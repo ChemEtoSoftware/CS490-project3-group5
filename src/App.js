@@ -1,23 +1,37 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import { MakeBoard } from './Board.js';
+import { useState, useRef, useEffect } from 'react';
+import io from 'socket.io-client';
+
+const socket = io();
 
 function App() {
+  const [board, setBoard] = useState(["","","","","","","","",""]);
+  function onClickButton(clickedId){
+    console.log(clickedId);
+    setBoard(prevBoard => {
+      const temp = [...prevBoard];
+      temp[parseInt(clickedId)]='x';
+      socket.emit('tictactoe',{message : temp});
+      return temp;
+    });
+    console.log(board);
+  }
+  
+
+  useEffect(() =>{
+    socket.on('tictactoe',(data)=>{
+      setBoard(prevBoard=> {
+        return [...data.message];
+      });
+    });
+  },[]);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="board">
+      {board.map((if_x,index) => <MakeBoard if_x={if_x} id={index} click={onClickButton}/>)}
     </div>
   );
 }
