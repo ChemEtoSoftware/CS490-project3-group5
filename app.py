@@ -32,8 +32,8 @@ def on_disconnect():
 @socketio.on('login')
 def on_login(data):
     users.append(str(data))
-    print(str(data))
-    socketio.emit('login', data, broadcast=True, include_self=True)
+    print("These are the users",str(users))
+    socketio.emit('login', users, broadcast=True, include_self=True)
 
 @socketio.on('logout')
 def on_logout(data):
