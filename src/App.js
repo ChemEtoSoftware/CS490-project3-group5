@@ -9,6 +9,11 @@ const socket = io();
 
 function App() {
   const [board, setBoard] = useState(["","","","","","","","",""]);
+  const [users, setUser] = useState(["Kevin"]);
+  const [isLoggedIn, setValue] = useState(false);
+  
+  console.log(isLoggedIn);
+  
   function onClickButton(clickedId){
     console.log(clickedId);
     setBoard(prevBoard => {
