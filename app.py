@@ -15,6 +15,7 @@ socketio = SocketIO(
 )
 
 users=[]
+previous_arr=["","","","","","","","",""]
 
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
@@ -31,6 +32,7 @@ def on_disconnect():
 
 @socketio.on('login')
 def on_login(data):
+    global users
     users.append(data)
     print("These are the users",users)
     socketio.emit('login', users, broadcast=True, include_self=True)
@@ -46,10 +48,23 @@ def on_logout(data):
 # 'chat' is a custom event name that we just decided
 @socketio.on('tictactoe')
 def on_tictactoe(data): # data is whatever arg you pass in your emit call on client
-    print(str(data))
+    global previous_arr
+    sum1 = 0;
+    sum2 = 0;
+    print(str(data['message']))
+    
+    for i in range (0,9):
+        if(previous_arr[i]=='X' or previous_arr[i]=='O'):
+            sum1 += 1;
+        if(data['message'][i]=='X' or data['message'][i]=='O'):
+            sum2 +=1
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('tictactoe',  data, broadcast=True, include_self=False)
+    if(sum1>sum2):
+        socketio.emit('tictactoe',  {'message' : previous_arr}, broadcast=True, include_self=False)
+    else:
+        socketio.emit('tictactoe',  data, broadcast=True, include_self=False)
+        previous_arr=data['message']
 
 socketio.run(
     app,

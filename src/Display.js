@@ -9,6 +9,7 @@ export function Display(props){
     else if (props.number==1){
         letter='O';
     }
+     props.setX(props.number,props.name);
     return(
         <ol>
             Player {letter} : {props.name}
