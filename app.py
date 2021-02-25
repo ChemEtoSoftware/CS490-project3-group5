@@ -49,6 +49,10 @@ def on_logout(data):
 @socketio.on('tictactoe')
 def on_tictactoe(data): # data is whatever arg you pass in your emit call on client
     global previous_arr
+    if(data['message']==["","","","","","","","",""]):
+        previous_arr=data['message'];
+        socketio.emit('tictactoe',  data, broadcast=True, include_self=False)
+        return
     sum1 = 0;
     sum2 = 0;
     print(str(data['message']))

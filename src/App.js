@@ -23,8 +23,9 @@ function App() {
   var currentWindow;
   var button;
   var display;
-
-
+  var winner;
+  var theWinnerIs;
+  var reset;
 
 
   //Use effects for the game. If the user reloads there page, it doesn't update to the original player's square, but instead updates the original player's square to be blank as well.
@@ -89,19 +90,25 @@ function App() {
       console.log("Current list of users upon login",users);
       setUser(prev => {
         const temp = [...prev,user];
-        setChecker(user);
+        setChecker((prev)=>user);
         return temp;
       });
-      setValue(true);
+      setValue((prev)=>true);
       socket.emit('login',user);
     }
   }
 
 
   function onLogout(){
-    setValue(false);
+    setValue((prev) => false);
+    setBoard(prevBoard => ["","","","","","","","",""]);
+    socket.emit('tictactoe',{message : board});
+    setChecker((prev) => '');
+    set_isX((prev) => '');
+    set_isXNext((prev) => true);
+    setUser((prev)=>[]);
     socket.emit('logout',checkUser);
-    setChecker(null);
+    setChecker((prev) => null);
     console.log(checkUser);
   }
   
@@ -112,15 +119,37 @@ function App() {
     console.log("And this is the client",checkUser);
     if(name==checkUser && number==0){
       console.log(name,number,checkUser);
-      set_isX('X');
+      set_isX((prev) => 'X');
     }
     else if (name == checkUser && number==1){
-      set_isX('O');
+      set_isX((prev) => 'O');
     }
   }
   
-  
-  
+  function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+  }
+  function reset(){
+    setBoard(prevBoard => ["","","","","","","","",""]);
+    set_isXNext((prev) => true);
+    socket.emit('tictactoe',{message : ["","","","","","","","",""], nxt : true});
+  }
   
   
   
@@ -132,11 +161,18 @@ function App() {
     currentWindow = <Login inputRef={inputRef} onLogin={onLogin}/>;
     display = null;
     button = null;
+    winner = null;
+    theWinnerIs=null;
+    reset=null;
   }
   else{
     currentWindow = board.map((if_x,index) => <MakeBoard if_x={if_x} id={index} click={onClickButton}/>);
     display = users.map((currentUser,index) => <Display name={currentUser} number={index} setX={setX}/>);
     button = <Logout onLogout={onLogout}/>;
+    theWinnerIs=<h1>The winner is: </h1>;
+    winner = calculateWinner(board);
+    reset = <button onClick={reset}>Reset</button>;
+    
   }
   
   
@@ -148,10 +184,13 @@ function App() {
         {currentWindow}
       </div>
       <div>
-        {button}
+        {button}{reset}
       </div>
       <div>
         {display}
+      </div>
+      <div>
+        {theWinnerIs}{winner}
       </div>
     </div>
   );
