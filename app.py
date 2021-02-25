@@ -31,14 +31,15 @@ def on_disconnect():
 
 @socketio.on('login')
 def on_login(data):
-    users.append(str(data))
-    print("These are the users",str(users))
+    users.append(data)
+    print("These are the users",users)
     socketio.emit('login', users, broadcast=True, include_self=True)
 
 @socketio.on('logout')
 def on_logout(data):
-    users.remove(str(data))
-    print(str(data))
+    users.remove(data)
+    print(users)
+    print(data)
     socketio.emit('logout', data, broadcast=True, include_self=True)
 
 # When a client emits the event 'chat' to the server, this function is run
