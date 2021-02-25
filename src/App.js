@@ -148,7 +148,7 @@ function App() {
   function reset(){
     setBoard(prevBoard => ["","","","","","","","",""]);
     set_isXNext((prev) => true);
-    socket.emit('tictactoe',{message : ["","","","","","","","",""], nxt : true});
+    socket.emit('tictactoe',{message : ["","","","","","","","",""], nxt : false});
   }
   
   
