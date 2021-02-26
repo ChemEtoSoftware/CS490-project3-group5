@@ -1,19 +1,9 @@
-# Flask and create-react-app
+# Project 2
 
-## Requirements
-1. `npm install`
-2. `pip install -r requirements.txt`
+## Milestone 1
+This was a struggle to get running, but I finally managed. Logging out ended up not working. I had problems with setting the user as X or O, but I was able to get it done by passing setUserLetter as a function and modifying the states like that.
+I'd initially tried just doing it from inside onLogin, but the states update asynchronously, so I had to create a separate function for this to work. I also had an issue with getting the conditionals setup, initially. 
+I tried using an if else statement and just putting the code in those huge blocks, but then I couldn't declare my functions normally. This also wouldn't work because of how isLoggedIn is updated asynchronously.
+So, after reading through the provided documentation, I realized I could just choose what's rendered by using variables. It made it work finally.
 
-## Setup
-1. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
-
-## Run Application
-1. Run command in terminal (in your project directory): `python app.py`
-2. Run command in another terminal, `cd` into the project directory, and run `npm run start`
-3. Preview web page in browser '/'
-
-## Deploy to Heroku
-*Don't do the Heroku step for assignments, you only need to deploy for Project 2*
-1. Create a Heroku app: `heroku create --buildpack heroku/python`
-2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
-3. Push to Heroku: `git push heroku main`
+What I would do to improve is to definitely made it prettier. It sure is ugly to look at. But it works.
