@@ -5,6 +5,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv()) # This is to load your env variables from .env
+
 
 app = Flask(__name__, static_folder='./build/static')
 # Point SQLAlchemy to your Heroku database
@@ -17,6 +19,7 @@ db = SQLAlchemy(app)
 # circular import issues
 import models
 db.create_all()
+
 
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -44,7 +47,7 @@ def on_disconnect():
 
 @socketio.on('login')
 def on_login(data):
-    new_user = models.Person(username=data['user'])
+    new_user = models.Person(username=data['user'],score=0)
     db.session.add(new_user)
     db.session.commit()
     all_people = models.Person.query.all()
@@ -52,17 +55,16 @@ def on_login(data):
     for person in all_people:
         users.append(person.username)
     print("These are the users", users)
-    socketio.emit('login', users, broadcast=True, include_self=True)
+    socketio.emit('login', {'users' : users}, broadcast=True, include_self=True)
 
 @socketio.on('logout')
 def on_logout(data):
-    users.remove(data)
-    print(users)
-    print(data)
-    socketio.emit('logout', data, broadcast=True, include_self=True)
+    db.session.delete(data)
+    db.session.commit()
 
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
+#This function makes sure that a user who logs in later, after the game's already started, can't modify the board, and that they receive an up-to-date board.
 @socketio.on('tictactoe')
 def on_tictactoe(data): # data is whatever arg you pass in your emit call on client
     global previous_arr
@@ -81,7 +83,7 @@ def on_tictactoe(data): # data is whatever arg you pass in your emit call on cli
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     if(sum1 > sum2):
-        socketio.emit('tictactoe', {'message' : previous_arr}, broadcast=True, include_self=False)
+        socketio.emit('tictactoe', {'message' : previous_arr, 'nxt' : data['nxt']}, broadcast=True, include_self=False)
     else:
         socketio.emit('tictactoe', data, broadcast=True, include_self=False)
         previous_arr = data['message']

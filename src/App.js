@@ -4,6 +4,7 @@ import { MakeBoard } from './Board.js';
 import { Login } from './Login.js';
 import { Logout } from './Logout.js';
 import { Display } from './Display.js';
+import { LeaderBoard } from './LeaderBoard.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -20,20 +21,23 @@ function App() {
   const inputRef = useRef(null);
   const [currentLetter, setCurrentLetter] = useState('Temp');
   const [isXNext, set_isXNext] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(null);
+  const [isLead,setIsLead] = useState(null);
   var currentWindow;
   var logoutButton;
-  var leaderBoard;
   var winner;
   var theWinnerIsStatement;
   var reset;
-
+  var leaderBoardButton;
+  var leader;
 
   //Use effects for the game. If the user reloads there page, it doesn't update to the original player's square, but instead updates the original player's square to be blank as well.
   useEffect(() =>{
     socket.on('tictactoe',(data)=>{
       setBoard(prevBoard=> [...data.message]);
       set_isXNext((prev) => !data.nxt);
-      console.log(isXNext);
+      console.log(currentLetter);
+      console.log("Is x next? ",isXNext);
     });
   },[]);
   
@@ -46,7 +50,7 @@ function App() {
   useEffect(() =>{
     socket.on('login',(data) =>{
       setUser(prev => {
-        const temp = [...data];
+        const temp = [...data.users];
         console.log("Up-to-date list of users",temp);
         return temp;
       });
@@ -65,7 +69,7 @@ function App() {
       return null;
     }
     console.log(currentLetter,isXNext);
-    if((isXNext && currentLetter=='X') || (!isXNext && currentLetter=='O')){
+    if((isXNext && currentLetter==='X') || (!isXNext && currentLetter==='O')){
       console.log(clickedId);
       setBoard(prevBoard => {
         const temp = [...prevBoard];
@@ -84,18 +88,19 @@ function App() {
   //Tells all the users who's logged in, tells the program who the current user is (i.e. the person who logged in on the current tab)
   function onLogin(){
     const user = inputRef.current.value;
-    if (user==""){
+    
+    if (user===""){
       alert("You need to enter a proper username");
     }
     else{
-      console.log("Current list of users upon login",users);
       setUser(prev => {
         const temp = [...prev,user];
         setCheckUser((prev)=>user);
+        console.log("Current list of users upon login",temp);
         return temp;
       });
       setIsLoggedIn((prev)=>true);
-      socket.emit('login',user);
+      socket.emit('login',{user : user});
     }
   }
 
@@ -118,11 +123,11 @@ function App() {
     console.log("This is the current index",number);
     console.log("This is the current user",name);
     console.log("And this is the client",checkUser);
-    if(name==checkUser && number==0){
+    if(name===checkUser && number===0){
       console.log(name,number,checkUser);
       setCurrentLetter((prev) => 'X');
     }
-    else if (name == checkUser && number==1){
+    else if (name === checkUser && number===1){
       setCurrentLetter((prev) => 'O');
     }
   }
@@ -154,7 +159,10 @@ function App() {
     socket.emit('tictactoe',{message : ["","","","","","","","",""], nxt : false});
   }
   
-  
+  function leaderBoard(){
+    console.log("The leaderBoard button was clicked");
+    setIsLead(prev => !prev);
+  }
   
   
   
@@ -162,7 +170,6 @@ function App() {
   //Conditionals
   if(!isLoggedIn){
     currentWindow = <Login inputRef={inputRef} onLogin={onLogin}/>;
-    leaderBoard = null;
     logoutButton = null;
     winner = null;
     theWinnerIsStatement=null;
@@ -170,8 +177,11 @@ function App() {
   }
   else{
     currentWindow = board.map((if_x,index) => <MakeBoard if_x={if_x} id={index} click={onClickButton}/>);
-    leaderBoard = users.map((currentUser,index) => <Display name={currentUser} number={index} setUserLetter={setUserLetter}/>);
     logoutButton = <Logout onLogout={onLogout}/>;
+    leaderBoardButton = <LeaderBoard leaderBoard={leaderBoard} users={users} currentUser={checkUser} setUserLetter={setUserLetter}/>;
+    if(isLead){
+      leader = users.map((currentUser,index) => <Display name={currentUser} number={index}/>);
+    }
     theWinnerIsStatement=<h1>The winner is: </h1>;
     winner = calculateWinner(board);
     reset = <button onClick={reset}>Reset</button>;
@@ -190,7 +200,8 @@ function App() {
         {logoutButton}{reset}
       </div>
       <div>
-        {leaderBoard}
+        {leaderBoardButton}
+        {leader}
       </div>
       <div>
         {theWinnerIsStatement}{winner}

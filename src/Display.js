@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 
 export function Display(props){
+    console.log("This is the current user",props.name,props.number);
     var letter='';
     if(props.number==0){
         letter='X';
@@ -9,7 +10,6 @@ export function Display(props){
     else if (props.number==1){
         letter='O';
     }
-     props.setUserLetter(props.number,props.name);
     return(
         <ol>
             Player {letter} : {props.name}
