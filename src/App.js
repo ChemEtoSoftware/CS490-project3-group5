@@ -190,7 +190,7 @@ function App() {
           console.log("And you're emitting to the winner socket here.");
           socket.emit('winner',{username : checkUser, status : 'winner'});
         }
-        else{
+        else if(currentLetter!=''){
           console.log("You're the loser.");
           socket.emit('winner',{username : checkUser, status : 'loser'});
         }
