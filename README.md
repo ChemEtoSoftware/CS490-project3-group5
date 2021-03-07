@@ -1,9 +1,14 @@
 # Project 2
 
-## Milestone 1
-This was a struggle to get running, but I finally managed. Logging out ended up not working. I had problems with setting the user as X or O, but I was able to get it done by passing setUserLetter as a function and modifying the states like that.
-I'd initially tried just doing it from inside onLogin, but the states update asynchronously, so I had to create a separate function for this to work. I also had an issue with getting the conditionals setup, initially. 
-I tried using an if else statement and just putting the code in those huge blocks, but then I couldn't declare my functions normally. This also wouldn't work because of how isLoggedIn is updated asynchronously.
-So, after reading through the provided documentation, I realized I could just choose what's rendered by using variables. It made it work finally.
+## Milestone 2
+1. If you want to clone this repo, just remember that you need to have all the libraries in requirements.txt. That means sql_alchemy, flask_sql_alchemy, socketio, etc. All are required for this program to run.
+2. First run "npm run start" on a terminal window, then "python app.py" on another terminal window (provided this isn't being run through Heroku). If you want to remove a user from the database, make sure to click logout.
+3. If you're going to run this on heroku, you need to setup a postgressql database on the heroku end. I'd recommend deleting any apps from the directory that were previously open. 
+4. Initialize your DB from the terminal.
 
-What I would do to improve is to definitely made it prettier. It sure is ugly to look at. But it works.
+* A known problem is how ugly my code is, and its lack of modularity. Given more time for this milestone, I'd have split up all the functions and components further into separate files. It would have helped my program look a lot better.
+* Another thing I'd like to have fixed was the issue with the program incrementing/decrementing the user's score by 2 instead of one. I ran console logs, and both users show they only emit to the socket once, but the socket prints twice for each user. 
+
+* Issues I ran into were numerous. This biggest pain was re-rendering. I figured I should give my useEffects arguments to prevent them constantly re-rendering anytime a state was updated. I also tried to make my code more conditional, so that 
+* it wasn't constantly re-rendering everything. I also kept having timeout issues on the server end, because of a function I had that was supposed to update a user's letter to X or O. I realized I could just write that code inside the login
+* function instead. My winner function is similar to what that function was like, in that it queries the DB and sends data to the client. I believe it stopped having timeout issues because I gave my useEffects arguments for when to re-render. 
