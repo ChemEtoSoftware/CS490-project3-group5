@@ -12,3 +12,7 @@
 * Issues I ran into were numerous. This biggest pain was re-rendering. I figured I should give my useEffects arguments to prevent them constantly re-rendering anytime a state was updated. I also tried to make my code more conditional, so that 
 * it wasn't constantly re-rendering everything. I also kept having timeout issues on the server end, because of a function I had that was supposed to update a user's letter to X or O. I realized I could just write that code inside the login
 * function instead. My winner function is similar to what that function was like, in that it queries the DB and sends data to the client. I believe it stopped having timeout issues because I gave my useEffects arguments for when to re-render. 
+
+IMPORTANT:
+    The program stores a previous board just in case a spectator logs in during a game. If you close all tabs with the server running, then open up new tabs and log in as different users, the old board will display. Hit reset just to
+    override this issue.
