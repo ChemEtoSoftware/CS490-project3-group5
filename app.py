@@ -47,21 +47,38 @@ def on_disconnect():
 
 @socketio.on('login')
 def on_login(data):
-    new_user = models.Person(username=data['user'],score=0)
+    new_user = models.Person(username=data['user'],score=100)
+    
     db.session.add(new_user)
     db.session.commit()
     all_people = models.Person.query.all()
     users = []
+    ordered_users = []
     for person in all_people:
         users.append(person.username)
+    ordered_scores = db.session.query(models.Person).order_by(models.Person.score.desc())
+    for score in ordered_scores:
+        ordered_users.append({'username' : score.username , 'score' : score.score})
+    print(ordered_users)
     print("These are the users", users)
-    socketio.emit('login', {'users' : users}, broadcast=True, include_self=True)
+    socketio.emit('login', {'users' : users, 'ordered_users' : ordered_users}, broadcast=True, include_self=True)
 
 @socketio.on('logout')
 def on_logout(data):
-    db.session.delete(data)
+    user = models.Person.query.filter_by(username=data).first()
+    db.session.delete(user)
     db.session.commit()
-
+    
+    
+@socketio.on('letter')
+def letter(data):
+    user = db.session.query(models.Person).filter_by(username=data['username']).first()
+    user.letter = data['letter']
+    db.session.add(user)
+    db.session.commit()
+    users = models.Person.query.all()
+    print(users)
+    
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
 #This function makes sure that a user who logs in later, after the game's already started, can't modify the board, and that they receive an up-to-date board.

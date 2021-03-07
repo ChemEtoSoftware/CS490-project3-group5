@@ -1,18 +1,22 @@
 import './App.css';
+import './Display.css';
 import React from 'react';
 
 export function Display(props){
-    console.log("This is the current user",props.name,props.number);
-    var letter='';
-    if(props.number==0){
-        letter='X';
+    console.log("This is the current user",props.name,props.number,props.currentUser);
+    var line;
+    console.log(props.currentLetter);
+    if(props.name===props.currentUser){
+        var letter=props.currentLetter;
+        line = <td> <b>Player {letter} ({props.name})</b></td>
     }
-    else if (props.number==1){
-        letter='O';
+    else{
+        line = <td> Player {letter} ({props.name})</td>
     }
     return(
-        <ol>
-            Player {letter} : {props.name}
-        </ol>
+        <tr>
+            <td> {line}</td>
+            <td>{props.number}</td>
+        </tr>
         );
 }

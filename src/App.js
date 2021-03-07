@@ -16,10 +16,11 @@ function App() {
   //These are all of my variables for the game. Yeah, it's a lot.
   const [board, setBoard] = useState(["","","","","","","","",""]);
   const [users, setUser] = useState([]);
+  const [scores, setScores] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkUser,setCheckUser] = useState(null);
   const inputRef = useRef(null);
-  const [currentLetter, setCurrentLetter] = useState('Temp');
+  const [currentLetter, setCurrentLetter] = useState('');
   const [isXNext, set_isXNext] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [isLead,setIsLead] = useState(null);
@@ -52,6 +53,10 @@ function App() {
       setUser(prev => {
         const temp = [...data.users];
         console.log("Up-to-date list of users",temp);
+        return temp;
+      });
+      setScores(prev =>{
+        const temp = [...data.ordered_users];
         return temp;
       });
     });
@@ -126,9 +131,11 @@ function App() {
     if(name===checkUser && number===0){
       console.log(name,number,checkUser);
       setCurrentLetter((prev) => 'X');
+      socket.emit('letter',{user : checkUser, letter : 'X'});
     }
     else if (name === checkUser && number===1){
       setCurrentLetter((prev) => 'O');
+      socket.emit('letter',{user : checkUser, letter : 'O'});
     }
   }
   
@@ -180,7 +187,16 @@ function App() {
     logoutButton = <Logout onLogout={onLogout}/>;
     leaderBoardButton = <LeaderBoard leaderBoard={leaderBoard} users={users} currentUser={checkUser} setUserLetter={setUserLetter}/>;
     if(isLead){
-      leader = users.map((currentUser,index) => <Display name={currentUser} number={index}/>);
+      <table>
+         <thead>
+            <tr>
+                <th colspan="2">The table header</th>
+            </tr>
+          </thead>
+          <tbody>
+              {leader = scores.map((currentUser) => <Display name={currentUser.username} number={currentUser.score} currentUser={checkUser} currentLetter={currentLetter}/>)}
+          </tbody>
+      </table>
     }
     theWinnerIsStatement=<h1>The winner is: </h1>;
     winner = calculateWinner(board);
