@@ -22,23 +22,33 @@ function App() {
   const inputRef = useRef(null);
   const [currentLetter, setCurrentLetter] = useState('');
   const [isXNext, set_isXNext] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(null);
+  const [currentWinner, setCurrentWinner] = useState(null);
   const [isLead,setIsLead] = useState(null);
   var currentWindow;
   var logoutButton;
-  var winner;
   var theWinnerIsStatement;
   var reset;
   var leaderBoardButton;
   var leader;
-
+  var winner;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   //Use effects for the game. If the user reloads there page, it doesn't update to the original player's square, but instead updates the original player's square to be blank as well.
   useEffect(() =>{
     socket.on('tictactoe',(data)=>{
       setBoard(prevBoard=> [...data.message]);
       set_isXNext((prev) => !data.nxt);
-      console.log(currentLetter);
-      console.log("Is x next? ",isXNext);
+      
     });
   },[]);
   
@@ -48,6 +58,7 @@ function App() {
     }
   });*/
   
+  //Gives a list of users in the order that they logged in, as well as a list of users ordered by their scores.
   useEffect(() =>{
     socket.on('login',(data) =>{
       setUser(prev => {
@@ -62,6 +73,32 @@ function App() {
     });
     },[]);
 
+  //Just updates the scores of users.
+  useEffect(() => {
+    socket.on('winner',(data) =>{
+      setScores(prev => {
+        const temp = [...data.ordered_users];
+        return temp;
+      });
+    });
+    return function cleanup(){
+      socket.off('winner');
+    }
+  },[currentWinner]);
+  //This is just for updating currentWinner to null.
+  useEffect(() => {
+    socket.on('reset',(data) => {
+      if(data['message'] == true)
+        setCurrentWinner(prev => null);
+    });
+  },[currentWinner]);
+
+
+
+
+
+
+
 
 
 
@@ -75,7 +112,6 @@ function App() {
     }
     console.log(currentLetter,isXNext);
     if((isXNext && currentLetter==='X') || (!isXNext && currentLetter==='O')){
-      console.log(clickedId);
       setBoard(prevBoard => {
         const temp = [...prevBoard];
         if(temp[parseInt(clickedId)]!='X' && temp[parseInt(clickedId)]!='O'){
@@ -85,7 +121,6 @@ function App() {
         socket.emit('tictactoe',{message : temp,nxt : isXNext});
         return temp;
       });
-      console.log(board);
     }
     
   }
@@ -93,7 +128,6 @@ function App() {
   //Tells all the users who's logged in, tells the program who the current user is (i.e. the person who logged in on the current tab)
   function onLogin(){
     const user = inputRef.current.value;
-    
     if (user===""){
       alert("You need to enter a proper username");
     }
@@ -120,25 +154,21 @@ function App() {
     setUser((prev)=>[]);
     socket.emit('logout',checkUser);
     setCheckUser((prev) => null);
-    console.log(checkUser);
+    setCurrentWinner(prev => null)
   }
   
   //Tells the user if they're X, O or a spectator.
   function setUserLetter(number,name){
-    console.log("This is the current index",number);
-    console.log("This is the current user",name);
-    console.log("And this is the client",checkUser);
+    
     if(name===checkUser && number===0){
-      console.log(name,number,checkUser);
       setCurrentLetter((prev) => 'X');
-      socket.emit('letter',{user : checkUser, letter : 'X'});
     }
     else if (name === checkUser && number===1){
       setCurrentLetter((prev) => 'O');
-      socket.emit('letter',{user : checkUser, letter : 'O'});
     }
   }
   
+  //Calculated winner function to emit to winner socket and update scores accordingly. 
   function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -153,7 +183,22 @@ function App() {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return "Player ".concat(squares[a]);
+      if(currentWinner===null){
+        console.log("You're inside the calculated winner function.");
+        setCurrentWinner(prev => (squares[a]));
+        if(currentLetter===squares[a]){
+          console.log("And you're emitting to the winner socket here.");
+          socket.emit('winner',{username : checkUser, status : 'winner'});
+        }
+        else{
+          console.log("You're the loser.");
+          socket.emit('winner',{username : checkUser, status : 'loser'});
+        }
+        return "Player ".concat(squares[a]);
+      }
+      else{
+        setCurrentWinner(prev => null);
+      }
     }
   }
   return null;
@@ -163,9 +208,12 @@ function App() {
   function reset(){
     setBoard(prevBoard => ["","","","","","","","",""]);
     set_isXNext((prev) => true);
+    setCurrentWinner(prev => null);
+    winner='';
     socket.emit('tictactoe',{message : ["","","","","","","","",""], nxt : false});
+    socket.emit('reset',{message : true});
   }
-  
+  //Tells the program if the user clicked the leaderboard button was clicked to activate the conditional.
   function leaderBoard(){
     console.log("The leaderBoard button was clicked");
     setIsLead(prev => !prev);
@@ -174,17 +222,37 @@ function App() {
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   //Conditionals
   if(!isLoggedIn){
     currentWindow = <Login inputRef={inputRef} onLogin={onLogin}/>;
     logoutButton = null;
-    winner = null;
     theWinnerIsStatement=null;
     reset=null;
   }
+  //Log in button was clicked.
   else{
+    //Sets up board.
     currentWindow = board.map((if_x,index) => <MakeBoard if_x={if_x} id={index} click={onClickButton}/>);
+    //Checks if anybody's won yet.
+    if(currentWinner===null){
+      winner = calculateWinner(board);
+    }
+    //Functional logout button.
     logoutButton = <Logout onLogout={onLogout}/>;
+    
+    //Passing setUserLetter to tell the program if the user is X or O, but I'm going to remove this for milestone.
     leaderBoardButton = <LeaderBoard leaderBoard={leaderBoard} users={users} currentUser={checkUser} setUserLetter={setUserLetter}/>;
     if(isLead){
       <table>
@@ -194,14 +262,12 @@ function App() {
             </tr>
           </thead>
           <tbody>
-              {leader = scores.map((currentUser) => <Display name={currentUser.username} number={currentUser.score} currentUser={checkUser} currentLetter={currentLetter}/>)}
+              {leader = scores.map((currentUser) => <Display name={currentUser.username} number={currentUser.score} currentUser={checkUser} currentLetter={currentUser.letter}/>)}
           </tbody>
       </table>
     }
     theWinnerIsStatement=<h1>The winner is: </h1>;
-    winner = calculateWinner(board);
     reset = <button onClick={reset}>Reset</button>;
-    
   }
   
   
@@ -220,7 +286,7 @@ function App() {
         {leader}
       </div>
       <div>
-        {theWinnerIsStatement}{winner}
+        {theWinnerIsStatement}{currentWinner}
       </div>
     </div>
   );

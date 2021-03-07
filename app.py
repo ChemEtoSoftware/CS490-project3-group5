@@ -4,6 +4,9 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
+from engineio.payload import Payload
+
+Payload.max_decode_packets = 200
 
 load_dotenv(find_dotenv()) # This is to load your env variables from .env
 
@@ -19,7 +22,6 @@ db = SQLAlchemy(app)
 # circular import issues
 import models
 db.create_all()
-
 
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -56,29 +58,65 @@ def on_login(data):
     ordered_users = []
     for person in all_people:
         users.append(person.username)
+        
+    #Checking to see if the user is X or O.
+    if(users.index(data['user']) == 0):
+        updated_user = db.session.query(models.Person).filter_by(username=data['user']).first()
+        updated_user.letter = 'X'
+        print(updated_user.username,updated_user.letter)
+        db.session.add(updated_user)
+        db.session.commit()
+    elif(users.index(data['user']) == 1):
+        updated_user = db.session.query(models.Person).filter_by(username=data['user']).first()
+        updated_user.letter = 'O'
+        print(updated_user.username,updated_user.letter)
+        db.session.add(updated_user)
+        db.session.commit()
+        
+    #Order the scores in descening order.
     ordered_scores = db.session.query(models.Person).order_by(models.Person.score.desc())
     for score in ordered_scores:
-        ordered_users.append({'username' : score.username , 'score' : score.score})
+        ordered_users.append({'username' : score.username , 'score' : score.score, 'letter' : score.letter})
     print(ordered_users)
     print("These are the users", users)
+    
+    #Send everything back to the client
     socketio.emit('login', {'users' : users, 'ordered_users' : ordered_users}, broadcast=True, include_self=True)
 
 @socketio.on('logout')
 def on_logout(data):
-    user = models.Person.query.filter_by(username=data).first()
+    user = db.session.query(models.Person).filter_by(username=data).first()
     db.session.delete(user)
     db.session.commit()
     
+#Increments/Decrements the winner/loser. Sends back the new list. 
+@socketio.on('winner')
+def on_winner(data):
+    ordered_users = []
+    winner = db.session.query(models.Person).filter_by(username=data['username']).first()
+    if(data['status']=='winner'):
+        winner.score += 1
     
-@socketio.on('letter')
-def letter(data):
-    user = db.session.query(models.Person).filter_by(username=data['username']).first()
-    user.letter = data['letter']
-    db.session.add(user)
+    elif(data['status']=='loser'):
+        winner.score -= 1
+    
+    db.session.add(winner)
     db.session.commit()
-    users = models.Person.query.all()
-    print(users)
+    print(winner.score)
     
+    ordered_scores = db.session.query(models.Person).order_by(models.Person.score.desc())
+    for score in ordered_scores:
+        ordered_users.append({'username' : score.username , 'score' : score.score, 'letter' : score.letter})
+    print(ordered_users)
+    socketio.emit('winner', {'ordered_users' : ordered_users}, broadcast=True, include_self=True)
+
+#Just tells all users to change their currentWinner state to null upon one clicking the reset button.
+@socketio.on('reset')
+def on_reset(data):
+    if(data['message']==True):
+        socketio.emit('reset',{'message' : True}, broadcast=True, include_self=False)
+
+
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
 #This function makes sure that a user who logs in later, after the game's already started, can't modify the board, and that they receive an up-to-date board.
