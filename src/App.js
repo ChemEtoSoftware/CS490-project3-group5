@@ -278,14 +278,14 @@ function App() {
       <div className="board">
         {currentWindow}
       </div>
-      <div>
+      <div className="logoutbutton">
         {logoutButton}{reset}
       </div>
-      <div>
+      <div className="leaderboardbutton">
         {leaderBoardButton}
         {leader}
       </div>
-      <div>
+      <div className="victor">
         {theWinnerIsStatement}{currentWinner}
       </div>
     </div>

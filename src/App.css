@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.logoutbutton {
+  margin: 0 auto;
+  break-after: always;
+}
+
+.leaderboardbutton {
+  margin: 0 auto;
+  break-after: always;
+}
+
+.victor {
+  margin: 0 auto;
+}

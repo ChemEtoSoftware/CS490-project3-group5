@@ -10,3 +10,17 @@
 .box {
   border: 1px solid black; /* Shows the lines in the CSS grid */
 }
+
+.logoutbutton {
+  margin: 0 auto;
+  break-after: always;
+}
+
+.leaderboardbutton {
+  margin: 0 auto;
+  break-after: always;
+}
+
+.victor {
+  margin: 0 auto;
+}
