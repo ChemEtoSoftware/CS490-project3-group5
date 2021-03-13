@@ -1,11 +1,11 @@
 import './App.css';
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
-import { MakeBoard } from './Board';
-import { Login } from './Login';
-import { Logout } from './Logout';
-import { Display } from './Display';
-import { LeaderBoard } from './LeaderBoard';
+import { MakeBoard } from './Board.js';
+import { Login } from './Login.js';
+import { Logout } from './Logout.js';
+import { Display } from './Display.js';
+import { LeaderBoard } from './LeaderBoard.js';
 
 const socket = io();
 
