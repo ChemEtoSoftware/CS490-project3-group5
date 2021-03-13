@@ -27,7 +27,6 @@ function App() {
   let resetButton;
   let leaderBoardButton;
   let leader;
-  let winner;
 
   /* Use effects for the game. If the user reloads there page.
   It doesn't update to the original player's square,
@@ -179,7 +178,6 @@ function App() {
     setBoard(['', '', '', '', '', '', '', '', '']);
     setIsXNext(true);
     setCurrentWinner(null);
-    winner = '';
     socket.emit('tictactoe', {
       message: ['', '', '', '', '', '', '', '', ''],
       nxt: false,
@@ -205,7 +203,7 @@ function App() {
     ));
     // Checks if anybody's won yet.
     if (currentWinner === null) {
-      winner = calculateWinner(board);
+      calculateWinner(board);
     }
     // Functional logout button.
     logoutButton = <Logout onLogout={onLogout} />;
@@ -259,7 +257,7 @@ function App() {
       </div>
       <div className="victor">
         {theWinnerIsStatement}
-        {winner}
+        {currentWinner}
       </div>
     </div>
   );
