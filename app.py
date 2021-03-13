@@ -78,14 +78,12 @@ def on_login(data):
         updated_user = DB.session.query(
             models.Person).filter_by(username=data['user']).first()
         updated_user.letter = 'X'
-        print(updated_user.username, updated_user.letter)
         DB.session.add(updated_user)
         DB.session.commit()
     elif users.index(data['user']) == 1:
         updated_user = DB.session.query(
             models.Person).filter_by(username=data['user']).first()
         updated_user.letter = 'O'
-        print(updated_user.username, updated_user.letter)
         DB.session.add(updated_user)
         DB.session.commit()
 
@@ -98,9 +96,6 @@ def on_login(data):
             'score': score.score,
             'letter': score.letter
         })
-    print(ordered_users)
-    print("These are the users", users)
-
     #Send everything back to the client
     SOCKETIO.emit('login', {
         'users': users,
@@ -108,7 +103,7 @@ def on_login(data):
     },
                   broadcast=True,
                   include_self=True)
-
+    return users
 
 @SOCKETIO.on('logout')
 def on_logout(data):
@@ -117,7 +112,7 @@ def on_logout(data):
     user = DB.session.query(models.Person).filter_by(username=data).first()
     DB.session.delete(user)
     DB.session.commit()
-
+    return data['username']
 
 #Increments/Decrements the winner/loser. Sends back the new list.
 @SOCKETIO.on('winner')
@@ -134,8 +129,6 @@ def on_winner(data):
 
     DB.session.add(winner)
     DB.session.commit()
-    print(winner.score)
-
     ordered_scores = DB.session.query(models.Person).order_by(
         models.Person.score.desc())
     for score in ordered_scores:
@@ -144,10 +137,10 @@ def on_winner(data):
             'score': score.score,
             'letter': score.letter
         })
-    print(ordered_users)
     SOCKETIO.emit('winner', {'ordered_users': ordered_users},
                   broadcast=True,
                   include_self=True)
+    return data['username']
 #Just tells all users to change their
 #currentWinner state to null upon one
 #clicking the reset button.
@@ -158,6 +151,7 @@ def on_reset(data):
         SOCKETIO.emit('reset', {'message': True},
                       broadcast=True,
                       include_self=False)
+    return data['message']
 # When a client emits the event 'chat' to the server,
 # this function is run.
 # 'chat' is a custom event name that we just decided
@@ -175,28 +169,25 @@ def on_tictactoe(data):
         PREVIOUS_ARR = data['message']
         SOCKETIO.emit('tictactoe', data, broadcast=True, include_self=False)
         return
+    arr = sum_of_arrays(data['message'], PREVIOUS_ARR)
+    data['message'] = arr
+    SOCKETIO.emit('tictactoe', data, broadcast=True, include_self=False)
+    PREVIOUS_ARR = arr
+
+def sum_of_arrays(arr1, arr2):
+    """This function is purely for comparing if the previously held array is greater
+    than the one currently passed. This is to prevent a new user who logged in
+    from ruining the game"""
     sum1 = 0
     sum2 = 0
-    print(str(data['message']))
     for i in range(0, 9):
-        if PREVIOUS_ARR[i] == 'X' or PREVIOUS_ARR[i] == 'O':
+        if arr1[i] == 'X' or arr1[i] == 'O':
             sum1 += 1
-        if data['message'][i] == 'X' or data['message'][i] == 'O':
+        if arr2[i] == 'X' or arr2[i] == 'O':
             sum2 += 1
-    # This emits the 'chat' event from the server to all clients except for
-    # the client that emmitted the event that triggered this function
     if sum1 > sum2:
-        SOCKETIO.emit('tictactoe', {
-            'message': PREVIOUS_ARR,
-            'nxt': data['nxt']
-        },
-                      broadcast=True,
-                      include_self=False)
-    else:
-        SOCKETIO.emit('tictactoe', data, broadcast=True, include_self=False)
-        PREVIOUS_ARR = data['message']
-
-
+        return arr1
+    return arr2
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg
