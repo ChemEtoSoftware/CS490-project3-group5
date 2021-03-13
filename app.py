@@ -50,7 +50,6 @@ def on_disconnect():
 @socketio.on('login')
 def on_login(data):
     new_user = models.Person(username=data['user'],score=100)
-    
     db.session.add(new_user)
     db.session.commit()
     all_people = models.Person.query.all()

@@ -1,10 +1,10 @@
-import './App.css';
-import React from 'react';
+import "./App.css";
+import React from "react";
 
-export function Logout(props){
-    return (
-        <div>
-            <button onClick={() => props.onLogout()}>Logout</button>
-        </div>
-        );
+export function Logout(props) {
+  return (
+    <div>
+      <button onClick={() => props.onLogout()}>Logout</button>
+    </div>
+  );
 }
