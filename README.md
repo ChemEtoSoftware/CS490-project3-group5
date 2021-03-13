@@ -15,4 +15,4 @@
 
 IMPORTANT:
     The program stores a previous board just in case a spectator logs in during a game. If you close all tabs with the server running, then open up new tabs and log in as different users, the old board will display. Hit reset just to
-    override this issue.
+    override this issue. Have to edit this file so that git will push to heroku
