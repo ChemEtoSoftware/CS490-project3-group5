@@ -1,0 +1,40 @@
+{
+  "name": "airbnb",
+  "version": "1.0.0",
+  "description": "This is for my Project 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "None",
+    "start": "npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NJIT-CS490-SP21/project2-kfp3.git"
+  },
+  "keywords": [
+    "ReactJS",
+    "ESLINT",
+    "Prettier",
+    "yapf"
+  ],
+  "author": "Kevin Pereira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NJIT-CS490-SP21/project2-kfp3/issues"
+  },
+  "homepage": "https://github.com/NJIT-CS490-SP21/project2-kfp3#readme",
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "socket.io-client": "^4.0.0"
+  }
+}
