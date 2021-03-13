@@ -9,6 +9,7 @@ chardet==4.0.0
 click==7.1.2
 colorama==0.4.3
 cors==0.9.7
+coverage==5.5
 decorator==4.4.2
 Django==2.0.2
 docutils==0.15.2
@@ -75,6 +76,7 @@ virtualenvwrapper==4.8.4
 wcwidth==0.2.5
 Werkzeug==1.0.1
 wrapt==1.12.1
+yapf==0.31.0
 zipp==3.4.0
 zope.event==4.5.0
 zope.interface==5.2.0

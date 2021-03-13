@@ -4,12 +4,10 @@
   "description": "This is for my Project 2",
   "main": "index.js",
   "scripts": {
-    "test": "None",
-    "start": "npm run start"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NJIT-CS490-SP21/project2-kfp3.git"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "keywords": [
     "ReactJS",
@@ -19,23 +17,37 @@
   ],
   "author": "Kevin Pereira",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NJIT-CS490-SP21/project2-kfp3/issues"
-  },
-  "homepage": "https://github.com/NJIT-CS490-SP21/project2-kfp3#readme",
   "devDependencies": {
     "eslint": "^7.22.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "webpack-cli": "^4.5.0"
+    "eslint-plugin-react-hooks": "^1.7.0"
   },
   "dependencies": {
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.6.3",
+    "prettier": "^2.2.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "socket.io-client": "^4.0.0"
+    "react-scripts": "4.0.2",
+    "socket.io-client": "^4.0.0",
+    "web-vitals": "^1.1.0"
+  },
+  "proxy": "http://localhost:8081",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
