@@ -6,3 +6,4 @@ export function LeaderBoard(props) {
   props.setUserLetter(num, props.currentUser);
   return <button onClick={() => props.leaderBoard()}>Leader Board</button>;
 }
+export default LeaderBoard;

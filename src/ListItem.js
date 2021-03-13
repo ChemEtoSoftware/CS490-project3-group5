@@ -8,3 +8,4 @@ export function ListItem() {
     </ul>
   );
 }
+export default ListItem;
