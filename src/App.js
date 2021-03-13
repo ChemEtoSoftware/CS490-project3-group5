@@ -201,7 +201,7 @@ function App() {
   } /* Log in button was clicked. */ else {
     // Sets up board.
     currentWindow = board.map((ifIsx, index) => (
-      <MakeBoard if_x={ifIsx} id={index} click={onClickButton} />
+      <MakeBoard ifX={ifIsx} id={index} click={onClickButton} />
     ));
     // Checks if anybody's won yet.
     if (currentWinner === null) {

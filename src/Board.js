@@ -1,12 +1,24 @@
 import React from 'react';
 import './Board.css';
+import PropTypes from 'prop-types';
 
 export function MakeBoard(props) {
+  const { ifX, id, click } = props;
   return (
-    <button className="box" id={props.id} onClick={() => props.click(props.id)}>
-      {props.if_x}
+    <button type="button" value="button" className="box" id={id} onClick={() => click(id)}>
+      {ifX}
     </button>
   );
 }
+MakeBoard.propTypes = {
+  ifX: PropTypes.string,
+  id: PropTypes.number,
+  click: PropTypes.func,
+};
 
+MakeBoard.defaultProps = {
+  ifX: '',
+  id: null,
+  click: null,
+};
 export default MakeBoard;
