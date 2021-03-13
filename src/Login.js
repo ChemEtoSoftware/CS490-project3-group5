@@ -27,7 +27,7 @@ Login.propTypes = {
 };
 
 Login.defaultProps = {
-  inputRef: null,
+  inputRef: '',
   onLogin: null,
 };
 export default Login;
