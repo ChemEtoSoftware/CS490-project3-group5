@@ -12,7 +12,7 @@ export function Login(props) {
       Enter username here:
       {' '}
       <input ref={inputRef} type="text" />
-      <button type="button" value="Login" onClick={onLogin}>Login</button>
+      <button type="button" onClick={onLogin}>Login</button>
     </div>
   );
 }

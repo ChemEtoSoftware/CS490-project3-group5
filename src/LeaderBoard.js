@@ -8,7 +8,7 @@ export function LeaderBoard(props) {
   } = props;
   const num = users.indexOf(currentUser);
   setUserLetter(num, currentUser);
-  return <button type="button" value="button" onClick={() => leaderBoard()}>Leader Board</button>;
+  return <button type="button" onClick={() => leaderBoard()}>Leader Board</button>;
 }
 
 LeaderBoard.propTypes = {

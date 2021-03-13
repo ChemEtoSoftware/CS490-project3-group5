@@ -6,7 +6,7 @@ export function Logout(props) {
   const { onLogout } = props;
   return (
     <div>
-      <button type="button" value="logout" onClick={() => onLogout()}>Logout</button>
+      <button type="button" onClick={() => onLogout()}>Logout</button>
     </div>
   );
 }

@@ -242,7 +242,7 @@ function App() {
       </table>;
     }
     theWinnerIsStatement = <h1>The winner is: </h1>;
-    resetButton = <button type="button" value="button" onClick={reset}>Reset</button>;
+    resetButton = <button type="button" onClick={reset}>Reset</button>;
   }
 
   // Now Heroku doesn't want to deploy.
