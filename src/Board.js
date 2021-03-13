@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export function MakeBoard(props) {
   const { ifX, id, click } = props;
   return (
-    <button type="button" value="button" className="box" id={id} onClick={() => click(id)}>
+    <button type="button" value="square" className="box" id={id} onClick={() => click(id)}>
       {ifX}
     </button>
   );
