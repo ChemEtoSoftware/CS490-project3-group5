@@ -245,6 +245,8 @@ function App() {
     resetButton = <button type="button" value="button" onClick={reset}>Reset</button>;
   }
 
+
+//Now Heroku doesn't want to deploy.
   return (
     <div>
       <div className="board">{currentWindow}</div>
