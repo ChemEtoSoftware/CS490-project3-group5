@@ -64,11 +64,8 @@ def on_login(data):
     a score of 100. Also sets Player X, Player O and Spectators.
     Also orders the users by score and returns that to Display
     in LeaderBoard."""
-    new_user = models.Person(username=data['user'], score=100)
-    DB.session.add(new_user)
-    DB.session.commit()
-    all_people = models.Person.query.all()
-    users = regular_append(all_people)
+    username = data['username']
+    users = add_to_db(username)
     #Checking to see if the user is X or O.
     if users.index(data['user']) == 0:
         updated_user = DB.session.query(
@@ -93,6 +90,14 @@ def on_login(data):
     },
                   broadcast=True,
                   include_self=True)
+
+def add_to_db(user):
+    """This function is purely just for adding the user to the db"""
+    new_user = models.Person(username=user, score=100)
+    DB.session.add(new_user)
+    DB.session.commit()
+    all_people = models.Person.query.all()
+    users = regular_append(all_people)
     return users
 
 @SOCKETIO.on('logout')
@@ -107,9 +112,9 @@ def on_logout(data):
 #Increments/Decrements the winner/loser. Sends back the new list.
 @SOCKETIO.on('winner')
 def on_winner(data):
-    """Tells everybody who'se won, and returns updated scores."""
+    """Tells everybody who's won, and returns updated scores."""
     winner = DB.session.query(
-        models.Person).filter_by(username=data['username']).first()
+        models.Person).filter_by(username=data['username'])
     if data['status'] == 'winner':
         winner.score += 1
 
@@ -120,11 +125,13 @@ def on_winner(data):
     DB.session.commit()
     ordered_scores = DB.session.query(models.Person).order_by(
         models.Person.score.desc())
+    for score in ordered_scores:
+        print(score.score)
     ordered_users = ordered_append(ordered_scores)
     SOCKETIO.emit('winner', {'ordered_users': ordered_users},
                   broadcast=True,
                   include_self=True)
-    return data['username']
+    return ordered_users
 #Just tells all users to change their
 #currentWinner state to null upon one
 #clicking the reset button.
