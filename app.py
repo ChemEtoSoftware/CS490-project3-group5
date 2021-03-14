@@ -68,11 +68,7 @@ def on_login(data):
     DB.session.add(new_user)
     DB.session.commit()
     all_people = models.Person.query.all()
-    users = []
-    ordered_users = []
-    for person in all_people:
-        users.append(person.username)
-
+    users = regular_append(all_people)
     #Checking to see if the user is X or O.
     if users.index(data['user']) == 0:
         updated_user = DB.session.query(
@@ -86,16 +82,10 @@ def on_login(data):
         updated_user.letter = 'O'
         DB.session.add(updated_user)
         DB.session.commit()
-
     #Order the scores in descening order.
     ordered_scores = DB.session.query(models.Person).order_by(
         models.Person.score.desc())
-    for score in ordered_scores:
-        ordered_users.append({
-            'username': score.username,
-            'score': score.score,
-            'letter': score.letter
-        })
+    ordered_users = ordered_append(ordered_scores)
     #Send everything back to the client
     SOCKETIO.emit('login', {
         'users': users,
@@ -118,7 +108,6 @@ def on_logout(data):
 @SOCKETIO.on('winner')
 def on_winner(data):
     """Tells everybody who'se won, and returns updated scores."""
-    ordered_users = []
     winner = DB.session.query(
         models.Person).filter_by(username=data['username']).first()
     if data['status'] == 'winner':
@@ -131,12 +120,7 @@ def on_winner(data):
     DB.session.commit()
     ordered_scores = DB.session.query(models.Person).order_by(
         models.Person.score.desc())
-    for score in ordered_scores:
-        ordered_users.append({
-            'username': score.username,
-            'score': score.score,
-            'letter': score.letter
-        })
+    ordered_users = ordered_append(ordered_scores)
     SOCKETIO.emit('winner', {'ordered_users': ordered_users},
                   broadcast=True,
                   include_self=True)
@@ -188,6 +172,23 @@ def sum_of_arrays(arr1, arr2):
     if sum1 > sum2:
         return arr1
     return arr2
+def regular_append(query_arr):
+    """This function is just for appending to an array
+    called users that gets returned"""
+    users = []
+    for person in query_arr:
+        users.append(person.username)
+    return users
+def ordered_append(object_arr):
+    """This function is for appending objects to array
+    in ordered fashion."""
+    ordered_users = []
+    for score in object_arr:
+        ordered_users.append({
+            'username': score.username,
+            'score': score.score,
+            'letter': score.letter})
+    return ordered_users
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg
