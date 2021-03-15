@@ -11,7 +11,7 @@ export function Login(props) {
       <h1>Login here so that you can play or watch the tictactoe game.</h1>
       Enter username here:
       {' '}
-      <input ref={inputRef} type="text" />
+      <input ref={inputRef} type="text" placeholder="Put in a real name"/>
       <button type="button" onClick={onLogin}>Login</button>
     </div>
   );
