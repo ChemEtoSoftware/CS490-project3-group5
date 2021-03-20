@@ -3,7 +3,7 @@ import unittest
 import os
 import sys
 sys.path.append(os.path.abspath('../../'))
-from app import regular_append, ordered_append, sum_of_arrays
+from helpers import regular_append, ordered_append, sum_of_arrays
 import models
 
 ARRAY_INPUT = "username"
@@ -45,21 +45,21 @@ class OrderAppendTestCase(unittest.TestCase):
         self.success_test_params = [
             {
                 ARRAY_INPUT: [KEVIN, JOE, IRENE],
-                EXPECTED_OUTPUT: [{'username' : 'Kevin', 'score' : 100, 'letter' : None},
-                                  {'username' : 'Joe', 'score' : 101, 'letter' : None},
-                                  {'username' : 'Irene', 'score' : 99, 'letter' : None}]
+                EXPECTED_OUTPUT: [{'username' : 'Kevin', 'score' : 100},
+                                  {'username' : 'Joe', 'score' : 101},
+                                  {'username' : 'Irene', 'score' : 99}]
             },
             {
                 ARRAY_INPUT: [IRENE, JOE, KEVIN],
-                EXPECTED_OUTPUT: [{'username' : 'Irene', 'score' : 99, 'letter' : None},
-                                  {'username' : 'Joe', 'score' : 101, 'letter' : None},
-                                  {'username' : 'Kevin', 'score' : 100, 'letter' : None}]
+                EXPECTED_OUTPUT: [{'username' : 'Irene', 'score' : 99},
+                                  {'username' : 'Joe', 'score' : 101},
+                                  {'username' : 'Kevin', 'score' : 100}]
             },
             {
                 ARRAY_INPUT: [JOE, KEVIN, IRENE],
-                EXPECTED_OUTPUT: [{'username' : 'Joe', 'score' : 101, 'letter' : None},
-                                  {'username' : 'Kevin', 'score' : 100, 'letter':None},
-                                  {'username' : 'Irene', 'score' : 99, 'letter' : None}]
+                EXPECTED_OUTPUT: [{'username' : 'Joe', 'score' : 101},
+                                  {'username' : 'Kevin', 'score' : 100},
+                                  {'username' : 'Irene', 'score' : 99}]
             }
         ]
 

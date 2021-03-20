@@ -3,6 +3,7 @@ import './Display.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// This function is actually displaying the leaderboard.
 export function Display(props) {
   const {
     name, number, currentUser, currentLetter,
@@ -29,8 +30,6 @@ export function Display(props) {
         {' '}
         Player
         {' '}
-        {currentLetter}
-        {' '}
         (
         {name}
         )
@@ -39,10 +38,7 @@ export function Display(props) {
   }
   return (
     <tr>
-      <td>
-        {' '}
-        {line}
-      </td>
+      {line}
       <td>{number}</td>
     </tr>
   );

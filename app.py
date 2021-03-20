@@ -9,8 +9,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
+from helpers import ordered_append, sum_of_arrays, add_to_db
 
-
+#Prevents server overload
 Payload.max_decode_packets = 200
 
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
@@ -24,7 +25,6 @@ APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(APP)
 # IMPORTANT: This must be AFTER creating DB variable to prevent
 # circular import issues
-
 import models
 
 DB.create_all()
@@ -37,7 +37,7 @@ SOCKETIO = SocketIO(APP,
                     manage_session=False)
 
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
-
+LIST_OF_ACTIVE_USERS = []
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -64,57 +64,41 @@ def on_login(data):
     a score of 100. Also sets Player X, Player O and Spectators.
     Also orders the users by score and returns that to Display
     in LeaderBoard."""
-    username = data['username']
-    users = add_to_db(username)
-    #Checking to see if the user is X or O.
-    if users.index(data['user']) == 0:
-        updated_user = DB.session.query(
-            models.Person).filter_by(username=data['user']).first()
-        updated_user.letter = 'X'
-        DB.session.add(updated_user)
-        DB.session.commit()
-    elif users.index(data['user']) == 1:
-        updated_user = DB.session.query(
-            models.Person).filter_by(username=data['user']).first()
-        updated_user.letter = 'O'
-        DB.session.add(updated_user)
-        DB.session.commit()
+    username = data['user']
+    exists = DB.session.query(models.Person).filter_by(username=username).first()
+    if exists is None:
+        add_to_db(username, DB, models)
+    LIST_OF_ACTIVE_USERS.append(username)
     #Order the scores in descening order.
     ordered_scores = DB.session.query(models.Person).order_by(
         models.Person.score.desc())
     ordered_users = ordered_append(ordered_scores)
     #Send everything back to the client
     SOCKETIO.emit('login', {
-        'users': users,
+        'users': LIST_OF_ACTIVE_USERS,
         'ordered_users': ordered_users
     },
                   broadcast=True,
                   include_self=True)
-
-def add_to_db(user):
-    """This function is purely just for adding the user to the db"""
-    new_user = models.Person(username=user, score=100)
-    DB.session.add(new_user)
-    DB.session.commit()
-    all_people = models.Person.query.all()
-    users = regular_append(all_people)
-    return users
-
 @SOCKETIO.on('logout')
 def on_logout(data):
-    """Currently deletes user from db but this needs
-    to be redone."""
-    user = DB.session.query(models.Person).filter_by(username=data).first()
-    DB.session.delete(user)
-    DB.session.commit()
-    return data['username']
-
+    """Resets board"""
+    global PREVIOUS_ARR
+    PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
+    LIST_OF_ACTIVE_USERS.remove(data)
+    ordered_scores = DB.session.query(models.Person).order_by(
+        models.Person.score.desc())
+    ordered_users = ordered_append(ordered_scores)
+    SOCKETIO.emit('logout', {
+        'users': LIST_OF_ACTIVE_USERS,
+        'ordered_users': ordered_users
+    })
 #Increments/Decrements the winner/loser. Sends back the new list.
 @SOCKETIO.on('winner')
 def on_winner(data):
     """Tells everybody who's won, and returns updated scores."""
     winner = DB.session.query(
-        models.Person).filter_by(username=data['username'])
+        models.Person).filter_by(username=data['username']).first()
     if data['status'] == 'winner':
         winner.score += 1
 
@@ -164,38 +148,6 @@ def on_tictactoe(data):
     data['message'] = arr
     SOCKETIO.emit('tictactoe', data, broadcast=True, include_self=False)
     PREVIOUS_ARR = arr
-
-def sum_of_arrays(arr1, arr2):
-    """This function is purely for comparing if the previously held array is greater
-    than the one currently passed. This is to prevent a new user who logged in
-    from ruining the game"""
-    sum1 = 0
-    sum2 = 0
-    for i in range(0, 9):
-        if arr1[i] == 'X' or arr1[i] == 'O':
-            sum1 += 1
-        if arr2[i] == 'X' or arr2[i] == 'O':
-            sum2 += 1
-    if sum1 > sum2:
-        return arr1
-    return arr2
-def regular_append(query_arr):
-    """This function is just for appending to an array
-    called users that gets returned"""
-    users = []
-    for person in query_arr:
-        users.append(person.username)
-    return users
-def ordered_append(object_arr):
-    """This function is for appending objects to array
-    in ordered fashion."""
-    ordered_users = []
-    for score in object_arr:
-        ordered_users.append({
-            'username': score.username,
-            'score': score.score,
-            'letter': score.letter})
-    return ordered_users
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg

@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { MakeBoard } from './Board';
 import { Login } from './Login';
@@ -7,51 +7,40 @@ import { Logout } from './Logout';
 import { Display } from './Display';
 import { LeaderBoard } from './LeaderBoard';
 
-const socket = io();
+export const socket = io();
 
 function App() {
   // These are all of my variables for the game. Yeah, it's a lot.
   const [board, setBoard] = useState(['', '', '', '', '', '', '', '', '']);
+  // List of unordered users for determining who's X/O and who's not
   const [users, setUser] = useState([]);
+  // List of ordered users by score
   const [scores, setScores] = useState([]);
+  // Allows program to conditionally render if the logged in button was processed.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Keeps track of the username of each tab for later functions.
   const [checkUser, setCheckUser] = useState(null);
-  const inputRef = useRef(null);
+  // Is the current user X or O
   const [currentLetter, setCurrentLetter] = useState('');
+  // Whose turn is it
   const [isXNext, setIsXNext] = useState(true);
+  // Shows who won the game. Cleared on reset and logout.
   const [currentWinner, setCurrentWinner] = useState(null);
+  // Was the leaderboard button pressed.
   const [isLead, setIsLead] = useState(null);
+  /* These are all the variables I put in the return statement. They're null
+  if log in button was not clicked, otherwise they render other react components */
   let currentWindow;
   let logoutButton;
   let theWinnerIsStatement;
   let resetButton;
   let leaderBoardButton;
   let leader;
-
-  /* Use effects for the game. If the user reloads there page.
-  It doesn't update to the original player's square,
-  but instead updates the original player's square to be blank as well. */
-  useEffect(() => {
-    socket.on('tictactoe', (data) => {
-      setBoard([...data.message]);
-      setIsXNext(!data.nxt);
-    });
-  }, []);
-
   /* useEffect(() => {
     return function cleanup(){
       socket.emit('logout',checkUser);
     }
   }); */
-
-  /* Gives a list of users in the order that they logged in,
-  as well as a list of users ordered by their scores. */
-  useEffect(() => {
-    socket.on('login', (data) => {
-      setUser([...data.users]);
-      setScores([...data.ordered_users]);
-    });
-  }, []);
 
   // Just updates the scores of users.
   useEffect(() => {
@@ -61,83 +50,13 @@ function App() {
     return function cleanup() {
       socket.off('winner');
     };
-  }, [currentWinner]);
+  }, []);
   // This is just for updating currentWinner to null.
   useEffect(() => {
     socket.on('reset', (data) => {
       if (data.message === true) setCurrentWinner(null);
     });
-  }, [currentWinner]);
-
-  /* Changes the value of each square. currentLetter is
-  telling the program if the user is X or O.
-  It has nothing to do with the square's value.
-  This function also tells the program if X is next. */
-  function onClickButton(clickedId) {
-    if (currentLetter !== 'X' && currentLetter !== 'O') {
-      return null;
-    }
-    if (
-      (isXNext && currentLetter === 'X')
-      || (!isXNext && currentLetter === 'O')
-    ) {
-      setBoard((prevBoard) => {
-        const temp = [...prevBoard];
-        if (
-          temp[parseInt(clickedId, 10)] !== 'X'
-          && temp[parseInt(clickedId, 10)] !== 'O'
-        ) {
-          temp[parseInt(clickedId, 10)] = currentLetter;
-        }
-        setIsXNext(!isXNext);
-        socket.emit('tictactoe', { message: temp, nxt: isXNext });
-        return temp;
-      });
-    }
-    return board;
-  }
-
-  /* Tells all the users who's logged in,
-  tells the program who the current user is
-  (i.e. the person who logged in on the current tab) */
-  function onLogin() {
-    const user = inputRef.current.value;
-    if (user === '') {
-      alert('You need to enter a proper username'); // eslint-disable-line no-alert
-    } else {
-      setUser((prev) => {
-        const temp = [...prev, user];
-        setCheckUser(user);
-        return temp;
-      });
-      setIsLoggedIn(true);
-      socket.emit('login', { user });
-    }
-  }
-
-  // Wasn't required but I figured what the heck. Still isn't perfect.
-  function onLogout() {
-    setIsLoggedIn(false);
-    setBoard(['', '', '', '', '', '', '', '', '']);
-    socket.emit('tictactoe', { message: ['', '', '', '', '', '', '', '', ''] });
-    setCheckUser('');
-    setCurrentLetter('');
-    setIsXNext(true);
-    setUser([]);
-    socket.emit('logout', checkUser);
-    setCheckUser(null);
-    setCurrentWinner(null);
-  }
-
-  // Tells the user if they're X, O or a spectator.
-  function setUserLetter(number, name) {
-    if (name === checkUser && number === 0) {
-      setCurrentLetter('X');
-    } else if (name === checkUser && number === 1) {
-      setCurrentLetter('O');
-    }
-  }
-
+  }, []);
   // Calculated winner function to emit to winner socket and update scores accordingly.
   function calculateWinner(squares) {
     const lines = [
@@ -184,38 +103,64 @@ function App() {
     });
     socket.emit('reset', { message: true });
   }
-  /* Tells the program if the user clicked the leaderboard button
-  was clicked to activate the conditional. */
-  function leaderBoard() {
-    setIsLead((prev) => !prev);
-  }
-
   // Conditionals
   if (!isLoggedIn) {
-    currentWindow = <Login inputRef={inputRef} onLogin={onLogin} />;
+    currentWindow = (
+      <Login
+        setUser={setUser}
+        setCheckUser={setCheckUser}
+        setIsLoggedIn={setIsLoggedIn}
+        socket={socket}
+      />
+    );
     logoutButton = null;
     theWinnerIsStatement = null;
     resetButton = null;
   } /* Log in button was clicked. */ else {
     // Sets up board.
     currentWindow = board.map((ifIsx, index) => (
-      <MakeBoard ifX={ifIsx} id={index} click={onClickButton} />
+      <MakeBoard
+        ifX={ifIsx}
+        id={index}
+        currentLetter={currentLetter}
+        isXNext={isXNext}
+        setBoard={setBoard}
+        setIsXNext={setIsXNext}
+        board={board}
+        socket={socket}
+      />
     ));
     // Checks if anybody's won yet.
     if (currentWinner === null) {
       calculateWinner(board);
     }
     // Functional logout button.
-    logoutButton = <Logout onLogout={onLogout} />;
-
-    /* Passing setUserLetter to tell the program if the user is X or O,
-    but I'm going to remove this for milestone. */
+    logoutButton = (
+      <Logout
+        setIsLoggedIn={setIsLoggedIn}
+        currentLetter={currentLetter}
+        setBoard={setBoard}
+        setCheckUser={setCheckUser}
+        setCurrentLetter={setCurrentLetter}
+        setIsXNext={setIsXNext}
+        setUser={setUser}
+        setCurrentWinner={setCurrentWinner}
+        checkUser={checkUser}
+        setScores={setScores}
+        setIsLead={setIsLead}
+        socket={socket}
+      />
+    );
+    // Functional leaderboard button.
     leaderBoardButton = (
       <LeaderBoard
-        leaderBoard={leaderBoard}
         users={users}
         currentUser={checkUser}
-        setUserLetter={setUserLetter}
+        setCurrentLetter={setCurrentLetter}
+        setIsLead={setIsLead}
+        setUser={setUser}
+        setScores={setScores}
+        socket={socket}
       />
     );
     if (isLead) {
@@ -232,7 +177,7 @@ function App() {
                 name={currentUser.username}
                 number={currentUser.score}
                 currentUser={checkUser}
-                currentLetter={currentUser.letter}
+                currentLetter={currentLetter}
               />
             )))
           }
@@ -242,8 +187,7 @@ function App() {
     theWinnerIsStatement = <h1>The winner is: </h1>;
     resetButton = <button type="button" onClick={reset}>Reset</button>;
   }
-
-  // Now Heroku doesn't want to deploy.
+  // Renders everything.
   return (
     <div>
       <div className="board">{currentWindow}</div>
