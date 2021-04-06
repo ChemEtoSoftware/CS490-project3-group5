@@ -1,14 +1,13 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import io from 'socket.io-client';
 
 export const socket = io();
 
 function App() {
-  // Renders everything.
   return (
     <div>
-      
+      <h1>Hello World</h1>
     </div>
   );
 }

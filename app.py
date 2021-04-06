@@ -9,7 +9,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
-from helpers import ordered_append, sum_of_arrays, add_to_db
+#from helpers import ordered_append, sum_of_arrays, add_to_db
 
 #Prevents server overload
 Payload.max_decode_packets = 200
@@ -25,9 +25,9 @@ APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(APP)
 # IMPORTANT: This must be AFTER creating DB variable to prevent
 # circular import issues
-import models
+#import models
 
-DB.create_all()
+#DB.create_all()
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
