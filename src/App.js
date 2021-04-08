@@ -71,6 +71,7 @@ function App() {
       .catch(error => {
         //props.onLoginError();
       });
+      window.location.reload(false);
   };
   
   function handlekeywordChange(e) {
