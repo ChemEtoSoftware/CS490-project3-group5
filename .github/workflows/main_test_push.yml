@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: test_push_main
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build_and_lint:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+          
+      # Installs dependencies (pip)
+      - name: Install pip
+        run: python -m pip install --upgrade pip
+      # Installs PyLint using pip
+      - name: Install PyLint
+        run: python pip install pylint
+      # Uses pylint to lint all python files in root directory, using class exception codes
+      - name: Lint with PyLint
+        run: pylint -d 'E1101,C0413,W1508,R0903,W0603' *.py
