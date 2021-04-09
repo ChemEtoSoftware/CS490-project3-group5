@@ -25,7 +25,7 @@ export const InitialData = ({initialData}) => {
         <List>
         {initialData.map(initialData => {
             return (
-            <List.Item key={initialData.name}>
+            <List.Item key={initialData.id}>
                 <Header>{initialData.name}</Header>
                 <img src ={initialData.images[0].url} />
                 <p>{initialData.dates.start.localDate}</p>

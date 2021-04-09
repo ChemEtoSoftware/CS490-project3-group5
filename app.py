@@ -57,7 +57,18 @@ def api_post():
     '''keyword read sent from the front-end'''
     login_json = request.get_json()
     keyword = login_json.get('keyword')
+    postalCode = login_json.get('postalCode')
+    startDate = login_json.get('startDate')
+    endDate = login_json.get('endDate')
+    city = login_json.get('city')
+    stateCode = login_json.get('startCode')
+    
     session["keyword"] = keyword
+    session["postalCode"] = postalCode
+    session["startDate"] = startDate
+    session["endDate"] = endDate
+    session["city"] = city
+    session["stateCode"] = stateCode
     #print(keyword)
     return keyword
 
@@ -70,13 +81,35 @@ def on_connect():
 def api():
     '''to send query request to TicketMaster API'''
     keyword = session.get("keyword", None)
+    postalCode = session.get("postalCode", None) 
+    startDate = session.get("startDate", None)
+    endDate = session.get("endDate", None)
+    city = session.get("city", None)
+    stateCode = session.get("stateCode", None)
     print(keyword)
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?keyword={}&apikey={}'.format(
-        session.get("keyword", None), APIKEY)
+    print(postalCode)
+    print(startDate)
+    print(endDate)
+    print(city)
+    print(stateCode)
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    if keyword:
+        redurl += "&keyword={}".format(keyword)
+    if postalCode:
+        redurl += "&postalCode={}".format(postalCode)
+    if startDate:
+        startDate += "T00:00:00Z"
+        redurl += "&startDateTime={}".format(startDate)
+    if endDate:
+        endDate += "T23:59:59Z"
+        redurl += "&endDateTime={}".format(endDate)
+    if city:
+        redurl += "&city={}".format(city)
+    if stateCode:
+        redurl += "&stateCode={}".format(stateCode)
+        
     req = requests.get(redurl)
-    #data = json.loads(req.text)
     jsontext = req.json()
-
     return jsontext
 
 @SOCKETIO.on('disconnect')
