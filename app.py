@@ -57,9 +57,21 @@ def api_post():
     '''keyword read sent from the front-end'''
     login_json = request.get_json()
     keyword = login_json.get('keyword')
+    postalcode = login_json.get('postalCode')
+    startdate = login_json.get('startDate')
+    enddate = login_json.get('endDate')
+    city = login_json.get('city')
+    statecode = login_json.get('startCode')
+
     session["keyword"] = keyword
+    session["postalCode"] = postalcode
+    session["startDate"] = startdate
+    session["endDate"] = enddate
+    session["city"] = city
+    session["stateCode"] = statecode
     #print(keyword)
     return keyword
+
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -70,13 +82,34 @@ def on_connect():
 def api():
     '''to send query request to TicketMaster API'''
     keyword = session.get("keyword", None)
+    postalcode = session.get("postalcode", None)
+    startdate = session.get("startdate", None)
+    enddate = session.get("enddate", None)
+    city = session.get("city", None)
+    statecode = session.get("statecode", None)
     print(keyword)
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?keyword={}&apikey={}'.format(
-        session.get("keyword", None), APIKEY)
+    print(postalcode)
+    print(startdate)
+    print(enddate)
+    print(city)
+    print(statecode)
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    if keyword:
+        redurl += "&keyword={}".format(keyword)
+    if postalcode:
+        redurl += "&postalCode={}".format(postalcode)
+    if startdate:
+        startdate += "T00:00:00Z"
+        redurl += "&startDateTime={}".format(startdate)
+    if enddate:
+        enddate += "T23:59:59Z"
+        redurl += "&endDateTime={}".format(enddate)
+    if city:
+        redurl += "&city={}".format(city)
+    if statecode:
+        redurl += "&stateCode={}".format(statecode)
     req = requests.get(redurl)
-    #data = json.loads(req.text)
     jsontext = req.json()
-
     return jsontext
 '''
 @SOCKETIO.on('bookmarked')
