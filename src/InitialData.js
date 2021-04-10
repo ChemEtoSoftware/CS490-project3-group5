@@ -1,7 +1,6 @@
 /*
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
-
 export const Movies = ({ initialData }) => {
     return(
         <List>

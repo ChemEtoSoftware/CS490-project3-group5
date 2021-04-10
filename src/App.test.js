@@ -20,7 +20,6 @@ test('Test if board shows and login disappears', () => {
   const X = screen.getByText('X');
   expect(X).toBeInTheDocument();
 });
-
 test('See if the leaderboard is updated based on a change in props', () => {
   const { rerender } = render(<Display name="Kevin" number="100"
   currentUser="Kevin" currentLetter="X" />);
