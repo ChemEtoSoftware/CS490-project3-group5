@@ -78,7 +78,20 @@ def api():
     jsontext = req.json()
 
     return jsontext
-
+'''
+@SOCKETIO.on('bookmarked')
+def on_bookmark(data):
+   USER_ID = data.user_id
+   BOOKMARKED_EVENT_ID = data.event_id
+   NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
+   db.session.add(NEW_BOOKMARKED_EVENT_ID)
+   db.session.commit()
+'''
+@APP.route('/api/bookmark', methods=['POST'])
+def get_bookmarks():
+    BOOKMARK_JSON = request.get_json()
+    USER_ID = BOOKMARK_JSON.get('user_id')
+    print(user_id)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
