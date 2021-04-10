@@ -86,11 +86,14 @@ def on_bookmark(data):
    NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
    db.session.add(NEW_BOOKMARKED_EVENT_ID)
    db.session.commit()
+   return "success";
 '''
 @APP.route('/api/bookmark', methods=['POST'])
 def get_bookmarks():
-    BOOKMARK_JSON = request.get_json()
-    USER_ID = BOOKMARK_JSON.get('user_id')
+    '''This function gives the user's list of
+    bookmarks to the front end'''
+    bookmark_json = request.get_json()
+    user_id = bookmark_json.get('user_id')
     print(user_id)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
