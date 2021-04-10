@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    jest: ,
+    jest: true,
   },
   extends: [
     'plugin:react/recommended',
