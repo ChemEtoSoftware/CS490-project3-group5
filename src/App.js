@@ -83,11 +83,7 @@ function App() {
       })      .catch(error => {
         //props.onLoginError();
       });
-<<<<<<< HEAD
-      window.location.reload(false);
-=======
-    location.reload();
->>>>>>> 35d084bb1c238f2f20da1a91c1dc1bc800b4ec3f
+      location.reload();
   };
   
   function handlekeywordChange(e) {
