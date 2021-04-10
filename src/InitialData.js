@@ -1,7 +1,6 @@
 /*
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
-
 export const Movies = ({ initialData }) => {
     return(
         <List>
@@ -19,8 +18,11 @@ export const Movies = ({ initialData }) => {
 /* eslint-disable */
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 export const InitialData = ({initialData}) => {
+    //Todo
+    //const {...} = initialData
     return (
         <List>
         {initialData.map(initialData => {
@@ -35,3 +37,19 @@ export const InitialData = ({initialData}) => {
         </List>
     );
 };
+
+InitialData.propTypes = {
+    /*
+    TODO
+    Fill out proptypes for your props.
+    */
+};
+
+InitialData.defaultProps = {
+  /*
+  TODO
+  Set default values for your props.
+  */
+};
+
+export default InitialData;

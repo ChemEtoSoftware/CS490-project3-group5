@@ -1,12 +1,10 @@
-"""Class for person template"""
+"""Class for user and bookmark template"""
 from app import DB
 
-class Person(DB.Model):
-    """Can create a Person with username and score. Letter won't be used"""
-    id = DB.Column(DB.Integer, primary_key=True)
-    username = DB.Column(DB.String(80), unique=True, nullable=False)
-    score = DB.Column(DB.Integer, unique=False, nullable=False)
-    letter = DB.Column(DB.String(1), unique=False, nullable=True)
+class Bookmark(DB.Model):
+    """Can create a Bookmark with username and event_id"""
+    id = DB.Column(DB.ForeignKey('user.id'), DB.String(80), primary_key=True, nullable=False)
+    event_id = DB.Column(DB.String(80), unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Person %r>' % self.username
+        return '<Bookmark %r>' % self.username
