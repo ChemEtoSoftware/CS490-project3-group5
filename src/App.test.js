@@ -1,17 +1,13 @@
-// import { fireEvent, render, screen } from '@testing-library/react';
-// import App from './App';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import App from './App';
 
-/* test('Test if board shows and login disappears', () => {
+test('Test if board shows and login disappears', () => {
   render(<App />);
-  const linkElement = screen.getByText('Login');
+  const linkElement = screen.getByText('Events');
   expect(linkElement).toBeInTheDocument();
-  const input = screen.getByPlaceholderText('Put in a real name');
-  fireEvent.change(input, { target: { value: 'Kevin' } });
-  fireEvent.click(linkElement);
-  expect(linkElement).not.toBeInTheDocument();
 });
-
-test('Test if an X or O shows up when a square is click', () => {
+/* test('Test if an X or O shows up when a square is click', () => {
   render(<App />);
   const linkElement = screen.getByText('Login');
   const input = screen.getByPlaceholderText('Put in a real name');
