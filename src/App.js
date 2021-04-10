@@ -3,7 +3,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { InitialData } from './InitialData';
-//import 'semantic-ui-css/semantic.min.css';
+//import 'semantic-ui-css/semantic.min.css'
 
 export const socket = io();
 
