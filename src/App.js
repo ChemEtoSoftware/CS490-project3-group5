@@ -3,6 +3,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { InitialData } from './InitialData';
+import 'semantic-ui-css/semantic.min.css'
 
 export const socket = io();
 
@@ -27,7 +28,7 @@ function App() {
   */
   const [value, setValue] = useState('');
   
-  function handleSubmit(e) {
+   /*function handleSubmit(e) {
     e.preventDefault();
     const data = { name: value };
     console.log('submit');
@@ -45,13 +46,20 @@ function App() {
   function handleValue(e) {
     setValue(e.target.value);
   }
+  }*/
   
-  const [state, setstate] = useState({
+    /*const [state, setstate] = useState({
     keyword:'',
     password: ''
   });
-  
-  function handleSearch(e) {
+  });*/
+  const [keyword, setKeyword] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [city, setCity] = useState("");
+  const [stateCode, setStateCode] = useState("");
+   function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {
       method: 'POST',
@@ -60,24 +68,50 @@ function App() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        keyword: state.keyword
+        keyword: keyword,
+        postalCode: postalCode,
+        startDate: startDate,
+        endDate: endDate,
+        city: city,
+        stateCode: stateCode
       })
     })
       .then(response => response.json())
       .then(json => {
         const accessToken = json.access_token;
         //props.onLogin(accessToken);
-      })
-      .catch(error => {
+      })      .catch(error => {
         //props.onLoginError();
       });
+<<<<<<< HEAD
       window.location.reload(false);
+=======
+    location.reload();
+>>>>>>> 35d084bb1c238f2f20da1a91c1dc1bc800b4ec3f
   };
   
   function handlekeywordChange(e) {
-    setstate({
-      keyword: e.target.value
-    });
+     setKeyword(e.target.value);
+  };
+
+  function handlepostalCodeChange(e) {
+    setPostalCode(e.target.value);
+  };
+
+  function handlestartDateChange(e) {
+    setStartDate(e.target.value);
+  };
+
+  function handleendDateChange(e) {
+    setEndDate(e.target.value);
+  };
+
+  function handlecityChange(e) {
+    setCity(e.target.value);
+  };
+
+  function handlestateCodeChange(e) {
+    setStateCode(e.target.value);
   };
   
 
@@ -85,14 +119,12 @@ function App() {
     <div>
     <div>
       <form>
-        Keyword:
-        <br />
-        <input
-          type="text"
-          name="keyword"
-          value={state.keyword}
-          onChange={handlekeywordChange}
-        />
+         Keyword: <input type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
+        Postal Code: <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
+        Start Date: <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
+        End Date: <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
+        City: <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
+        State Code: <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
         <button onClick={handleSearch}>Search</button>
       </form>
     </div>
