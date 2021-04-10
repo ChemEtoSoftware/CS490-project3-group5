@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    "jest": true
+    jest: ,
   },
   extends: [
     'plugin:react/recommended',
@@ -19,6 +19,6 @@ module.exports = {
     'react',
   ],
   rules: {
-  "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-}
+    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
+  },
 };
