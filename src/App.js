@@ -9,11 +9,18 @@ export const socket = io();
 
 function App() {
   const [initialData, setInitialData] = useState([]);
+  const [error, setError] = useState(false);
   useEffect(() => {
-    window.fetch('/api').then(
+    fetch('/api').then(
       (response) => response.json(),
-    ).then((data) => setInitialData(data._embedded.events));
-  }, []);
+    ).then((data) => setInitialData(data._embedded.events)).catch(err => {
+            setError(true);
+            console.log(error);
+        })
+  }, 
+  
+  
+  []);
   
   console.log(initialData);
   
@@ -115,7 +122,7 @@ function App() {
     <div>
     <div>
       <form>
-         Keyword: <input type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
+        Keyword: <input type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
         Postal Code: <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
         Start Date: <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
         End Date: <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
@@ -127,6 +134,7 @@ function App() {
     
     <div>
       <h1>Events</h1>
+      {error ? <p>Sorry, your input was invalid. Please enter keywords, such as "game", "jazz", "rock"...</p> : null}
      <InitialData initialData={initialData} />
     </div>
     
