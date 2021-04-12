@@ -19,17 +19,14 @@ load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
 APP = Flask(__name__, static_folder='./build/static')
 APP.secret_key = os.urandom(24)
-# Point SQLAlchemy to your Heroku database
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-# Gets rid of a warning
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB = SQLAlchemy(APP)
-# IMPORTANT: This must be AFTER creating DB variable to prevent
-# circular import issues
-#import models
-
-#DB.create_all()
+import models
+if __name__ == "__main__":
+    DB.create_all()
+Users = models.get_users(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -83,6 +80,25 @@ def api():
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
+    
+@SOCKETIO.on('Login')
+def on_login(data):
+    '''Receives login emit and uploads user data to database'''
+    truncate_len = len("'https://lh3.googleusercontent.com")
+    truncated_imgurl = data["imageUrl"][truncate_len:]
+    user_data = Users(id=data["googleId"][-7:],email= data["email"],firstName= data["givenName"],familyName= data["familyName"], imageURL= truncated_imgurl)
+    DB.session.add(user_data)
+    DB.session.commit()
+    all_users = Users.query.all()
+    print("Current Users:\n")
+    for item in all_users:
+        print(item)
+    print(data)
+    
+@SOCKETIO.on('Logout')
+def on_logout(data):
+    '''Receives logout emit and removes user session'''
+    print(data["socketID"])
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg

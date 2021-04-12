@@ -27,12 +27,12 @@ function App() {
   // console.log(initialData);
   function conditionalLogin(){
     if(isLoggedIn){
-      return(<Login setLogin={toggleLogin}/>);
+      return(<Login setLogin={toggleLogin} socket={socket}/>);
     }
   }
   function conditionalLogout(){
     if(!isLoggedIn){
-      return(<Logout toggleLogin={toggleLogin}/>);
+      return(<Logout toggleLogin={toggleLogin} socket={socket}/>);
     }
   }
   /*

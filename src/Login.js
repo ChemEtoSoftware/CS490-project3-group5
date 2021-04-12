@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import PropTypes from 'prop-types';
+import io from 'socket.io-client';
 import AppLogo from './img/EventGuru.jpg';
 import './Login.css';
 
@@ -10,15 +11,16 @@ import './Login.css';
 const clientId = 'YOUR_CLIENT_ID';
 export function Login(props) {
   const [isLoggedIn] = useState(false);
-  const { setLogin } = props;
+  const { setLogin, socket } = props;
   const handleLogin = (res) => {
     console.log('[Login Success] currentUser:', res.profileObj);
     // refreshTokenSetup(res);
+    socket.emit('Login', res.profileObj);
     setLogin(true);
   };
   const handleFailLogin = (res) => {
     console.log('[Login failed] res:', res);
-    alert('')
+    alert('Login Failed!');
   };
   function conditionalLogin() {
     if (isLoggedIn === false) {
@@ -51,10 +53,12 @@ export function Login(props) {
 }
 Login.propTypes = {
   setLogin: PropTypes.func,
+  socket: PropTypes.instanceOf(io()),
 };
 Login.defaultProps = {
   setLogin: () => {
     alert('default');
   },
+  socket: null,
 };
 export default Login;
