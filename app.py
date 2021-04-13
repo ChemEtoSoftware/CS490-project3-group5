@@ -57,18 +57,18 @@ def api_post():
     '''keyword read sent from the front-end'''
     login_json = request.get_json()
     keyword = login_json.get('keyword')
-    postalcode = login_json.get('postalCode')
-    startdate = login_json.get('startDate')
-    enddate = login_json.get('endDate')
+    postalcode = login_json.get('postalcode')
+    startdate = login_json.get('startdate')
+    enddate = login_json.get('enddate')
     city = login_json.get('city')
-    statecode = login_json.get('startCode')
+    statecode = login_json.get('statecode')
 
     session["keyword"] = keyword
-    session["postalCode"] = postalcode
-    session["startDate"] = startdate
-    session["endDate"] = enddate
+    session["postalcode"] = postalcode
+    session["startdate"] = startdate
+    session["enddate"] = enddate
     session["city"] = city
-    session["stateCode"] = statecode
+    session["statecode"] = statecode
     #print(keyword)
     return keyword
 
