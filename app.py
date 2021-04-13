@@ -3,7 +3,7 @@
     as well as allowing them the chance to play each other.
 """
 import os
-from flask import Flask, json, request, session
+from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -40,16 +40,11 @@ SOCKETIO = SocketIO(APP,
 
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
-
-
-'''
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
 def index(filename):
     """Fetches the file. Hooks server up to client"""
     return send_from_directory('./build', filename)
-'''
-
 SEARCH_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
 APIKEY = os.getenv("APIKEY")
 @APP.route('/api/post', methods=['POST'])
