@@ -11,16 +11,14 @@ function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   useEffect(() => {
-    fetch('/api').then(
-      (response) => response.json(),
-    ).then((data) => setInitialData(data._embedded.events)).catch(err => {
+    fetch('/api')
+    .then((response) => response.json(),)
+    .then((data) => setInitialData(data._embedded.events))
+    .catch(err => {
             setError(true);
             console.log(error);
         })
-  }, 
-  
-  
-  []);
+  }, []);
   
   console.log(initialData);
   
@@ -66,7 +64,9 @@ function App() {
   const [endDate, setEndDate] = useState("");
   const [city, setCity] = useState("");
   const [stateCode, setStateCode] = useState("");
-   function handleSearch(e) {
+  const [showHide, setShowHide] = useState(false);
+  
+  function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {
       method: 'POST',
@@ -76,21 +76,22 @@ function App() {
       },
       body: JSON.stringify({
         keyword: keyword,
-        postalCode: postalCode,
-        startDate: startDate,
-        endDate: endDate,
+        postalcode: postalCode,
+        startdate: startDate,
+        enddate: endDate,
         city: city,
-        stateCode: stateCode
+        statecode: stateCode
       })
     })
-      .then(response => response.json())
-      .then(json => {
-        const accessToken = json.access_token;
-        //props.onLogin(accessToken);
-      })      .catch(error => {
-        //props.onLoginError();
-      });
-      location.reload();
+    .then(response => response.json())
+    .then(json => {
+      const accessToken = json.access_token;
+      //props.onLogin(accessToken);
+    })      
+    .catch(error => {
+      //props.onLoginError();
+    });
+    location.reload();
   };
   
   function handlekeywordChange(e) {
@@ -117,24 +118,47 @@ function App() {
     setStateCode(e.target.value);
   };
   
-
+  
+  function displayFilteredSearchButton() {
+    return (
+      <div>
+        <button type="button" onClick={() => onShowHide()}>
+          Filters
+        </button>
+      </div>
+    );
+  }
+  
+  function onShowHide() {
+    setShowHide((prevShow) => !prevShow);
+  }
+  
+  function displayFilteredSearch() {
+    return (
+      <div>
+        Postal Code (5 digits): <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
+        Start Date (format: yyyy-mm-dd): <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
+        End Date (format: yyyy-mm-dd): <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
+        City: <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
+        State Code (2 letters): <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
+      </div>
+    );
+  }
+  
   return (
     <div>
     <div>
       <form>
         Keyword: <input type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
-        Postal Code: <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
-        Start Date: <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
-        End Date: <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
-        City: <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
-        State Code: <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
+        {showHide === false ? displayFilteredSearchButton() : null}
+        {showHide === true ? displayFilteredSearch() : null}
         <button onClick={handleSearch}>Search</button>
       </form>
     </div>
     
     <div>
       <h1>Events</h1>
-      {error ? <p>Sorry, your input was invalid. Please enter keywords, such as "game", "jazz", "rock"...</p> : null}
+      {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
      <InitialData initialData={initialData} />
     </div>
     
