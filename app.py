@@ -35,7 +35,7 @@ DB = SQLAlchemy(APP)
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
 SOCKETIO = SocketIO(APP,
-                    CORS_allowed_origins="*",
+                    cors_allowed_origins="*",
                     json=json,
                     manage_session=False)
 
