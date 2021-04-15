@@ -68,31 +68,8 @@ def api_post():
     session["city"] = city
     session["statecode"] = statecode
     session["countrycode"] = countrycode
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    if keyword:
-        redurl += "&keyword={}".format(keyword)
-    if postalcode:
-        redurl += "&postalCode={}".format(postalcode)
-    if radius:
-        redurl += "&radius={}".format(radius)
-    if startdate:
-        startdate += "T00:00:00Z"
-        redurl += "&startDateTime={}".format(startdate)
-    if enddate:
-        enddate += "T23:59:59Z"
-        redurl += "&endDateTime={}".format(enddate)
-    if city:
-        redurl += "&city={}".format(city)
-    if statecode:
-        redurl += "&stateCode={}".format(statecode)
-    if countrycode:
-        redurl += "&countryCode={}".format(countrycode)
-    req = requests.get(redurl)
-    jsontext = req.json()
-    return jsontext
     #print(keyword)
-    #return keyword
-
+    return keyword
 
 @SOCKETIO.on('connect')
 def on_connect():
