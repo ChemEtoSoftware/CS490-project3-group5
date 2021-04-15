@@ -88,7 +88,6 @@ def api():
     city = session.get("city", None)
     statecode = session.get("statecode", None)
     countrycode = session.get("countrycode", None)
-    
     print(keyword)
     print(postalcode)
     print(radius)
@@ -116,7 +115,6 @@ def api():
         redurl += "&stateCode={}".format(statecode)
     if countrycode:
         redurl += "&countryCode={}".format(countrycode)
-        
     req = requests.get(redurl)
     jsontext = req.json()
     return jsontext
