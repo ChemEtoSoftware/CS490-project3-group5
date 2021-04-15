@@ -4,7 +4,7 @@ import App from './App';
 
 test('Test if board shows and login disappears', () => {
   render(<App />);
-  const linkElement = screen.getByText('Events');
+  const linkElement = screen.getByText('search');
   expect(linkElement).toBeInTheDocument();
 });
 /* test('Test if an X or O shows up when a square is click', () => {
