@@ -10,8 +10,7 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
-
-  /*useEffect(() => {
+  useEffect(() => {
     fetch('/api')
     .then((response) => response.json(),)
     .then((data) => setInitialData(data._embedded.events))
@@ -19,47 +18,10 @@ function App() {
             setError(true);
             console.log(error);
         })
-  }, []);*/
-  
+  }, []);
   
   console.log(initialData);
-  
-  /*
-  useEffect(() => {
-    window.fetch('/api').then((response) => (response.json()).then((data) => {
-      console.log(data._embedded['events']);
-      setInitialData(data._embedded['events']);
-      console.log(initialData);
-    }));
-  }, []);
-  */
-  const [value, setValue] = useState('');
-  
-   /*function handleSubmit(e) {
-    e.preventDefault();
-    const data = { name: value };
-    console.log('submit');
-    console.log(value);
-    window.fetch('/api/', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(res => res.json())
-      .then(res => console.log(res));
-  }
-  function handleValue(e) {
-    setValue(e.target.value);
-  }
-  }*/
-  
-    /*const [state, setstate] = useState({
-    keyword:'',
-    password: ''
-  });
-  });*/
+ 
   const [keyword, setKeyword] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [radius, setRadius] = useState("");
@@ -102,7 +64,7 @@ function App() {
     location.reload();
   };
   
-  function handleSearch(e) {
+  /*function handleSearch(e) {
     e.preventDefault();
     setError(false);
     setShowHide(false);
@@ -117,7 +79,7 @@ function App() {
       countrycode: countryCode,
     });
     console.log("hello");
-  }
+  }*/
   
   function handlekeywordChange(e) {
      setKeyword(e.target.value);
@@ -217,7 +179,7 @@ function App() {
     );
   }
   
-  useEffect(() => {
+  /*useEffect(() => {
     socket.on('start', (data) => {
       console.log("on first connect")
       setInitialData(data._embedded.events);
@@ -289,7 +251,7 @@ function App() {
     return (
       <div><p>Sorry, your input was invalid. Please enter a new keyword search.</p></div>
     );
-  }
+  }*/
   
   return (
     <div>
@@ -313,6 +275,9 @@ function App() {
        <InitialData initialData={initialData} setShowEventPage={setShowEventPage} 
        showEventPage={showEventPage} eventPage={eventPage} 
        setEventPage={setEventPage}/>
+   
+        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+        <InitialData initialData={initialData} />
       </div>
     </div>
   );
