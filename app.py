@@ -68,7 +68,6 @@ def api_post():
     session["city"] = city
     session["statecode"] = statecode
     session["countrycode"] = countrycode
-    
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     if keyword:
         redurl += "&keyword={}".format(keyword)
