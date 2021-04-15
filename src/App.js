@@ -10,6 +10,7 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
+  
   useEffect(() => {
     fetch('/api')
     .then((response) => response.json(),)
