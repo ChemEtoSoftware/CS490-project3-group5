@@ -132,6 +132,7 @@ def search(data):
 
 @APP.route('/api', methods=['GET'])
 def api():
+    """api search"""
     #to send query request to TicketMaster API
     keyword = session.get("keyword", None)
     postalcode = session.get("postalcode", None)
