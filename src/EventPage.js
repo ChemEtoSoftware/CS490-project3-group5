@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Bookmarks from './Bookmarks';
 export function EventPage (props){
     //Todo
-    const { initialData } = props;
+    /*const { initialData } = props;
     return (
         <List>
         {initialData.map(initialData => {
@@ -20,7 +20,7 @@ export function EventPage (props){
             );
         })}
         </List>
-    );
+    );*/
 };
 
 EventPage.propTypes = {
