@@ -69,8 +69,10 @@ function App() {
   const [stateCode, setStateCode] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [showHide, setShowHide] = useState(false);
-  
-  /*function handleSearch(e) {
+  const [showEventPage, setShowEventPage] = useState(true);
+  const [eventPage, setEventPage] = useState('');
+
+  function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {
       method: 'POST',
@@ -98,7 +100,7 @@ function App() {
       //props.onLoginError();
     });
     location.reload();
-  };*/
+  };
   
   function handleSearch(e) {
     e.preventDefault();
@@ -307,10 +309,10 @@ function App() {
       
       <div className="search">
         <h1>Events</h1>
-        
-        <div>
-          {error===true ? displayErrorMessage() : <InitialData initialData={initialData} />}
-        </div>
+        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+       <InitialData initialData={initialData} setShowEventPage={setShowEventPage} 
+       showEventPage={showEventPage} eventPage={eventPage} 
+       setEventPage={setEventPage}/>
       </div>
     </div>
   );
