@@ -76,13 +76,13 @@ def api_post():
 @SOCKETIO.on('connect')
 def on_connect():
     """Simply shows who's connected. Nothing more"""
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    '''redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     req = requests.get(redurl)
     jsontext = req.json()
     print('User connected!')
-    SOCKETIO.emit('start', jsontext)
+    SOCKETIO.emit('start', jsontext)'''
 
-@SOCKETIO.on('apiSearch')
+'''@SOCKETIO.on('apiSearch')
 def search(data):
     """api search"""
     print("got search")
@@ -128,9 +128,9 @@ def search(data):
         SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
     except:
         print("false")
-        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)
+        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)'''
 
-'''@APP.route('/api', methods=['GET'])
+@APP.route('/api', methods=['GET'])
 def api():
     #to send query request to TicketMaster API
     keyword = session.get("keyword", None)
@@ -171,7 +171,7 @@ def api():
     req = requests.get(redurl)
     jsontext = req.json()
     return jsontext
-'''
+
 
 '''
 @SOCKETIO.on('bookmarked')
