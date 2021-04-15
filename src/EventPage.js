@@ -3,24 +3,24 @@ import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import Bookmarks from './Bookmarks';
-export function EventPage (props){
+export function EventPage (currEvent,setEventPage,setShowEventPage){
     //Todo
-    const { initialData } = props;
-    return (
+    console.log(currEvent);
+    console.log()
+    setShowEventPage(false);
+    setEventPage( prev => {
         <List>
-        {initialData.map(initialData => {
             return (
-            <div className="container" onClick={() => EventPage(initialData)}>
-                <List.Item key={initialData.id}>
-                    <Header>{initialData.name}</Header>
-                    <img src ={initialData.images[0].url} />
-                    <p>{initialData.dates.start.localDate}</p>
+            <div className="container">
+                <List.Item key={currEvent.id}>
+                    <Header>{currEvent.name}</Header>
+                    <img src ={currEvent.images.url} />
+                    <p>{currEvent.dates.start.localDate}</p>
                 </List.Item>
             </div>
             );
-        })}
         </List>
-    );
+    });
 };
 
 EventPage.propTypes = {

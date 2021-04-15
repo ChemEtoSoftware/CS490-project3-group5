@@ -16,30 +16,37 @@ export const Movies = ({ initialData }) => {
 };
 */
 /* eslint-disable */
-import React from 'react';
+import React, {useState} from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import Bookmarks from './Bookmarks';
 import EventPage from './EventPage';
-export const InitialData = ({initialData}) => {
-    //Todo
-    //const {...} = initialData
-    return (
-        <List>
-        {initialData.map(initialData => {
-            return (
-            <div className="container" onClick={() => EventPage(initialData)}>
-                <List.Item key={initialData.id}>
-                    <Header>{initialData.name}</Header>
-                    <img src ={initialData.images[0].url} />
-                    <p>{initialData.dates.start.localDate}</p>
-                </List.Item>
-            </div>
-            );
-        })}
-        </List>
-    );
-};
+export function InitialData(props){
+    const {initialData, showEventPage, setShowEventPage, eventPage, setEventPage} = props
+    console.log(showEventPage);
+    if (showEventPage){
+        return (
+            <List>
+            {initialData.map(currEvent => {
+                console.log(currEvent);
+                return (
+                <div className="container" onClick={() => EventPage(currEvent,setEventPage,setShowEventPage)}>
+                    <List.Item key={currEvent.id}>
+                        <Header>{currEvent.name}</Header>
+                        <img src ={currEvent.images[0].url} />
+                        <p>{currEvent.dates.start.localDate}</p>
+                    </List.Item>
+                </div>
+                );
+            })}
+            </List>
+        );
+    }
+    else{
+        return eventPage;
+    }
+}
+
 
 InitialData.propTypes = {
     /*
