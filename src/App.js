@@ -270,14 +270,11 @@ function App() {
       </div>
       
       <div className="search">
-        <h1>Events</h1>
-        {!error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+      <h1>Events</h1>
+      {!error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
        <InitialData initialData={initialData} setShowEventPage={setShowEventPage} 
        showEventPage={showEventPage} eventPage={eventPage} 
        setEventPage={setEventPage}/>
-   
-        {!error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null} 
-        <InitialData initialData={initialData} />
       </div>
     </div>
   );
