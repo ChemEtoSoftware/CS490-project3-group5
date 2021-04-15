@@ -69,8 +69,8 @@ function App() {
   const [countryCode, setCountryCode] = useState("");
   const [showHide, setShowHide] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
-  const {eventPage, setEventPage} = useState([])
-  
+  const [eventPage, setEventPage] = useState('');
+
   function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {

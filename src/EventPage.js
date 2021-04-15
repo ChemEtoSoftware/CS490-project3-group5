@@ -8,19 +8,19 @@ export function EventPage (currEvent,setEventPage,setShowEventPage){
     console.log(currEvent);
     console.log()
     setShowEventPage(false);
-    setEventPage( prev => {
+    setEventPage(
         <List>
             return (
             <div className="container">
                 <List.Item key={currEvent.id}>
                     <Header>{currEvent.name}</Header>
-                    <img src ={currEvent.images.url} />
+                    <img src ={currEvent.images[0].url} />
                     <p>{currEvent.dates.start.localDate}</p>
                 </List.Item>
             </div>
             );
         </List>
-    });
+    );
 };
 
 EventPage.propTypes = {
