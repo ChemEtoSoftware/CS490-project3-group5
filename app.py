@@ -53,17 +53,21 @@ def api_post():
     login_json = request.get_json()
     keyword = login_json.get('keyword')
     postalcode = login_json.get('postalcode')
+    radius = login_json.get('radius')
     startdate = login_json.get('startdate')
     enddate = login_json.get('enddate')
     city = login_json.get('city')
     statecode = login_json.get('statecode')
+    countrycode = login_json.get('countrycode')
 
     session["keyword"] = keyword
     session["postalcode"] = postalcode
+    session["radius"] = radius
     session["startdate"] = startdate
     session["enddate"] = enddate
     session["city"] = city
     session["statecode"] = statecode
+    session["countrycode"] = countrycode
     #print(keyword)
     return keyword
 
@@ -78,21 +82,27 @@ def api():
     '''to send query request to TicketMaster API'''
     keyword = session.get("keyword", None)
     postalcode = session.get("postalcode", None)
+    radius = session.get("radius", None)
     startdate = session.get("startdate", None)
     enddate = session.get("enddate", None)
     city = session.get("city", None)
     statecode = session.get("statecode", None)
+    countrycode = session.get("countrycode", None)
     print(keyword)
     print(postalcode)
+    print(radius)
     print(startdate)
     print(enddate)
     print(city)
     print(statecode)
+    print(countrycode)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     if keyword:
         redurl += "&keyword={}".format(keyword)
     if postalcode:
         redurl += "&postalCode={}".format(postalcode)
+    if radius:
+        redurl += "&radius={}".format(radius)
     if startdate:
         startdate += "T00:00:00Z"
         redurl += "&startDateTime={}".format(startdate)
@@ -103,6 +113,8 @@ def api():
         redurl += "&city={}".format(city)
     if statecode:
         redurl += "&stateCode={}".format(statecode)
+    if countrycode:
+        redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
     return jsontext
