@@ -43,7 +43,7 @@ export function InitialData(props){
         );
     }
     else{
-        return eventPage;
+        return (eventPage);
     }
 }
 

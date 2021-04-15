@@ -10,15 +10,14 @@ export function EventPage (currEvent,setEventPage,setShowEventPage){
     setShowEventPage(false);
     setEventPage(
         <List>
-            return (
             <div className="container">
                 <List.Item key={currEvent.id}>
                     <Header>{currEvent.name}</Header>
                     <img src ={currEvent.images[0].url} />
+                    <div className="buttonHolder"> <button className="search" onClick={() => Bookmarks(currEvent)}> Bookmark </button> </div>
                     <p>{currEvent.dates.start.localDate}</p>
                 </List.Item>
             </div>
-            );
         </List>
     );
 };
