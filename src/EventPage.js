@@ -1,29 +1,11 @@
-/*
-import React from 'react';
-import { List, Header } from 'semantic-ui-react';
-export const Movies = ({ initialData }) => {
-    return(
-        <List>
-        {initialData.map(initialData => {
-            return (
-            <List.Item key={initialData.title}>
-            <Header>{initialData.title}</Header>
-            </List.Item>
-            );
-        })}
-        </List>
-    );
-};
-*/
 /* eslint-disable */
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import Bookmarks from './Bookmarks';
-import EventPage from './EventPage';
-export const InitialData = ({initialData}) => {
+export function EventPage (props){
     //Todo
-    //const {...} = initialData
+    const { initialData } = props;
     return (
         <List>
         {initialData.map(initialData => {
@@ -41,18 +23,18 @@ export const InitialData = ({initialData}) => {
     );
 };
 
-InitialData.propTypes = {
+EventPage.propTypes = {
     /*
     TODO
     Fill out proptypes for your props.
     */
 };
 
-InitialData.defaultProps = {
+EventPage.defaultProps = {
   /*
   TODO
   Set default values for your props.
   */
 };
 
-export default InitialData;
+export default EventPage;
