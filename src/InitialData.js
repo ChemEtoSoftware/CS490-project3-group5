@@ -15,51 +15,56 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
-/* eslint-disable */
-import React, {useState} from 'react';
+import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import Bookmarks from './Bookmarks';
-import EventPage from './EventPage';
-export function InitialData(props){
-    const {initialData, showEventPage, setShowEventPage, eventPage, setEventPage} = props
-    console.log(showEventPage);
-    if (showEventPage){
-        return (
-            <List>
-            {initialData.map(currEvent => {
-                console.log(currEvent);
-                return (
-                <div className="container" onClick={() => EventPage(currEvent,setEventPage,setShowEventPage)}>
-                    <List.Item key={currEvent.id}>
-                        <Header>{currEvent.name}</Header>
-                        <img src ={currEvent.images[0].url} />
-                        <p>{currEvent.dates.start.localDate}</p>
-                    </List.Item>
-                </div>
-                );
-            })}
-            </List>
-        );
-    }
-    else{
-        return (eventPage);
-    }
+import { EventPage } from './EventPage';
+
+export function InitialData(props) {
+  const {
+    initialData,
+    showEventPage,
+    setShowEventPage,
+    eventPage,
+    setEventPage,
+  } = props;
+  if (showEventPage) {
+    return (
+      <List>
+        {initialData.map((currEvent) => (
+          // eslint-disable-next-line
+          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage)}>
+            <List.Item key={currEvent.id}>
+              <Header>{currEvent.name}</Header>
+              <img src={currEvent.images[0].url} alt="" />
+              <p>{currEvent.dates.start.localDate}</p>
+            </List.Item>
+          </div>
+        ))}
+      </List>
+    );
+  //  eslint-disable-next-line
+  }
+  //  eslint-disable-next-line
+  else {
+    return (eventPage);
+  }
 }
 
-
 InitialData.propTypes = {
-    /*
-    TODO
-    Fill out proptypes for your props.
-    */
+  initialData: PropTypes.arrayOf(PropTypes.object),
+  showEventPage: PropTypes.bool,
+  setShowEventPage: PropTypes.func,
+  eventPage: PropTypes.string,
+  setEventPage: PropTypes.func,
 };
 
 InitialData.defaultProps = {
-  /*
-  TODO
-  Set default values for your props.
-  */
+  initialData: [],
+  showEventPage: true,
+  setShowEventPage: null,
+  eventPage: '',
+  setEventPage: null,
 };
 
 export default InitialData;
