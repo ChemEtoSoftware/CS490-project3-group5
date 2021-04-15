@@ -60,10 +60,12 @@ function App() {
   });*/
   const [keyword, setKeyword] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const [radius, setRadius] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [city, setCity] = useState("");
   const [stateCode, setStateCode] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [showHide, setShowHide] = useState(false);
   
   function handleSearch(e) {
@@ -77,10 +79,12 @@ function App() {
       body: JSON.stringify({
         keyword: keyword,
         postalcode: postalCode,
+        radius: radius,
         startdate: startDate,
         enddate: endDate,
         city: city,
-        statecode: stateCode
+        statecode: stateCode,
+        countrycode: countryCode,
       })
     })
     .then(response => response.json())
@@ -101,6 +105,10 @@ function App() {
   function handlepostalCodeChange(e) {
     setPostalCode(e.target.value);
   };
+  
+  function handleradiusChange(e) {
+    setRadius(e.target.value);
+  };
 
   function handlestartDateChange(e) {
     setStartDate(e.target.value);
@@ -118,14 +126,14 @@ function App() {
     setStateCode(e.target.value);
   };
   
+  function handlecountryCodeChange(e) {
+    setCountryCode(e.target.value);
+  };
+  
   
   function displayFilteredSearchButton() {
     return (
-      <div>
-        <button type="button" onClick={() => onShowHide()}>
-          Filters
-        </button>
-      </div>
+      <div className="buttonHolder"> <button className="search" onClick={() => onShowHide()}>Filters</button> </div>
     );
   }
   
@@ -135,33 +143,80 @@ function App() {
   
   function displayFilteredSearch() {
     return (
-      <div>
-        Postal Code (5 digits): <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
-        Start Date (format: yyyy-mm-dd): <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
-        End Date (format: yyyy-mm-dd): <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
-        City: <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
-        State Code (2 letters): <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
+      <div className="filters">
+        <div class="col-30">
+          <label>Postal Code (5 digits): </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label>Radius (in miles):  </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="radius" value={radius} onChange={handleradiusChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label>Start Date (format: yyyy-mm-dd): </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label>End Date (format: yyyy-mm-dd): </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label> City: </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label>State Code (2 letters): </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
+        </div>
+        
+        <div class="col-30">
+          <label>Country Code (2 letters): </label>
+        </div>
+        <div class="col-70">
+          <input type="text" name="countryCode" value={countryCode} onChange={handlecountryCodeChange}/> <br />
+        </div>
       </div>
     );
   }
   
   return (
     <div>
-    <div>
-      <form>
-        Keyword: <input type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
-        {showHide === false ? displayFilteredSearchButton() : null}
-        {showHide === true ? displayFilteredSearch() : null}
-        <button onClick={handleSearch}>Search</button>
-      </form>
-    </div>
-    
-    <div>
-      <h1>Events</h1>
-      {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
-     <InitialData initialData={initialData} />
-    </div>
-    
+      <div className="search">
+        <form>
+          <div class="col-30">
+            <label>Keyword: </label>
+          </div>
+          <div class="col-70">
+            <input className="keywordInput" type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
+          </div>
+          {showHide === false ? displayFilteredSearchButton() : null}
+          {showHide === true ? displayFilteredSearch() : null} 
+          <div className="buttonHolder"> <button className="search" onClick={handleSearch}>Search</button> </div>
+        </form>
+      </div>
+      
+      <div className="search">
+        <h1>Events</h1>
+        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+       <InitialData initialData={initialData} />
+      </div>
     </div>
   );
 }
