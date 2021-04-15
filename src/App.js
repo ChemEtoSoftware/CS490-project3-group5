@@ -10,7 +10,12 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
+<<<<<<< HEAD
   useEffect(() => {
+=======
+
+  /*useEffect(() => {
+>>>>>>> 17f83059679cdfcf8353348ae442c49df1839502
     fetch('/api')
     .then((response) => response.json(),)
     .then((data) => setInitialData(data._embedded.events))
