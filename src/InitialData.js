@@ -23,11 +23,12 @@ import { EventPage } from './EventPage';
 export function InitialData(props) {
   const {
     initialData,
-    showEventPage,
     setShowEventPage,
+    showEventPage,
     eventPage,
     setEventPage,
   } = props;
+  console.log(showEventPage);
   if (showEventPage) {
     return (
       <List>

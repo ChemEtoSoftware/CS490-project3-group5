@@ -1,10 +1,8 @@
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
-import PropTypes from 'prop-types';
 import { Bookmarks } from './Bookmarks';
 
-export function EventPage(props) {
-  const { currEvent, setEventPage, setShowEventPage } = props;
+export function EventPage(currEvent, setEventPage, setShowEventPage) {
   setShowEventPage(false);
   setEventPage(
     <List>
@@ -21,17 +19,5 @@ export function EventPage(props) {
     </List>,
   );
 }
-
-EventPage.propTypes = {
-  currEvent: PropTypes.objectOf(PropTypes.object),
-  setEventPage: PropTypes.func,
-  setShowEventPage: PropTypes.func,
-};
-
-EventPage.defaultProps = {
-  currEvent: '',
-  setEventPage: null,
-  setShowEventPage: null,
-};
 
 export default EventPage;

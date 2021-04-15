@@ -10,18 +10,6 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
-  useEffect(() => {
-    fetch('/api')
-    .then((response) => response.json(),)
-    .then((data) => setInitialData(data._embedded.events))
-    .catch(err => {
-            setError(true);
-            console.log(error);
-        })
-  }, []);
-  
-  console.log(initialData);
- 
   const [keyword, setKeyword] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [radius, setRadius] = useState("");
@@ -33,7 +21,18 @@ function App() {
   const [showHide, setShowHide] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
   const [eventPage, setEventPage] = useState('');
-
+  useEffect(() => {
+    fetch('/api')
+    .then((response) => response.json(),)
+    .then((data) => setInitialData(data._embedded.events))
+    .catch(err => {
+            setError(true);
+            console.log(error);
+        })
+  }, [eventPage]);
+  
+  console.log(initialData);
+  
   function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {
