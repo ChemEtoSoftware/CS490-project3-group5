@@ -10,8 +10,8 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
-  
-  useEffect(() => {
+
+  /*useEffect(() => {
     fetch('/api')
     .then((response) => response.json(),)
     .then((data) => setInitialData(data._embedded.events))
@@ -19,7 +19,8 @@ function App() {
             setError(true);
             console.log(error);
         })
-  }, []);
+  }, []);*/
+  
   
   console.log(initialData);
   
@@ -69,7 +70,7 @@ function App() {
   const [countryCode, setCountryCode] = useState("");
   const [showHide, setShowHide] = useState(false);
   
-  function handleSearch(e) {
+  /*function handleSearch(e) {
     e.preventDefault();
     fetch('/api/post', {
       method: 'POST',
@@ -97,7 +98,24 @@ function App() {
       //props.onLoginError();
     });
     location.reload();
-  };
+  };*/
+  
+  function handleSearch(e) {
+    e.preventDefault();
+    setError(false);
+    setShowHide(false);
+    socket.emit('apiSearch', {
+      keyword: keyword,
+      postalcode: postalCode,
+      radius: radius,
+      startdate: startDate,
+      enddate: endDate,
+      city: city,
+      statecode: stateCode,
+      countrycode: countryCode,
+    });
+    console.log("hello");
+  }
   
   function handlekeywordChange(e) {
      setKeyword(e.target.value);
@@ -134,7 +152,7 @@ function App() {
   
   function displayFilteredSearchButton() {
     return (
-      <div className="buttonHolder"> <button className="search" onClick={() => onShowHide()}>Filters</button> </div>
+      <div className="buttonHolder"> <button className="search" onClick={() => onShowHide()}>Filter Events</button> </div>
     );
   }
   
@@ -197,10 +215,84 @@ function App() {
     );
   }
   
+  useEffect(() => {
+    socket.on('start', (data) => {
+      console.log("on first connect")
+      setInitialData(data._embedded.events);
+    });
+    
+    socket.on('apiResult', (data) => {
+      console.log("on api return")
+      console.log(data._embedded.events)
+      setInitialData(data._embedded.events);
+      if (document.getElementsByName("keyword")[0]){
+        document.getElementsByName("keyword")[0].value='';
+      }
+      if (document.getElementsByName("postalCode")[0]){
+        document.getElementsByName("postalCode")[0].value='';
+      }
+      if (document.getElementsByName("radius")[0]){
+        document.getElementsByName("radius")[0].value='';
+      }
+      if (document.getElementsByName("startDate")[0]){
+        document.getElementsByName("startDate")[0].value='';
+      }
+      if (document.getElementsByName("endDate")[0]){
+        document.getElementsByName("endDate")[0].value='';
+      }
+      if (document.getElementsByName("city")[0]){
+        document.getElementsByName("city")[0].value='';
+      }
+      if (document.getElementsByName("stateCode")[0]){
+        document.getElementsByName("stateCode")[0].value='';
+      }
+      if (document.getElementsByName("countryCode")[0]){
+        document.getElementsByName("countryCode")[0].value='';
+      }
+    });
+    
+    socket.on('error', (data) => {
+      setError(true);
+      console.log(error);
+      console.log(document.getElementsByName("keyword")[0].value);
+      if (document.getElementsByName("keyword")[0]){
+        document.getElementsByName("keyword")[0].value='';
+      }
+      if (document.getElementsByName("postalCode")[0]){
+        document.getElementsByName("postalCode")[0].value='';
+      }
+      if (document.getElementsByName("radius")[0]){
+        document.getElementsByName("radius")[0].value='';
+      }
+      if (document.getElementsByName("startDate")[0]){
+        document.getElementsByName("startDate")[0].value='';
+      }
+      if (document.getElementsByName("endDate")[0]){
+        document.getElementsByName("endDate")[0].value='';
+      }
+      if (document.getElementsByName("city")[0]){
+        document.getElementsByName("city")[0].value='';
+      }
+      if (document.getElementsByName("stateCode")[0]){
+        document.getElementsByName("stateCode")[0].value='';
+      }
+      if (document.getElementsByName("countryCode")[0]){
+        document.getElementsByName("countryCode")[0].value='';
+      }
+    });
+  }, []);
+  
+  function displayErrorMessage() {
+    //setError(false);
+    return (
+      <div><p>Sorry, your input was invalid. Please enter a new keyword search.</p></div>
+    );
+  }
+  
   return (
     <div>
       <div className="search">
-        <form>
+        <form id="frm">
           <div class="col-30">
             <label>Keyword: </label>
           </div>
@@ -215,8 +307,10 @@ function App() {
       
       <div className="search">
         <h1>Events</h1>
-        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
-       <InitialData initialData={initialData} />
+        
+        <div>
+          {error===true ? displayErrorMessage() : <InitialData initialData={initialData} />}
+        </div>
       </div>
     </div>
   );
