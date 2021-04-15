@@ -88,14 +88,20 @@ function App() {
       })
     })
     .then(response => response.json())
-    .then(json => {
+    /*.then(json => {
       const accessToken = json.access_token;
       //props.onLogin(accessToken);
     })      
     .catch(error => {
       //props.onLoginError();
-    });
-    location.reload();
+    });*/
+    .then((response) => response.json(),)
+    .then((data) => setInitialData(data._embedded.events))
+    .catch(err => {
+      setError(true);
+      console.log(error);
+    })
+    //location.reload();
   };
   
   function handlekeywordChange(e) {
