@@ -1,14 +1,4 @@
 """Class for user and bookmark template"""
-from app import DB
-
-class Bookmark(DB.Model):
-    """Can create a Bookmark with username and event_id"""
-    id = DB.Column(DB.ForeignKey('user.id'), DB.String(80), primary_key=True, nullable=False)
-    event_id = DB.Column(DB.String(80), unique=False, nullable=False)
-
-    def __repr__(self):
-        return '<Bookmark %r>' % self.username
-"""This program is used for incorporating Models from PostresQL"""
 # from app import DB
 
 def get_users(DB):
@@ -25,3 +15,15 @@ def get_users(DB):
             '''This function returns the users class'''
             return '<User %r>' % self.firstName
     return Users
+def get_bookmarks(DB):
+    '''This function defines the Bookmarks Class in our DB.'''
+    class Bookmark(DB.Model):
+        """Can create a Bookmark with username and event_id"""
+        id = DB.Column(DB.ForeignKey('user.id'), DB.String(80), primary_key=True, nullable=False)
+        event_id = DB.Column(DB.String(80), unique=False, nullable=False)
+        def __repr__(self):
+            return '<Bookmark %r>' % self.username
+    return Bookmark
+
+
+

@@ -8,7 +8,7 @@ import './Login.css';
 // import { refreshTokenSetup } from 'refreshToken';
 
 // import io from 'socket.io-client';
-const clientId = 'YOUR_CLIENT_ID';
+const clientId = '261247752424-q9516idbkvqfveotvoq8rnstd96j4660.apps.googleusercontent.com';
 export function Login(props) {
   const [isLoggedIn] = useState(false);
   const { setLogin, socket } = props;

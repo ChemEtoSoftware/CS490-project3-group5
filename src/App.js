@@ -6,7 +6,6 @@ import { Login } from './Login';
 import { Logout } from './Logout';
 // import { InitialData } from './InitialData';
 
-
 export const socket = io();
 
 function App() {
@@ -17,8 +16,8 @@ function App() {
   //   ).then((data) => setInitialData(data._embedded.events));
   // }, []);
   const [isLoggedIn, setLogin] = useState(false);
-  function toggleLogin(){
-    if(isLoggedIn){
+  function toggleLogin() {
+    if (isLoggedIn) {
       setLogin(false);
     } else {
       setLogin(true);
@@ -26,15 +25,24 @@ function App() {
     return null;
   }
   // console.log(initialData);
-  function conditionalLogin(){
-    if(isLoggedIn){
-      return(<Login setLogin={toggleLogin} socket={socket}/>);
+  function conditionalLogin() {
+    if (!isLoggedIn) {
+      return (
+        <Login setLogin={toggleLogin} socket={socket} />
+      );
     }
+    return null;
   }
-  function conditionalLogout(){
-    if(!isLoggedIn){
-      return(<Logout toggleLogin={toggleLogin} socket={socket}/>);
+  function conditionalLogout() {
+    if (isLoggedIn) {
+      return (
+        <div>
+          <SearchFilterEvents />
+          <Logout toggleLogin={toggleLogin} socket={socket} />
+        </div>
+      );
     }
+    return null;
   }
   /*
   useEffect(() => {
@@ -46,7 +54,6 @@ function App() {
   }, []);
   */
   // const [value, setValue] = useState('');
-  
   // function handleSubmit(e) {
   //   e.preventDefault();
   //   const data = { name: value };
@@ -65,12 +72,10 @@ function App() {
   // function handleValue(e) {
   //   setValue(e.target.value);
   // }
-  
   // const [state, setstate] = useState({
   //   keyword:'',
   //   password: ''
   // });
-  
   // function handleSearch(e) {
   //   e.preventDefault();
   //   fetch('/api/post', {
@@ -92,40 +97,36 @@ function App() {
   //       //props.onLoginError();
   //     });
   // };
-  
   // function handlekeywordChange(e) {
   //   setstate({
   //     keyword: e.target.value
   //   });
   // };
-  
-
   return (
     <div>
       {conditionalLogin()}
       {conditionalLogout()}
-      <SearchFilterEvents />
     </div>
   );
 }
 
 export default App;
 
-    // <div>
-    //   <form>
-    //     Keyword:
-    //     <br />
-    //     <input
-    //       type="text"
-    //       name="keyword"
-    //       value={state.keyword}
-    //       onChange={handlekeywordChange}
-    //     />
-    //     <button onClick={handleSearch}>Search</button>
-    //   </form>
-    // </div>
-    
-    // <div>
-    //   <h1>Events</h1>
-    // <InitialData initialData={initialData} />
-    // </div>
+// <div>
+//   <form>
+//     Keyword:
+//     <br />
+//     <input
+//       type="text"
+//       name="keyword"
+//       value={state.keyword}
+//       onChange={handlekeywordChange}
+//     />
+//     <button onClick={handleSearch}>Search</button>
+//   </form>
+// </div>
+
+// <div>
+//   <h1>Events</h1>
+// <InitialData initialData={initialData} />
+// </div>

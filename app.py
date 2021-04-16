@@ -73,13 +73,13 @@ def api_post():
 @SOCKETIO.on('connect')
 def on_connect():
     """Simply shows who's connected. Nothing more"""
-    '''redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     req = requests.get(redurl)
     jsontext = req.json()
     print('User connected!')
-    SOCKETIO.emit('start', jsontext)'''
+    SOCKETIO.emit('start', jsontext)
 
-'''@SOCKETIO.on('apiSearch')
+@SOCKETIO.on('apiSearch')
 def search(data):
     """api search"""
     print("got search")
@@ -125,7 +125,7 @@ def search(data):
         SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
     except:
         print("false")
-        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)'''
+        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)
 
 @APP.route('/api', methods=['GET'])
 def api():
@@ -171,16 +171,16 @@ def api():
     return jsontext
 
 
-'''
+
 @SOCKETIO.on('bookmarked')
 def on_bookmark(data):
    USER_ID = data.user_id
    BOOKMARKED_EVENT_ID = data.event_id
    NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
-   db.session.add(NEW_BOOKMARKED_EVENT_ID)
-   db.session.commit()
+   DB.session.add(NEW_BOOKMARKED_EVENT_ID)
+   DB.session.commit()
    return "success";
-'''
+
 @APP.route('/api/bookmark', methods=['POST'])
 def get_bookmarks():
     '''This function gives the user's list of

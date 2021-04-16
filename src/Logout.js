@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import './Login.css';
 
-const clientId = 'YOUR_CLIENT_ID';
+const clientId = '261247752424-q9516idbkvqfveotvoq8rnstd96j4660.apps.googleusercontent.com';
 export function Logout(props) {
   const { toggleLogin, socket } = props;
   const handleLogout = () => {
