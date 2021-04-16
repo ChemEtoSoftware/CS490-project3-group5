@@ -8,6 +8,9 @@ const fetch = require('node-fetch');
 export function SearchFilterEvents() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
+  const [showEventPage, setShowEventPage] = useState(true);
+  const [eventPage, setEventPage] = useState('');
+
   useEffect(() => {
     fetch('/api')
       .then((response) => response.json())
@@ -26,8 +29,6 @@ export function SearchFilterEvents() {
   const [stateCode, setStateCode] = useState('');
   const [countryCode, setCountryCode] = useState('');
   const [showHide, setShowHide] = useState(false);
-  const [showEventPage, setShowEventPage] = useState(true);
-  const [eventPage, setEventPage] = useState('');
 
   function handleSearch(e) {
     e.preventDefault();
@@ -192,9 +193,13 @@ export function SearchFilterEvents() {
       <div className="search">
         <h1>Events</h1>
         {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
-        <InitialData initialData={initialData} setShowEventPage={setShowEventPage} 
-        showEventPage={showEventPage} eventPage={eventPage} 
-        setEventPage={setEventPage}/>
+        <InitialData
+          initialData={initialData}
+          setShowEventPage={setShowEventPage}
+          showEventPage={showEventPage}
+          eventPage={eventPage}
+          setEventPage={setEventPage}
+        />
       </div>
     </div>
 
