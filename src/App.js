@@ -10,18 +10,6 @@ export const socket = io();
 function App() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
-  useEffect(() => {
-    fetch('/api')
-    .then((response) => response.json(),)
-    .then((data) => setInitialData(data._embedded.events))
-    .catch(err => {
-            setError(true);
-            console.log(error);
-        })
-  }, []);
-  
-  console.log(initialData);
- 
   const [keyword, setKeyword] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [radius, setRadius] = useState("");
@@ -31,6 +19,19 @@ function App() {
   const [stateCode, setStateCode] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [showHide, setShowHide] = useState(false);
+  const [showEventPage, setShowEventPage] = useState(true);
+  const [eventPage, setEventPage] = useState('');
+  useEffect(() => {
+    fetch('/api')
+    .then((response) => response.json(),)
+    .then((data) => setInitialData(data._embedded.events))
+    .catch(err => {
+            setError(true);
+            console.log(error);
+        })
+  }, [eventPage]);
+  
+  console.log(initialData);
   
   function handleSearch(e) {
     e.preventDefault();
@@ -125,52 +126,52 @@ function App() {
   function displayFilteredSearch() {
     return (
       <div className="filters">
-        <div class="col-30">
+        <div className="col-30">
           <label>Postal Code (5 digits): </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="postalCode" value={postalCode} onChange={handlepostalCodeChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label>Radius (in miles):  </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="radius" value={radius} onChange={handleradiusChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label>Start Date (format: yyyy-mm-dd): </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="startDate" value={startDate} onChange={handlestartDateChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label>End Date (format: yyyy-mm-dd): </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="endDate" value={endDate} onChange={handleendDateChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label> City: </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="city" value={city} onChange={handlecityChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label>State Code (2 letters): </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="stateCode" value={stateCode} onChange={handlestateCodeChange}/> <br />
         </div>
         
-        <div class="col-30">
+        <div className="col-30">
           <label>Country Code (2 letters): </label>
         </div>
-        <div class="col-70">
+        <div className="col-70">
           <input type="text" name="countryCode" value={countryCode} onChange={handlecountryCodeChange}/> <br />
         </div>
       </div>
@@ -255,10 +256,10 @@ function App() {
     <div>
       <div className="search">
         <form id="frm">
-          <div class="col-30">
+          <div className="col-30">
             <label>Keyword: </label>
           </div>
-          <div class="col-70">
+          <div className="col-70">
             <input className="keywordInput" type="text" name="keyword" value={keyword} onChange={handlekeywordChange}/> <br />
           </div>
           {showHide === false ? displayFilteredSearchButton() : null}
@@ -268,10 +269,11 @@ function App() {
       </div>
       
       <div className="search">
-        <h1>Events</h1>
-        
-        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
-        <InitialData initialData={initialData} />
+      <h1>Events</h1>
+      {!error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+       <InitialData initialData={initialData} setShowEventPage={setShowEventPage} 
+       showEventPage={showEventPage} eventPage={eventPage} 
+       setEventPage={setEventPage}/>
       </div>
     </div>
   );
