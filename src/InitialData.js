@@ -28,7 +28,6 @@ export function InitialData(props) {
     eventPage,
     setEventPage,
   } = props;
-  console.log(showEventPage);
   if (showEventPage) {
     return (
       <List>
