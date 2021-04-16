@@ -251,7 +251,7 @@ function App() {
       <div><p>Sorry, your input was invalid. Please enter a new keyword search.</p></div>
     );
   }*/
-  
+  console.log(initialData)
   return (
     <div>
       <div className="search">
