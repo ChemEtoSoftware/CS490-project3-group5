@@ -1,40 +1,23 @@
-/* eslint-disable */
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
-import PropTypes from 'prop-types';
-import Bookmarks from './Bookmarks';
-export function EventPage (props){
-    //Todo
-    /*const { initialData } = props;
-    return (
-        <List>
-        {initialData.map(initialData => {
-            return (
-            <div className="container" onClick={() => EventPage(initialData)}>
-                <List.Item key={initialData.id}>
-                    <Header>{initialData.name}</Header>
-                    <img src ={initialData.images[0].url} />
-                    <p>{initialData.dates.start.localDate}</p>
-                </List.Item>
-            </div>
-            );
-        })}
-        </List>
-    );*/
-};
+import { Bookmarks } from './Bookmarks';
 
-EventPage.propTypes = {
-    /*
-    TODO
-    Fill out proptypes for your props.
-    */
-};
-
-EventPage.defaultProps = {
-  /*
-  TODO
-  Set default values for your props.
-  */
-};
+export function EventPage(currEvent, setEventPage, setShowEventPage) {
+  setShowEventPage(false);
+  setEventPage(
+    <List>
+      <div className="container">
+        <List.Item key={currEvent.id}>
+          <Header>{currEvent.name}</Header>
+          <img src={currEvent.images[0].url} alt="" />
+          <div className="buttonHolder">
+            <button type="button" className="search" onClick={() => Bookmarks(currEvent)}> Bookmark </button>
+          </div>
+          <p>{currEvent.dates.start.localDate}</p>
+        </List.Item>
+      </div>
+    </List>,
+  );
+}
 
 export default EventPage;
