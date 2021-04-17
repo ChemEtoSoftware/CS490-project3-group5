@@ -7,7 +7,6 @@ import './Login.css';
 export function Logout(props) {
   const { toggleLogin, socket, authID } = props;
   const handleLogout = () => {
-    alert('Logout made successfully');
     socket.emit('Logout', { socketID: socket.id });
     toggleLogin();
   };
