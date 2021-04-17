@@ -13,7 +13,7 @@ def get_users(DB):
     
         def __repr__(self):
             '''This function returns the users class'''
-            return '<User %r>' % self.firstName
+            return '<User %r>' % self.id
     return Users
 def get_bookmarks(DB):
     '''This function defines the Bookmarks Class in our DB.'''

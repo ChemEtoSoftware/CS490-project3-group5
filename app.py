@@ -36,6 +36,8 @@ SOCKETIO = SocketIO(APP,
                     json=json,
                     manage_session=False)
 
+all_users = Users.query.all()
+ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
 @APP.route('/', defaults={"filename": "index.html"})
@@ -78,6 +80,8 @@ def on_connect():
     jsontext = req.json()
     print('User connected!')
     SOCKETIO.emit('start', jsontext)
+    print("Emitting Credentials to Client")
+    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = True, include_self=True)
 
 @SOCKETIO.on('apiSearch')
 def search(data):
@@ -196,21 +200,39 @@ def on_disconnect():
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    truncate_len = len("'https://lh3.googleusercontent.com")
-    truncated_imgurl = data["imageUrl"][truncate_len:]
-    user_data = Users(id=data["googleId"][-7:],email= data["email"],firstName= data["givenName"],familyName= data["familyName"], imageURL= truncated_imgurl)
-    DB.session.add(user_data)
-    DB.session.commit()
-    all_users = Users.query.all()
-    print("Current Users:\n")
+    global all_users
+    global LIST_OF_ACTIVE_USERS
+    print("Data Recieved: \n",data)
+    if data["googleId"][-7:] in all_users:
+        # ID does not exist in DB, add to DB
+        # truncate image url length to avoid string overflow in DB
+        truncate_len = len("'https://lh3.googleusercontent.com")
+        truncated_imgurl = data["imageUrl"][truncate_len:]
+        # init user data received from client into obj
+        # id is a string of length 7 which is maximum integer size
+        user_data = Users(id=data["googleId"][-7:],email= data["email"],firstName= data["givenName"],familyName= data["familyName"], imageURL= truncated_imgurl)
+        # add user to DB and commit
+        DB.session.add(user_data)
+        DB.session.commit()
+        all_users = Users.query.all()
+    # add googleId to list and dict of active users
+    LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
+    ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = { "ID":data["googleId"][-7:], "Name":data["givenName"] }
+    print("Current Users: \n")
     for item in all_users:
         print(item)
-    print(data)
     
 @SOCKETIO.on('Logout')
 def on_logout(data):
     '''Receives logout emit and removes user session'''
-    print(data["socketID"])
+    global ACTIVE_USER_SOCKET_PAIRS
+    # find Name and googleId array using socketID as index
+    userPair = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    # remove user from list_of_sctive_users, and active_user_socket_pairs
+    LIST_OF_ACTIVE_USERS.remove(userPair["ID"])
+    ACTIVE_USER_SOCKET_PAIRS.pop(data["socketID"])
+    print("Logging out user ",userPair["Name"])
+    
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg

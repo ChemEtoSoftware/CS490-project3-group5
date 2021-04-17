@@ -27,6 +27,7 @@ function App() {
   // console.log(initialData);
   function conditionalLogin() {
     if (!isLoggedIn) {
+      console.log(process.env);
       return (
         <Login setLogin={toggleLogin} socket={socket} />
       );
@@ -44,6 +45,7 @@ function App() {
     }
     return null;
   }
+
   /*
   useEffect(() => {
     window.fetch('/api').then((response) => (response.json()).then((data) => {
