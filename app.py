@@ -74,14 +74,14 @@ def api_post():
 
 @SOCKETIO.on('connect')
 def on_connect():
-    """Simply shows who's connected. Nothing more"""
+    """ Emit Google Credentials to Client on Connect """
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     req = requests.get(redurl)
     jsontext = req.json()
     print('User connected!')
     SOCKETIO.emit('start', jsontext)
     print("Emitting Credentials to Client")
-    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = True, include_self=True)
+    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = False, include_self=True)
 
 @SOCKETIO.on('apiSearch')
 def search(data):
