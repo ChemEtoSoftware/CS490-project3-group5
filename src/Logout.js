@@ -4,18 +4,16 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import './Login.css';
 
-// const clientId = '261247752424-q9516idbkvqfveotvoq8rnstd96j4660.apps.googleusercontent.com';
 export function Logout(props) {
-  const { toggleLogin, socket, credInfo } = props;
+  const { toggleLogin, socket, authID } = props;
   const handleLogout = () => {
-    alert('Logout made successfully');
     socket.emit('Logout', { socketID: socket.id });
     toggleLogin();
   };
   return (
     <div className="GoogleAuth">
       <GoogleLogout
-        clientId={credInfo}
+        clientId={authID}
         buttonText="Logout"
         onLogoutSuccess={handleLogout}
       />
@@ -25,13 +23,13 @@ export function Logout(props) {
 Logout.propTypes = {
   toggleLogin: PropTypes.func,
   socket: PropTypes.instanceOf(io()),
-  credInfo: PropTypes.string,
+  authID: PropTypes.string,
 };
 Logout.defaultProps = {
   toggleLogin: () => {
     alert('default');
   },
   socket: null,
-  credInfo: '',
+  authID: '',
 };
 export default Logout;

@@ -1,7 +1,11 @@
 .App {
   text-align: center;
 }
-
+.Loading {
+  text-align: center;
+  color: white;
+  margin-top: 20%;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

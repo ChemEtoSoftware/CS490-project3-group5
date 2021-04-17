@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { SearchFilterEvents } from './SearchFilter';
 import { Login } from './Login';
@@ -16,6 +16,8 @@ function App() {
   //   ).then((data) => setInitialData(data._embedded.events));
   // }, []);
   const [isLoggedIn, setLogin] = useState(false);
+  const [authID, setAuthID] = useState('');
+  const [canRender, setRenderStatus] = useState(false);
   function toggleLogin() {
     if (isLoggedIn) {
       setLogin(false);
@@ -24,28 +26,44 @@ function App() {
     }
     return null;
   }
-  // console.log(initialData);
+  function toggleRender() {
+    if (canRender) {
+      setRenderStatus(false);
+    } else {
+      setRenderStatus(true);
+    }
+    return null;
+  }
   function conditionalLogin() {
-    if (!isLoggedIn) {
-      console.log(process.env);
+    if (!isLoggedIn && canRender) {
       return (
-        <Login setLogin={toggleLogin} socket={socket} />
+        <Login setLogin={toggleLogin} socket={socket} authID={authID} />
       );
+    }
+    if (!isLoggedIn) {
+      return (<h1 className="Loading">Loading ...</h1>);
     }
     return null;
   }
   function conditionalLogout() {
-    if (isLoggedIn) {
+    if (isLoggedIn && canRender) {
       return (
         <div>
           <SearchFilterEvents />
-          <Logout toggleLogin={toggleLogin} socket={socket} />
+          <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
         </div>
       );
     }
     return null;
   }
-
+  useEffect(() => {
+    socket.on('credInfo', (data) => {
+      console.log(data);
+      setAuthID(data);
+      toggleRender();
+    });
+    return () => socket.removeEventListener('credInfo');
+  }, []);
   /*
   useEffect(() => {
     window.fetch('/api').then((response) => (response.json()).then((data) => {

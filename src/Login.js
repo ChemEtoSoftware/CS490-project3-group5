@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
@@ -8,11 +8,9 @@ import './Login.css';
 // import { refreshTokenSetup } from 'refreshToken';
 
 // import io from 'socket.io-client';
-// const clientId = '261247752424-q9516idbkvqfveotvoq8rnstd96j4660.apps.googleusercontent.com';
 export function Login(props) {
   const [isLoggedIn] = useState(false);
-  const { setLogin, socket } = props;
-  const [clientID, setClientID] = useState(null);
+  const { setLogin, socket, authID } = props;
   const handleLogin = (res) => {
     console.log('[Login Success] currentUser:', res.profileObj);
     res.profileObj.socketID = socket.id;
@@ -27,7 +25,7 @@ export function Login(props) {
   };
   function conditionalLogin() {
     if (isLoggedIn === false) {
-      console.log('Login CredInfo Status: ', clientID);
+      console.log('Login CredInfo Status: ', authID);
       return (
         <div>
           <div className="logo">
@@ -35,7 +33,7 @@ export function Login(props) {
           </div>
           <div className="GoogleAuth">
             <GoogleLogin
-              clientId={clientID}
+              clientId={authID}
               buttonText="Log in with Google"
               onSuccess={handleLogin}
               onFailure={handleFailLogin}
@@ -48,23 +46,6 @@ export function Login(props) {
     }
     return null;
   }
-  function triggerID(string) {
-    setClientID(string);
-  }
-  useEffect(() => {
-    socket.on('credInfo', (data) => {
-      if (clientID === null) {
-        console.log(data);
-        triggerID(data);
-        console.log('ClientInfo Set: ', clientID, data);
-      } else {
-        console.log('ID not null: ', clientID);
-      }
-    });
-    return () => {
-      socket.removeEventListener('credInfo');
-    };
-  }, []);
 
   return (
     <div>
@@ -75,13 +56,13 @@ export function Login(props) {
 Login.propTypes = {
   setLogin: PropTypes.func,
   socket: PropTypes.instanceOf(io()),
+  authID: PropTypes.string,
 };
 Login.defaultProps = {
   setLogin: () => {
     alert('default');
   },
   socket: null,
+  authID: '',
 };
 export default Login;
-// credInfo: PropTypes.string,
-// credInfo: '',
