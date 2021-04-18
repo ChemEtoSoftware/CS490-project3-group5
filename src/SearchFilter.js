@@ -49,10 +49,13 @@ export function SearchFilterEvents() {
         countrycode: countryCode,
       }),
     })
-      .then((response) => response.json());
-    window.location.reload(true);
+      .then((response) => response.json())
+      .then((data) => setInitialData(data._embedded.events))
+      .catch(() => {
+        setError(true);
+      });
+    // window.location.reload(true);
   }
-
   function handlekeywordChange(e) {
     setKeyword(e.target.value);
   }

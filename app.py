@@ -69,40 +69,6 @@ def api_post():
     session["city"] = city
     session["statecode"] = statecode
     session["countrycode"] = countrycode
-    #print(keyword)
-    return keyword
-
-@SOCKETIO.on('connect')
-def on_connect():
-    """ Emit Google Credentials to Client on Connect """
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    req = requests.get(redurl)
-    jsontext = req.json()
-    print('User connected!')
-    SOCKETIO.emit('start', jsontext)
-    print("Emitting Credentials to Client")
-    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = False, include_self=True)
-
-@SOCKETIO.on('apiSearch')
-def search(data):
-    """api search"""
-    print("got search")
-    keyword = data['keyword']
-    postalcode = data['postalcode']
-    radius = data['radius']
-    startdate = data['startdate']
-    enddate = data['enddate']
-    city = data['city']
-    statecode = data['statecode']
-    countrycode = data['countrycode']
-    print(keyword)
-    print(postalcode)
-    print(radius)
-    print(startdate)
-    print(enddate)
-    print(city)
-    print(statecode)
-    print(countrycode)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     if keyword:
         redurl += "&keyword={}".format(keyword)
@@ -124,12 +90,68 @@ def search(data):
         redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
-    try:
-        print(jsontext["_embedded"])
-        SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
-    except:
-        print("false")
-        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)
+    return jsontext
+    #print(keyword)
+    #return keyword
+
+@SOCKETIO.on('connect')
+def on_connect():
+    """ Emit Google Credentials to Client on Connect """
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    req = requests.get(redurl)
+    jsontext = req.json()
+    print('User connected!')
+    # SOCKETIO.emit('start', jsontext)
+    print("Emitting Credentials to Client")
+    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = False, include_self=True)
+
+# @SOCKETIO.on('apiSearch')
+# def search(data):
+#     """api search"""
+#     print("got search")
+#     keyword = data['keyword']
+#     postalcode = data['postalcode']
+#     radius = data['radius']
+#     startdate = data['startdate']
+#     enddate = data['enddate']
+#     city = data['city']
+#     statecode = data['statecode']
+#     countrycode = data['countrycode']
+#     print(keyword)
+#     print(postalcode)
+#     print(radius)
+#     print(startdate)
+#     print(enddate)
+#     print(city)
+#     print(statecode)
+#     print(countrycode)
+#     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+#     if keyword:
+#         redurl += "&keyword={}".format(keyword)
+#     if postalcode:
+#         redurl += "&postalCode={}".format(postalcode)
+#     if radius:
+#         redurl += "&radius={}".format(radius)
+#     if startdate:
+#         startdate += "T00:00:00Z"
+#         redurl += "&startDateTime={}".format(startdate)
+#     if enddate:
+#         enddate += "T23:59:59Z"
+#         redurl += "&endDateTime={}".format(enddate)
+#     if city:
+#         redurl += "&city={}".format(city)
+#     if statecode:
+#         redurl += "&stateCode={}".format(statecode)
+#     if countrycode:
+#         redurl += "&countryCode={}".format(countrycode)
+#     req = requests.get(redurl)
+#     jsontext = req.json()
+#     try:
+#         print(jsontext["_embedded"])
+#         SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
+#     except:
+#         print("false")
+#         SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)
 
 @APP.route('/api', methods=['GET'])
 def api():
@@ -172,6 +194,7 @@ def api():
         redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
+    session.clear()
     return jsontext
 
 
