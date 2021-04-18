@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Project 3
+=======
+# Project 2
+>>>>>>> 31e1c61d8697ae7034ec1da9c263ed265c2c984e
 
 This is an event discovery app - EventGuru! We aim to deliver an event discovery and searching app accessible form the browser. 
 This app will provide uses with the ability to view events, look up the event venue on a map, bookmark events, and interact (like and comment on) 
@@ -29,12 +33,19 @@ In your terminal:
 3. `pip install -U Flask`
 4. `npm install -g heroku`
 5. `pip install -U flask-cors`
+<<<<<<< HEAD
 6. `pip install flask-socketio`
 7. `npm install semantic-ui-react`
 8. `npm install`
 9. `pip install -r requirements.txt`
 10. `cd` into react-starter directory. Run `npm install socket.io-client --save`
 11. `pip install pylint`
+=======
+6. `npm install semantic-ui-react`
+7. `npm install`
+8. `pip install -r requirements.txt`
+
+>>>>>>> 31e1c61d8697ae7034ec1da9c263ed265c2c984e
 
 ## Setup
 
