@@ -40,7 +40,7 @@
    3. `\l` look for ec2-user as a database
 7. Make a new user:
    1. `psql` (if you already quit out of psql)
-   2. Type this with your username and password (DONT JUST COPY PASTE): ` create user some_username_here superuser password 'some_unique_new_password_here';`` e.g.  `create user ivana superuser password 'mysecretpassword123';`
+   2. Type this with your username and password (DONT JUST COPY PASTE): `create user some_username_here superuser password 'some_unique_new_password_here';` e.g.  `create user ivana superuser password 'mysecretpassword123';`
    3. `\q` to quit out of sql
 8. Save your username and password in a sql.env file with the format `SQL_USER=` and `SQL_PASSWORD=`
 9. To use SQL in Python: `pip install psycopg2-binary`
