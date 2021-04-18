@@ -171,6 +171,7 @@ def api():
         redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
+    session.clear()
     return jsontext
 
 
