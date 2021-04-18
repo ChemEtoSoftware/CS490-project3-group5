@@ -53,7 +53,7 @@
 3. Login and fill creds: `heroku login -i`
 4. Create a new Heroku app: `heroku create`
 5. Create a new remote DB on your Heroku app: `heroku addons:create heroku-postgresql:hobby-dev`
-   (If that doesn't work, add a `-a {your-app-name}`` to the end of the command, no braces)
+   (If that doesn't work, add a `-a {your-app-name}` to the end of the command, no braces)
 6. See the config vars set by Heroku for you: `heroku config`. Copy paste the value for DATABASE_URL
 7. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'`
 8. Also create a .env file and inside it add: `DATABASE_URL='copy-paste-value-in-here'`
