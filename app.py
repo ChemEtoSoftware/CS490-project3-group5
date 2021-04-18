@@ -28,6 +28,7 @@ import models
 if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
+Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -36,7 +37,7 @@ SOCKETIO = SocketIO(APP,
                     json=json,
                     manage_session=False)
 
-all_users = Users.query.all()
+ALL_USERS = Users.query.all()
 ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
@@ -97,13 +98,13 @@ def api_post():
 @SOCKETIO.on('connect')
 def on_connect():
     """ Emit Google Credentials to Client on Connect """
-    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    req = requests.get(redurl)
-    jsontext = req.json()
+    # redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    # req = requests.get(redurl)
+    # jsontext = req.json()
     print('User connected!')
     # SOCKETIO.emit('start', jsontext)
     print("Emitting Credentials to Client")
-    SOCKETIO.emit('credInfo',os.getenv('GOOGLE_CLIENT_ID'),broadcast = False, include_self=True)
+    SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
 
 # @SOCKETIO.on('apiSearch')
 # def search(data):
@@ -199,14 +200,15 @@ def api():
 
 
 
-@SOCKETIO.on('bookmarked')
-def on_bookmark(data):
-   USER_ID = data.user_id
-   BOOKMARKED_EVENT_ID = data.event_id
-   NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
-   DB.session.add(NEW_BOOKMARKED_EVENT_ID)
-   DB.session.commit()
-   return "success";
+# @SOCKETIO.on('bookmarked')
+# def on_bookmark(data):
+#     ''' on bookmark run function'''
+    # user_id = data.user_id
+    # bookmarked_event_id = data.event_id
+    # new_bookmarked_event_id = models.Bookmark(id=user_id, event_id=bookmarked_event_id)
+    # DB.session.add(new_bookmarked_event)
+    # DB.session.commit()
+    # return "success"
 
 @APP.route('/api/bookmark', methods=['POST'])
 def get_bookmarks():
@@ -219,43 +221,52 @@ def get_bookmarks():
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
-    
+
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    global all_users
+    global ALL_USERS
     global LIST_OF_ACTIVE_USERS
-    print("Data Recieved: \n",data)
-    if data["googleId"][-7:] in all_users:
+    print("Data Recieved: \n", data)
+    if data["googleId"][-7:] in ALL_USERS:
         # ID does not exist in DB, add to DB
         # truncate image url length to avoid string overflow in DB
         truncate_len = len("'https://lh3.googleusercontent.com")
         truncated_imgurl = data["imageUrl"][truncate_len:]
         # init user data received from client into obj
         # id is a string of length 7 which is maximum integer size
-        user_data = Users(id=data["googleId"][-7:],email= data["email"],firstName= data["givenName"],familyName= data["familyName"], imageURL= truncated_imgurl)
+        user_data = Users(
+            id=data["googleId"][-7:],
+            email=data["email"],
+            firstName=data["givenName"],
+            familyName=data["familyName"],
+            imageURL=truncated_imgurl
+            )
         # add user to DB and commit
         DB.session.add(user_data)
         DB.session.commit()
-        all_users = Users.query.all()
+        ALL_USERS = Users.query.all()
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
-    ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = { "ID":data["googleId"][-7:], "Name":data["givenName"] }
+    ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
+        "ID":data["googleId"][-7:],
+        "Name":data["givenName"],
+    }
     print("Current Users: \n")
-    for item in all_users:
+    for item in ALL_USERS:
         print(item)
-    
+
 @SOCKETIO.on('Logout')
 def on_logout(data):
     '''Receives logout emit and removes user session'''
     global ACTIVE_USER_SOCKET_PAIRS
     # find Name and googleId array using socketID as index
-    userPair = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    user_pair = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
     # remove user from list_of_sctive_users, and active_user_socket_pairs
-    LIST_OF_ACTIVE_USERS.remove(userPair["ID"])
+    LIST_OF_ACTIVE_USERS.remove(user_pair["ID"])
     ACTIVE_USER_SOCKET_PAIRS.pop(data["socketID"])
-    print("Logging out user ",userPair["Name"])
-    
+    print("Logging out user ", user_pair["Name"])
+
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg
