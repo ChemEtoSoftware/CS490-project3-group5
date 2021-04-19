@@ -108,8 +108,6 @@ In your terminal:
    a) label-has-associated-control - This enforces that a label tag has a text label and an associated control. For us to layout our elements in an attractive form on the web app, it is important for us to put the labels and associated input text tags in separete containers; this feature is limiting how we layout all the elements on the page.
    b) label-has-for - This enforces that a label tag has an associated control. Some of the labels displayed on our web app are not associated with any other user interactions tags or elements on the page; this feature is limiting how we layout all the elements on the page.
    c) no-underscore-dangle - This enforces that there are no dangling underscores in identifiers. In order for us to extract the right data from the API response json object, we must serch through a key called `_embedded`; this feature is limiting what keys we search through in the json object that is returend from the API.
-   d) max-len - This enforces that there are no lines of code that exceed the length limit. In our code, some of our lines are too long because of params that we have to enter to use experted functions; this feature is limiting how many params we can enter in exported functions.
-
 
 ## Known Problems TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
