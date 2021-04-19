@@ -33,6 +33,7 @@ export function SearchFilterEvents() {
   function handleSearch(e) {
     e.preventDefault();
     setError(false);
+    setShowHide(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',
@@ -56,6 +57,30 @@ export function SearchFilterEvents() {
         setError(true);
       });
     // window.location.reload(true);
+    if (keyword !== '') {
+      setKeyword('');
+    }
+    if (postalCode !== '') {
+      setPostalCode('');
+    }
+    if (radius !== '') {
+      setRadius('');
+    }
+    if (startDate !== '') {
+      setStartDate('');
+    }
+    if (endDate !== '') {
+      setEndDate('');
+    }
+    if (city !== '') {
+      setCity('');
+    }
+    if (stateCode !== '') {
+      setStateCode('');
+    }
+    if (countryCode !== '') {
+      setCountryCode('');
+    }
   }
 
   function displayErrorMessage() {
