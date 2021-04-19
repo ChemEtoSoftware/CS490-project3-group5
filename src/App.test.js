@@ -2,10 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('Test if board shows and login disappears', () => {
+test('Test Loading Screen Dissappears on credential receipt', () => {
   render(<App />);
-  const linkElement = screen.getByText('Search');
-  expect(linkElement).toBeInTheDocument();
+  const loading = screen.queryAllByText('Loading');
+  expect(loading).toHaveLength(0); // expect no elements
+  // const wait = await expect(screen.getByAltText('App Logo')).toBeInTheDocument();
 });
 /* test('Test if an X or O shows up when a square is click', () => {
   render(<App />);

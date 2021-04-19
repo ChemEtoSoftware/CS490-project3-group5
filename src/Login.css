@@ -1,0 +1,21 @@
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.GoogleAuth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.image {
+    border-top: 0px solid #5875A8;
+    border-bottom: 1px solid #E4DDE1;
+    border-left: 1px solid #E4DDE1;
+    border-right: 0px solid #5875A8;
+    border-radius: 50px;
+    margin-top: 20px;
+    box-shadow: -7px 7px 25px #4A608A;
+}
+/*191D2F*/
