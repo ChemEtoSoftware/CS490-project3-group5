@@ -32,6 +32,7 @@ export function SearchFilterEvents() {
 
   function handleSearch(e) {
     e.preventDefault();
+    setError(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',
@@ -55,6 +56,12 @@ export function SearchFilterEvents() {
         setError(true);
       });
     // window.location.reload(true);
+  }
+
+  function displayErrorMessage() {
+    return (
+      <p>Sorry, your input was invalid. Please enter a new keyword search.</p>
+    );
   }
 
   function handlekeywordChange(e) {
@@ -196,14 +203,7 @@ export function SearchFilterEvents() {
 
       <div className="search">
         <h1>Events</h1>
-        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : <p> </p>}
-        <InitialData
-          initialData={initialData}
-          setShowEventPage={setShowEventPage}
-          showEventPage={showEventPage}
-          eventPage={eventPage}
-          setEventPage={setEventPage}
-        />
+        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} />}
       </div>
     </div>
 
