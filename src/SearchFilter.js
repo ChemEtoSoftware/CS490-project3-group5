@@ -1,11 +1,13 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
 export function SearchFilterEvents(props) {
+  const { clientId } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -203,12 +205,20 @@ export function SearchFilterEvents(props) {
 
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} />}
+        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} />}
       </div>
     </div>
 
   );
 }
+
+SearchFilterEvents.propTypes = {
+  clientId: PropTypes.string,
+};
+
+SearchFilterEvents.defaultProps = {
+  clientId: null,
+};
 
 export const foo = 'foo';
 // socket version
