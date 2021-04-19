@@ -27,6 +27,7 @@ Logout.propTypes = {
 };
 Logout.defaultProps = {
   toggleLogin: () => {
+    //  eslint-disable-next-line
     alert('default');
   },
   socket: null,

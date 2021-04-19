@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 
 test('Test Loading Screen Dissappears on credential receipt', () => {
@@ -8,7 +8,7 @@ test('Test Loading Screen Dissappears on credential receipt', () => {
   expect(loading).toHaveLength(0); // expect no elements
   // const wait = await expect(screen.getByAltText('App Logo')).toBeInTheDocument();
 });
-/*test('Test if event container renders correctly', () => {
+/* test('Test if event container renders correctly', () => {
   render(<App />);
   const linkElement = screen.getByText('Login');
   const input = screen.getByPlaceholderText('Put in a real name');
