@@ -282,23 +282,7 @@ def on_login(data):
     global LIST_OF_ACTIVE_USERS
     print("Data Recieved: \n", data)
     if data["googleId"][-7:] in ALL_USERS:
-        # ID does not exist in DB, add to DB
-        # truncate image url length to avoid string overflow in DB
-        truncate_len = len("'https://lh3.googleusercontent.com")
-        truncated_imgurl = data["imageUrl"][truncate_len:]
-        # init user data received from client into obj
-        # id is a string of length 7 which is maximum integer size
-        user_data = Users(
-            id=data["googleId"][-7:],
-            email=data["email"],
-            firstName=data["givenName"],
-            familyName=data["familyName"],
-            imageURL=truncated_imgurl
-            )
-        # add user to DB and commit
-        DB.session.add(user_data)
-        DB.session.commit()
-        ALL_USERS = Users.query.all()
+        ALL_USERS = db_add_user(data)
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
@@ -308,6 +292,25 @@ def on_login(data):
     print("Current Users: \n")
     for item in ALL_USERS:
         print(item)
+
+def db_add_user(data):
+    # ID does not exist in DB, add to DB
+    # truncate image url length to avoid string overflow in DB
+    truncate_len = len("'https://lh3.googleusercontent.com")
+    truncated_imgurl = data["imageUrl"][truncate_len:]
+    # init user data received from client into obj
+    # id is a string of length 7 which is maximum integer size
+    user_data = Users(
+        id=data["googleId"][-7:],
+        email=data["email"],
+        firstName=data["givenName"],
+        familyName=data["familyName"],
+        imageURL=truncated_imgurl
+        )
+    # add user to DB and commit
+    DB.session.add(user_data)
+    DB.session.commit()
+    return Users.query.all() #returns queried users (ids)
 
 @SOCKETIO.on('Logout')
 def on_logout(data):
