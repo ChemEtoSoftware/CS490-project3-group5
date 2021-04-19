@@ -12,20 +12,20 @@ export function Login(props) {
   const [isLoggedIn] = useState(false);
   const { setLogin, socket, authID } = props;
   const handleLogin = (res) => {
-    console.log('[Login Success] currentUser:', res.profileObj);
+    // console.log('[Login Success] currentUser:', res.profileObj);
     res.profileObj.socketID = socket.id;
     // refreshTokenSetup(res);
-    console.log(res.profileObj);
+    // console.log(res.profileObj);
     socket.emit('Login', res.profileObj);
     setLogin(true);
   };
-  const handleFailLogin = (res) => {
-    console.log('[Login failed] res:', res);
+  const handleFailLogin = () => {
+    // console.log('[Login failed] res:', res);
     alert('Login Failed!');
   };
   function conditionalLogin() {
     if (isLoggedIn === false) {
-      console.log('Login CredInfo Status: ', authID);
+      // console.log('Login CredInfo Status: ', authID);
       return (
         <div>
           <div className="logo">

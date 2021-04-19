@@ -58,7 +58,7 @@ function App() {
   }
   useEffect(() => {
     socket.on('credInfo', (data) => {
-      console.log(data);
+      // console.log(data);
       setAuthID(data);
       toggleRender();
     });
