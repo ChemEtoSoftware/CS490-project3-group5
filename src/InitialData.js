@@ -18,7 +18,6 @@ export const Movies = ({ initialData }) => {
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import { EventPage } from './EventPage';
 
 export function InitialData(props) {
   const {
@@ -30,6 +29,32 @@ export function InitialData(props) {
     clientId,
     socket,
   } = props;
+  function EventPage(currEvent) {
+    function Bookmarks() {
+      const eventID = currEvent.id;
+      alert(eventID);
+      alert(clientId);
+      socket.emit('create_bookmark', {
+        id: clientId,
+        eventID,
+      });
+    }
+    setShowEventPage(false);
+    setEventPage(
+      <List>
+        <div className="container">
+          <List.Item key={currEvent.id}>
+            <Header>{currEvent.name}</Header>
+            <img src={currEvent.images[0].url} alt="" />
+            <div className="buttonHolder">
+              <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
+            </div>
+            <p>{currEvent.dates.start.localDate}</p>
+          </List.Item>
+        </div>
+      </List>,
+    );
+  }
   if (showEventPage) {
     return (
       <List>

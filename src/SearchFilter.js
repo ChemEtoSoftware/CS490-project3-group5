@@ -221,8 +221,7 @@ SearchFilterEvents.defaultProps = {
   clientId: null,
   socket: null,
 };
-
-export const foo = 'foo';
+export default SearchFilterEvents;
 // socket version
 
 /* function handleSearch(e) {
