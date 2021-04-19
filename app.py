@@ -28,7 +28,7 @@ import models
 if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
-Bookmarks = models.get_bookmarks(DB)
+# Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
