@@ -54,7 +54,6 @@ class AddUserTestCase(unittest.TestCase):
                         db_add_user(test[KEY_INPUT])
                         actual_result = self.db_mock_init
                         expected_result = test[KEY_EXPECTED]
-                    
                         print("\tA:",actual_result)
                         print("\tE:",expected_result)
                         print("\tM DB:",self.db_mock_init)
@@ -62,6 +61,5 @@ class AddUserTestCase(unittest.TestCase):
                         self.assertEqual(len(actual_result), len(expected_result))
                     # print("after asserts")
             print('end of test\n')
-
 if __name__ == '__main__':
     unittest.main()
