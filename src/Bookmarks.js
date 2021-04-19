@@ -1,16 +1,8 @@
 /* eslint-disable */
-import PropTypes from 'prop-types';
-
-export function Bookmarks(props) {
-  const { eventID } = props;
+import { List, Header } from 'semantic-ui-react';
+export function Bookmarks(eventID, clientId, socket) {
+  alert(eventID);
+  alert(clientId);
+  socket.emit('create_bookmark', {id : clientId, eventID : eventID})
 }
-Bookmarks.propTypes = {
-  eventID: PropTypes.string,
-  e: PropTypes.objectOf(PropTypes.object),
-};
-
-Bookmarks.defaultProps = {
-  eventID: null,
-  e: null,
-};
 export default Bookmarks;

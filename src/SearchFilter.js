@@ -7,7 +7,7 @@ import { InitialData } from './InitialData';
 const fetch = require('node-fetch');
 
 export function SearchFilterEvents(props) {
-  const { clientId } = props;
+  const { clientId, socket } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -205,7 +205,7 @@ export function SearchFilterEvents(props) {
 
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} />}
+        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} socket={socket} />}
       </div>
     </div>
 
@@ -214,10 +214,12 @@ export function SearchFilterEvents(props) {
 
 SearchFilterEvents.propTypes = {
   clientId: PropTypes.string,
+  socket: PropTypes.objectOf(PropTypes.object),
 };
 
 SearchFilterEvents.defaultProps = {
   clientId: null,
+  socket: null,
 };
 
 export const foo = 'foo';

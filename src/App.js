@@ -49,7 +49,7 @@ function App() {
     if (isLoggedIn && canRender) {
       return (
         <div>
-          <SearchFilterEvents clientId={authID} />
+          <SearchFilterEvents clientId={authID} socket={socket} />
           <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
         </div>
       );
