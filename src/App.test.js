@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
 test('Test Loading Screen Dissappears on credential receipt', () => {
@@ -8,7 +8,7 @@ test('Test Loading Screen Dissappears on credential receipt', () => {
   expect(loading).toHaveLength(0); // expect no elements
   // const wait = await expect(screen.getByAltText('App Logo')).toBeInTheDocument();
 });
-/* test('Test if an X or O shows up when a square is click', () => {
+test('Test if event container renders correctly', () => {
   render(<App />);
   const linkElement = screen.getByText('Login');
   const input = screen.getByPlaceholderText('Put in a real name');
@@ -21,7 +21,7 @@ test('Test Loading Screen Dissappears on credential receipt', () => {
   const X = screen.getByText('X');
   expect(X).toBeInTheDocument();
 });
-test('See if the leaderboard is updated based on a change in props', () => {
+/* test('See if the leaderboard is updated based on a change in props', () => {
   const { rerender } = render(<Display name="Kevin" number="100"
   currentUser="Kevin" currentLetter="X" />);
   expect(screen.getByRole('row')).toHaveTextContent('Kevin');
