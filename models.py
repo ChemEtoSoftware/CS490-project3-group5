@@ -19,7 +19,7 @@ def get_bookmarks(d_b):
     '''This function defines the Bookmarks Class in our d_b.'''
     class Bookmark(d_b.Model):
         """Can create a Bookmark with username and event_id"""
-        id = d_b.Column(d_b.ForeignKey('user.id'), d_b.String(80), primary_key=True, nullable=False)
+        id = d_b.Column( d_b.String(80), d_b.ForeignKey('user.id'), primary_key=True, nullable=False)
         event_id = d_b.Column(d_b.String(80), unique=False, nullable=False)
         def __repr__(self):
             return '<Bookmark %r>' % self.id

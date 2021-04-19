@@ -28,7 +28,7 @@ import models
 if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
-# Bookmarks = models.get_bookmarks(DB)
+Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -255,13 +255,14 @@ def api():
 
 @SOCKETIO.on('create_bookmark')
 def on_bookmark(data):
-   USER_ID = data.user_id
-   BOOKMARKED_EVENT_ID = data.event_id
-   NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
+   USER_ID = data['id']
+   BOOKMARKED_EVENT_ID = data['event_id']
+   NEW_BOOKMARKED_EVENT_ID = Bookmarks(id = USER_ID, event_id = BOOKMARKED_EVENT_ID)
    DB.session.add(NEW_BOOKMARKED_EVENT_ID)
    DB.session.commit()
-   BOOKMARKS = models.Bookmark.query.all()
-   return BOOKMARKS;
+   LIST_OF_BOOKMARKS = Bookmarks.query.all()
+   print LIST_OF_BOOKMARKS
+   return LIST_OF_BOOKMARKS
 
 @SOCKETIO.on('retrieve_bookmarks')
 def retrieve_bookmarks(data):
