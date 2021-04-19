@@ -294,6 +294,7 @@ def on_login(data):
         print(item)
 
 def db_add_user(data):
+    '''Helper function for mocking data'''
     # ID does not exist in DB, add to DB
     # truncate image url length to avoid string overflow in DB
     truncate_len = len("'https://lh3.googleusercontent.com")
@@ -305,7 +306,7 @@ def db_add_user(data):
         email=data["email"],
         firstName=data["givenName"],
         familyName=data["familyName"],
-        imageURL=truncated_imgurl
+        imageURL=truncated_imgurl,
         )
     # add user to DB and commit
     DB.session.add(user_data)

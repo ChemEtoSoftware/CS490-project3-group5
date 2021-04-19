@@ -1,11 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 
 test('Test Loading Screen Dissappears on credential receipt', () => {
-  const result = render(<App />);
-  const loading = screen.queryAllByText('Loading')
-  expect(loading).toHaveLength(0) // expect no elements
+  render(<App />);
+  const loading = screen.queryAllByText('Loading');
+  expect(loading).toHaveLength(0); // expect no elements
   // const wait = await expect(screen.getByAltText('App Logo')).toBeInTheDocument();
 });
 /* test('Test if an X or O shows up when a square is click', () => {
