@@ -28,9 +28,9 @@ APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(APP)
 # IMPORTANT: This must be AFTER creating DB variable to prevent
 # circular import issues
-#import models
+import models
 
-#DB.create_all()
+DB.create_all()
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -174,18 +174,19 @@ def api():
     return jsontext
 
 
-'''
-@SOCKETIO.on('bookmarked')
+
+@SOCKETIO.on('create_bookmark')
 def on_bookmark(data):
    USER_ID = data.user_id
    BOOKMARKED_EVENT_ID = data.event_id
    NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
-   db.session.add(NEW_BOOKMARKED_EVENT_ID)
-   db.session.commit()
-   return "success";
-'''
-@APP.route('/api/bookmark', methods=['POST'])
-def get_bookmarks():
+   DB.session.add(NEW_BOOKMARKED_EVENT_ID)
+   DB.session.commit()
+   BOOKMARKS = models.Bookmark.query.all()
+   return BOOKMARKS;
+
+@SOCKETIO.on('retrieve_bookmarks')
+def retrieve_bookmarks(data):
     '''This function gives the user's list of
     bookmarks to the front end'''
     bookmark_json = request.get_json()

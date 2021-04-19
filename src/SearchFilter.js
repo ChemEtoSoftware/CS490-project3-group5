@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { InitialData } from './InitialData';
-
+// import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
 export function SearchFilterEvents() {
