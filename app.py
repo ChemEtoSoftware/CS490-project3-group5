@@ -253,18 +253,18 @@ def api():
 
 
 
-# @SOCKETIO.on('bookmarked')
-# def on_bookmark(data):
-#     ''' on bookmark run function'''
-    # user_id = data.user_id
-    # bookmarked_event_id = data.event_id
-    # new_bookmarked_event_id = models.Bookmark(id=user_id, event_id=bookmarked_event_id)
-    # DB.session.add(new_bookmarked_event)
-    # DB.session.commit()
-    # return "success"
+@SOCKETIO.on('create_bookmark')
+def on_bookmark(data):
+   USER_ID = data.user_id
+   BOOKMARKED_EVENT_ID = data.event_id
+   NEW_BOOKMARKED_EVENT_ID = models.Bookmark(id=USER_ID, event_id=BOOKMARKED_EVENT_ID)
+   DB.session.add(NEW_BOOKMARKED_EVENT_ID)
+   DB.session.commit()
+   BOOKMARKS = models.Bookmark.query.all()
+   return BOOKMARKS;
 
-@APP.route('/api/bookmark', methods=['POST'])
-def get_bookmarks():
+@SOCKETIO.on('retrieve_bookmarks')
+def retrieve_bookmarks(data):
     '''This function gives the user's list of
     bookmarks to the front end'''
     bookmark_json = request.get_json()
