@@ -103,9 +103,6 @@ def api_post():
     #print(keyword)
     #return keyword
 
-<<<<<<< HEAD
-@SOCKETIO.on('apiSearch')
-=======
 @SOCKETIO.on('connect')
 def on_connect():
     """Simply shows who's connected. Nothing more"""
@@ -123,9 +120,10 @@ def on_connect():
     session["city"] = ""
     session["statecode"] = ""
     session["countrycode"] = ""
+    print("Emitting Credentials to Client")
+    SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
 
-'''@SOCKETIO.on('apiSearch')
->>>>>>> 1d06e5c8041d80374cd9f8f651f4b4197fdcfa55
+@SOCKETIO.on('apiSearch')
 def search(data):
     """api search"""
     print("got search")
@@ -169,17 +167,6 @@ def search(data):
     return jsontext
     #print(keyword)
     #return keyword
-
-@SOCKETIO.on('connect')
-def on_connect():
-    """ Emit Google Credentials to Client on Connect """
-    # redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    # req = requests.get(redurl)
-    # jsontext = req.json()
-    print('User connected!')
-    # SOCKETIO.emit('start', jsontext)
-    print("Emitting Credentials to Client")
-    SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
 
 # @SOCKETIO.on('apiSearch')
 # def search(data):
