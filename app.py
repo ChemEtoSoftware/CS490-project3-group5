@@ -258,7 +258,7 @@ def on_bookmark(data):
     '''This function is for adding
     a bookmark to the DB'''
     user_id = data['id']
-    bookmarked_event_id = data['event_id']
+    bookmarked_event_id = data['eventID']
     new_bookmarked_event_id = Bookmarks(id=user_id, event_id=bookmarked_event_id)
     DB.session.add(new_bookmarked_event_id)
     DB.session.commit()
