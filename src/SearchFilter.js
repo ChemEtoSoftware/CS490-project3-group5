@@ -203,7 +203,15 @@ export function SearchFilterEvents() {
 
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} />}
+        {error === true ? displayErrorMessage() : (
+          <InitialData
+            initialData={initialData}
+            setShowEventPage={setShowEventPage}
+            showEventPage={showEventPage}
+            eventPage={eventPage}
+            setEventPage={setEventPage}
+          />
+        )}
       </div>
     </div>
 
