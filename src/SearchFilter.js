@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
@@ -33,6 +32,7 @@ export function SearchFilterEvents() {
 
   function handleSearch(e) {
     e.preventDefault();
+    setError(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',
@@ -57,6 +57,16 @@ export function SearchFilterEvents() {
       });
     // window.location.reload(true);
   }
+<<<<<<< HEAD
+=======
+
+  function displayErrorMessage() {
+    return (
+      <p>Sorry, your input was invalid. Please enter a new keyword search.</p>
+    );
+  }
+
+>>>>>>> 1d06e5c8041d80374cd9f8f651f4b4197fdcfa55
   function handlekeywordChange(e) {
     setKeyword(e.target.value);
   }
@@ -196,14 +206,7 @@ export function SearchFilterEvents() {
 
       <div className="search">
         <h1>Events</h1>
-        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : <p>' '</p>}
-        <InitialData
-          initialData={initialData}
-          setShowEventPage={setShowEventPage}
-          showEventPage={showEventPage}
-          eventPage={eventPage}
-          setEventPage={setEventPage}
-        />
+        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} />}
       </div>
     </div>
 

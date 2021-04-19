@@ -61,7 +61,14 @@ def api_post():
     city = login_json.get('city')
     statecode = login_json.get('statecode')
     countrycode = login_json.get('countrycode')
-
+    print(keyword)
+    print(postalcode)
+    print(radius)
+    print(startdate)
+    print(enddate)
+    print(city)
+    print(statecode)
+    print(countrycode)
     session["keyword"] = keyword
     session["postalcode"] = postalcode
     session["radius"] = radius
@@ -96,7 +103,29 @@ def api_post():
     #print(keyword)
     #return keyword
 
+<<<<<<< HEAD
 @SOCKETIO.on('apiSearch')
+=======
+@SOCKETIO.on('connect')
+def on_connect():
+    """Simply shows who's connected. Nothing more"""
+    '''redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    req = requests.get(redurl)
+    jsontext = req.json()
+    print('User connected!')
+    SOCKETIO.emit('start', jsontext)'''
+    print('User connected!')
+    session["keyword"] = ""
+    session["postalcode"] = ""
+    session["radius"] = ""
+    session["startdate"] = ""
+    session["enddate"] = ""
+    session["city"] = ""
+    session["statecode"] = ""
+    session["countrycode"] = ""
+
+'''@SOCKETIO.on('apiSearch')
+>>>>>>> 1d06e5c8041d80374cd9f8f651f4b4197fdcfa55
 def search(data):
     """api search"""
     print("got search")
@@ -212,14 +241,6 @@ def api():
     city = session.get("city", None)
     statecode = session.get("statecode", None)
     countrycode = session.get("countrycode", None)
-    print(keyword)
-    print(postalcode)
-    print(radius)
-    print(startdate)
-    print(enddate)
-    print(city)
-    print(statecode)
-    print(countrycode)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     if keyword:
         redurl += "&keyword={}".format(keyword)
@@ -241,7 +262,6 @@ def api():
         redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
-    session.clear()
     return jsontext
 
 
