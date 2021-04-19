@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
@@ -195,7 +196,7 @@ export function SearchFilterEvents() {
 
       <div className="search">
         <h1>Events</h1>
-        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : null}
+        {error ? <p>Sorry, your input was invalid. Please enter a new keyword search.</p> : <p>' '</p>}
         <InitialData
           initialData={initialData}
           setShowEventPage={setShowEventPage}
