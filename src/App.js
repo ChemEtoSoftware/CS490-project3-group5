@@ -16,7 +16,7 @@ function App() {
   //   ).then((data) => setInitialData(data._embedded.events));
   // }, []);
   const [isLoggedIn, setLogin] = useState(false);
-  export const [authID, setAuthID] = useState('');
+  const [authID, setAuthID] = useState('');
   const [canRender, setRenderStatus] = useState(false);
   function toggleLogin() {
     if (isLoggedIn) {
@@ -49,7 +49,7 @@ function App() {
     if (isLoggedIn && canRender) {
       return (
         <div>
-          <SearchFilterEvents/>
+          <SearchFilterEvents clientId={authID}/>
           <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
         </div>
       );

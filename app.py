@@ -261,7 +261,7 @@ def on_bookmark(data):
    DB.session.add(NEW_BOOKMARKED_EVENT_ID)
    DB.session.commit()
    LIST_OF_BOOKMARKS = Bookmarks.query.all()
-   print LIST_OF_BOOKMARKS
+   print(LIST_OF_BOOKMARKS)
    return LIST_OF_BOOKMARKS
 
 @SOCKETIO.on('retrieve_bookmarks')

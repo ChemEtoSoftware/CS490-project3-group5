@@ -5,7 +5,7 @@ import { InitialData } from './InitialData';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
-export function SearchFilterEvents() {
+export function SearchFilterEvents(props) {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
