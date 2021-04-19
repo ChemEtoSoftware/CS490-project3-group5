@@ -37,6 +37,7 @@ module.exports = {
         some: ['nesting', 'id'],
       },
     }],
+    'max-len': 0,
   },
   settings: {
     'import/resolver': {
