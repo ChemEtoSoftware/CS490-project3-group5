@@ -255,21 +255,22 @@ def api():
 
 @SOCKETIO.on('create_bookmark')
 def on_bookmark(data):
-   USER_ID = data['id']
-   BOOKMARKED_EVENT_ID = data['event_id']
-   NEW_BOOKMARKED_EVENT_ID = Bookmarks(id = USER_ID, event_id = BOOKMARKED_EVENT_ID)
-   DB.session.add(NEW_BOOKMARKED_EVENT_ID)
-   DB.session.commit()
-   LIST_OF_BOOKMARKS = Bookmarks.query.all()
-   print(LIST_OF_BOOKMARKS)
-   return LIST_OF_BOOKMARKS
+    '''This function is for adding
+    a bookmark to the DB'''
+    user_id = data['id']
+    bookmarked_event_id = data['event_id']
+    new_bookmarked_event_id = Bookmarks(id=user_id, event_id=bookmarked_event_id)
+    DB.session.add(new_bookmarked_event_id)
+    DB.session.commit()
+    list_of_bookmarks = Bookmarks.query.all()
+    print(list_of_bookmarks)
+    return list_of_bookmarks
 
 @SOCKETIO.on('retrieve_bookmarks')
 def retrieve_bookmarks(data):
-    '''This function gives the user's list of
-    bookmarks to the front end'''
-    bookmark_json = request.get_json()
-    user_id = bookmark_json.get('user_id')
+    '''This function is for retrieving a
+    bookmark from the DB'''
+    user_id = data['user_id']
     print(user_id)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
