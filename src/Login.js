@@ -21,6 +21,7 @@ export function Login(props) {
   };
   const handleFailLogin = () => {
     // console.log('[Login failed] res:', res);
+    //  eslint-disable-next-line
     alert('Login Failed!');
   };
   function conditionalLogin() {
@@ -60,6 +61,7 @@ Login.propTypes = {
 };
 Login.defaultProps = {
   setLogin: () => {
+    //  eslint-disable-next-line
     alert('default');
   },
   socket: null,

@@ -28,7 +28,7 @@ import models
 if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
-# Bookmarks = models.get_bookmarks(DB)
+Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -253,22 +253,24 @@ def api():
 
 
 
-# @SOCKETIO.on('bookmarked')
-# def on_bookmark(data):
-#     ''' on bookmark run function'''
-    # user_id = data.user_id
-    # bookmarked_event_id = data.event_id
-    # new_bookmarked_event_id = models.Bookmark(id=user_id, event_id=bookmarked_event_id)
-    # DB.session.add(new_bookmarked_event)
-    # DB.session.commit()
-    # return "success"
+@SOCKETIO.on('create_bookmark')
+def on_bookmark(data):
+    '''This function is for adding
+    a bookmark to the DB'''
+    user_id = data['id']
+    bookmarked_event_id = data['event_id']
+    new_bookmarked_event_id = Bookmarks(id=user_id, event_id=bookmarked_event_id)
+    DB.session.add(new_bookmarked_event_id)
+    DB.session.commit()
+    list_of_bookmarks = Bookmarks.query.all()
+    print(list_of_bookmarks)
+    return list_of_bookmarks
 
-@APP.route('/api/bookmark', methods=['POST'])
-def get_bookmarks():
-    '''This function gives the user's list of
-    bookmarks to the front end'''
-    bookmark_json = request.get_json()
-    user_id = bookmark_json.get('user_id')
+@SOCKETIO.on('retrieve_bookmarks')
+def retrieve_bookmarks(data):
+    '''This function is for retrieving a
+    bookmark from the DB'''
+    user_id = data['user_id']
     print(user_id)
 @SOCKETIO.on('disconnect')
 def on_disconnect():

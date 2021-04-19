@@ -1,11 +1,13 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
-
+// import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
-export function SearchFilterEvents() {
+export function SearchFilterEvents(props) {
+  const { clientId } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -217,6 +219,14 @@ export function SearchFilterEvents() {
 
   );
 }
+
+SearchFilterEvents.propTypes = {
+  clientId: PropTypes.string,
+};
+
+SearchFilterEvents.defaultProps = {
+  clientId: null,
+};
 
 export const foo = 'foo';
 // socket version
