@@ -31,14 +31,21 @@ In your terminal:
 5. `pip install -U flask-cors`
 6. `pip install flask-socketio`
 7. `npm install semantic-ui-react`
-8. `npm install`
-9. `pip install -r requirements.txt`
-10. `cd` into react-starter directory. Run `npm install socket.io-client --save`
-11. `pip install pylint`
+8. `npm install react-google-login`
+9. `npm install`
+10. `pip install -r requirements.txt`
+11. `cd` into react-starter directory. Run `npm install socket.io-client --save`
+12. `pip install pylint`
 
 ## Setup
 
 1. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
+
+## API Setup
+
+1. Register this web application as a project on your TicketMaster Developer account: [Follow the link here](https://developer-acct.ticketmaster.com/user/login?destination=user)
+2. Register this web application as a project on your Google Developer account: [Follow the link here](https://developers.google.com/identity/sign-in/web/sign-in)
+3. Add your local testing environment URL as an authorized redirect URI and an authorized JavaScript origin URL in your app on the Google Cloud Platform,  
 
 ## Database Setup
 
@@ -53,7 +60,7 @@ In your terminal:
    c) \q to quit out of sql
 7. Save your username and password in a sql.env file with the format SQL_USER= and SQL_PASSWORD=.
 8. To use SQL in Python: pip install psycopg2-binary
-9. I your terminal: `pip install Flask-SQLAlchemy==2.1`
+9. In your terminal: `pip install Flask-SQLAlchemy==2.1`
 
 ## Heroku Setup
 
@@ -63,22 +70,6 @@ In your terminal:
 4. Create a new remote DB on your Heroku app: heroku addons:create heroku-postgresql:hobby-dev (If that doesn't work, add a -a {your-app-name} to the end of the command, no braces)
 5. See the config vars set by Heroku for you: heroku config. Copy paste the value for `DATABASE_URL`
 6. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'`
-
-## Initialize Database TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-
-1. In the terminal, run `python` to open an interactive session
-2. One by one, add the following lines: 
-   `from app import DB`
-   `import models`
-   `DB.create_all()`
-   `admin = models.Person(username='admin', rank=100)`
-   `DB.session.add(admin)`
-   `DB.session.commit()`
-3. To make sure this worked, run the following line in the same interactive session (If you see the admin as a Person entry, then it worked!):
-   `models.Person.query.all()`
-4. To make sure that this user was added to the Heroku database, connect to it using `heroku pg:psql`
-5. To see all tables, run the command `\d`; the person table should be in there
-6. To query the data in the person table, run the query `SELECT * FROM person;`; the admin user should be in there
 
 ## Run Application
 
@@ -109,10 +100,12 @@ In your terminal:
    b) label-has-for - This enforces that a label tag has an associated control. Some of the labels displayed on our web app are not associated with any other user interactions tags or elements on the page; this feature is limiting how we layout all the elements on the page.
    c) no-underscore-dangle - This enforces that there are no dangling underscores in identifiers. In order for us to extract the right data from the API response json object, we must serch through a key called `_embedded`; this feature is limiting what keys we search through in the json object that is returend from the API.
 
-## Known Problems TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+## Known Problems
 
-1. 
+1. We have to still beautify our web application. A lot of the componenets and features of the app are currenlty in rigid containers but we are hoping to fix that by the end of Sprint 2.
+2. The event page is still a work in progress because a lot of the features to be displayed on the page are Sprint 2 user stories. Thus, the event page looks unlike the design mockups from our project specs.
 
-## Technical Issues TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+## Technical Issues 
 
-1. 
+1. We had a hard time working with GitHub and integrating all of our code together. We ran into a few merging problems because several people were pushing and pulling code at the same time. We resolved these issues by having meetings several times throughout the week as a group or with just a few people from the group and discussing the problems and action items together.
+2. We also had a hard time with a few dependencies that we each had to install on our local environments to test the app in its fullest functionality. For example, semantic-ui-reaact and react-google-login posed many problems when we tested each others working components on our local environments.

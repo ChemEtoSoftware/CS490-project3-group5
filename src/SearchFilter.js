@@ -1,13 +1,11 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
-export function SearchFilterEvents(props) {
-  const { clientId } = props;
+export function SearchFilterEvents() {
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -35,6 +33,7 @@ export function SearchFilterEvents(props) {
   function handleSearch(e) {
     e.preventDefault();
     setError(false);
+    setShowHide(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',
@@ -58,6 +57,30 @@ export function SearchFilterEvents(props) {
         setError(true);
       });
     // window.location.reload(true);
+    if (keyword !== '') {
+      setKeyword('');
+    }
+    if (postalCode !== '') {
+      setPostalCode('');
+    }
+    if (radius !== '') {
+      setRadius('');
+    }
+    if (startDate !== '') {
+      setStartDate('');
+    }
+    if (endDate !== '') {
+      setEndDate('');
+    }
+    if (city !== '') {
+      setCity('');
+    }
+    if (stateCode !== '') {
+      setStateCode('');
+    }
+    if (countryCode !== '') {
+      setCountryCode('');
+    }
   }
 
   function displayErrorMessage() {
@@ -205,20 +228,20 @@ export function SearchFilterEvents(props) {
 
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} />}
+        {error === true ? displayErrorMessage() : (
+          <InitialData
+            initialData={initialData}
+            setShowEventPage={setShowEventPage}
+            showEventPage={showEventPage}
+            eventPage={eventPage}
+            setEventPage={setEventPage}
+          />
+        )}
       </div>
     </div>
 
   );
 }
-
-SearchFilterEvents.propTypes = {
-  clientId: PropTypes.string,
-};
-
-SearchFilterEvents.defaultProps = {
-  clientId: null,
-};
 
 export const foo = 'foo';
 // socket version
