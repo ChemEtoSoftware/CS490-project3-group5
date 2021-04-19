@@ -20,17 +20,15 @@ load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
 APP = Flask(__name__, static_folder='./build/static')
 APP.secret_key = os.urandom(24)
-# Point SQLAlchemy to your Heroku database
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-# Gets rid of a warning
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB = SQLAlchemy(APP)
-# IMPORTANT: This must be AFTER creating DB variable to prevent
-# circular import issues
 import models
-
-DB.create_all()
+if __name__ == "__main__":
+    DB.create_all()
+Users = models.get_users(DB)
+# Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -39,6 +37,8 @@ SOCKETIO = SocketIO(APP,
                     json=json,
                     manage_session=False)
 
+ALL_USERS = Users.query.all()
+ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
 @APP.route('/', defaults={"filename": "index.html"})
@@ -61,7 +61,14 @@ def api_post():
     city = login_json.get('city')
     statecode = login_json.get('statecode')
     countrycode = login_json.get('countrycode')
-
+    print(keyword)
+    print(postalcode)
+    print(radius)
+    print(startdate)
+    print(enddate)
+    print(city)
+    print(statecode)
+    print(countrycode)
     session["keyword"] = keyword
     session["postalcode"] = postalcode
     session["radius"] = radius
@@ -70,8 +77,31 @@ def api_post():
     session["city"] = city
     session["statecode"] = statecode
     session["countrycode"] = countrycode
+
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+    if keyword:
+        redurl += "&keyword={}".format(keyword)
+    if postalcode:
+        redurl += "&postalCode={}".format(postalcode)
+    if radius:
+        redurl += "&radius={}".format(radius)
+    if startdate:
+        startdate += "T00:00:00Z"
+        redurl += "&startDateTime={}".format(startdate)
+    if enddate:
+        enddate += "T23:59:59Z"
+        redurl += "&endDateTime={}".format(enddate)
+    if city:
+        redurl += "&city={}".format(city)
+    if statecode:
+        redurl += "&stateCode={}".format(statecode)
+    if countrycode:
+        redurl += "&countryCode={}".format(countrycode)
+    req = requests.get(redurl)
+    jsontext = req.json()
+    return jsontext
     #print(keyword)
-    return keyword
+    #return keyword
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -81,8 +111,19 @@ def on_connect():
     jsontext = req.json()
     print('User connected!')
     SOCKETIO.emit('start', jsontext)'''
+    print('User connected!')
+    session["keyword"] = ""
+    session["postalcode"] = ""
+    session["radius"] = ""
+    session["startdate"] = ""
+    session["enddate"] = ""
+    session["city"] = ""
+    session["statecode"] = ""
+    session["countrycode"] = ""
+    print("Emitting Credentials to Client")
+    SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
 
-'''@SOCKETIO.on('apiSearch')
+@SOCKETIO.on('apiSearch')
 def search(data):
     """api search"""
     print("got search")
@@ -123,12 +164,57 @@ def search(data):
         redurl += "&countryCode={}".format(countrycode)
     req = requests.get(redurl)
     jsontext = req.json()
-    try:
-        print(jsontext["_embedded"])
-        SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
-    except:
-        print("false")
-        SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)'''
+    return jsontext
+    #print(keyword)
+    #return keyword
+
+# @SOCKETIO.on('apiSearch')
+# def search(data):
+#     """api search"""
+#     print("got search")
+#     keyword = data['keyword']
+#     postalcode = data['postalcode']
+#     radius = data['radius']
+#     startdate = data['startdate']
+#     enddate = data['enddate']
+#     city = data['city']
+#     statecode = data['statecode']
+#     countrycode = data['countrycode']
+#     print(keyword)
+#     print(postalcode)
+#     print(radius)
+#     print(startdate)
+#     print(enddate)
+#     print(city)
+#     print(statecode)
+#     print(countrycode)
+#     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
+#     if keyword:
+#         redurl += "&keyword={}".format(keyword)
+#     if postalcode:
+#         redurl += "&postalCode={}".format(postalcode)
+#     if radius:
+#         redurl += "&radius={}".format(radius)
+#     if startdate:
+#         startdate += "T00:00:00Z"
+#         redurl += "&startDateTime={}".format(startdate)
+#     if enddate:
+#         enddate += "T23:59:59Z"
+#         redurl += "&endDateTime={}".format(enddate)
+#     if city:
+#         redurl += "&city={}".format(city)
+#     if statecode:
+#         redurl += "&stateCode={}".format(statecode)
+#     if countrycode:
+#         redurl += "&countryCode={}".format(countrycode)
+#     req = requests.get(redurl)
+#     jsontext = req.json()
+#     try:
+#         print(jsontext["_embedded"])
+#         SOCKETIO.emit('apiResult', jsontext, broadcast=True, include_self=True)
+#     except:
+#         print("false")
+#         SOCKETIO.emit('error', jsontext, broadcast=True, include_self=True)
 
 @APP.route('/api', methods=['GET'])
 def api():
@@ -142,14 +228,6 @@ def api():
     city = session.get("city", None)
     statecode = session.get("statecode", None)
     countrycode = session.get("countrycode", None)
-    print(keyword)
-    print(postalcode)
-    print(radius)
-    print(startdate)
-    print(enddate)
-    print(city)
-    print(statecode)
-    print(countrycode)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
     if keyword:
         redurl += "&keyword={}".format(keyword)
@@ -196,6 +274,56 @@ def retrieve_bookmarks(data):
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
+
+@SOCKETIO.on('Login')
+def on_login(data):
+    '''Receives login emit and uploads user data to database'''
+    global ALL_USERS
+    global LIST_OF_ACTIVE_USERS
+    print("Data Recieved: \n", data)
+    if data["googleId"][-7:] in ALL_USERS:
+        ALL_USERS = db_add_user(data)
+    # add googleId to list and dict of active users
+    LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
+    ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
+        "ID":data["googleId"][-7:],
+        "Name":data["givenName"],
+    }
+    print("Current Users: \n")
+    for item in ALL_USERS:
+        print(item)
+
+def db_add_user(data):
+    '''Helper function for mocking data'''
+    # ID does not exist in DB, add to DB
+    # truncate image url length to avoid string overflow in DB
+    truncate_len = len("'https://lh3.googleusercontent.com")
+    truncated_imgurl = data["imageUrl"][truncate_len:]
+    # init user data received from client into obj
+    # id is a string of length 7 which is maximum integer size
+    user_data = Users(
+        id=data["googleId"][-7:],
+        email=data["email"],
+        firstName=data["givenName"],
+        familyName=data["familyName"],
+        imageURL=truncated_imgurl,
+        )
+    # add user to DB and commit
+    DB.session.add(user_data)
+    DB.session.commit()
+    return Users.query.all() #returns queried users (ids)
+
+@SOCKETIO.on('Logout')
+def on_logout(data):
+    '''Receives logout emit and removes user session'''
+    global ACTIVE_USER_SOCKET_PAIRS
+    # find Name and googleId array using socketID as index
+    user_pair = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    # remove user from list_of_sctive_users, and active_user_socket_pairs
+    LIST_OF_ACTIVE_USERS.remove(user_pair["ID"])
+    ACTIVE_USER_SOCKET_PAIRS.pop(data["socketID"])
+    print("Logging out user ", user_pair["Name"])
+
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg

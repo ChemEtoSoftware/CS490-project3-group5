@@ -4,6 +4,13 @@ module.exports = {
     es2021: true,
     jest: true,
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   extends: [
     'plugin:react/recommended',
     'airbnb',
@@ -30,5 +37,13 @@ module.exports = {
         some: ['nesting', 'id'],
       },
     }],
+    'max-len': 0,
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.vue'],
+      },
+    },
   },
 };
