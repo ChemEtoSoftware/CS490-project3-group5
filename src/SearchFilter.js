@@ -57,8 +57,6 @@ export function SearchFilterEvents() {
       });
     // window.location.reload(true);
   }
-<<<<<<< HEAD
-=======
 
   function displayErrorMessage() {
     return (
@@ -66,7 +64,6 @@ export function SearchFilterEvents() {
     );
   }
 
->>>>>>> 1d06e5c8041d80374cd9f8f651f4b4197fdcfa55
   function handlekeywordChange(e) {
     setKeyword(e.target.value);
   }
