@@ -103,10 +103,12 @@ In your terminal:
    d) R0903 - This is used when a class has too few public methods. Since we need only a limited number of public menthods for the web app to run as expected, it is not necessary for us to add unecessary lines of code to the server side of the application.
    e) W0603 - This is used when the code contains global statements at the module level. For us to maintain our data and esaily access it across several methods, it is important for us to declare globar variables and maintain memory of DB data on the server side. 
    f) W0702 - This is used when an except clause does not specify exception types to catch. Since we do not know what types of errors the API will respond with for the get requests, we have to assume that any and all errors can come in; catcing all of these errors is important for us to know so that we can inform the user about entering invalud inputs.
+   g) C0301 - This is used when a line of code is too long. Since we wanted to run an unmocked test on the request url being sent to the TicketMaser API, we need to use the base url, which exceeds the length limit; disabling this error is important for us to run the unmocked tests.
 2. Eslint:
    a) label-has-associated-control - This enforces that a label tag has a text label and an associated control. For us to layout our elements in an attractive form on the web app, it is important for us to put the labels and associated input text tags in separete containers; this feature is limiting how we layout all the elements on the page.
    b) label-has-for - This enforces that a label tag has an associated control. Some of the labels displayed on our web app are not associated with any other user interactions tags or elements on the page; this feature is limiting how we layout all the elements on the page.
    c) no-underscore-dangle - This enforces that there are no dangling underscores in identifiers. In order for us to extract the right data from the API response json object, we must serch through a key called `_embedded`; this feature is limiting what keys we search through in the json object that is returend from the API.
+   d) max-len - This enforces that there are no lines of code that exceed the length limit. In our code, some of our lines are too long because of params that we have to enter to use experted functions; this feature is limiting how many params we can enter in exported functions.
 
 
 ## Known Problems TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
