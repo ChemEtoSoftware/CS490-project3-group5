@@ -12,7 +12,7 @@ from user_remove import user_remove
 INPUT_PARAMETER = "pop"
 EXPECTED_OUTPUT = "https://app.ticketmaster.com/discovery/v2/events.json?&keyword=pop"
 
-class InGameTestCase(unittest.TestCase):
+class ApiUrl(unittest.TestCase):
     """ success outputs and tests """
     def setUp(self):
         """ success outputs """
@@ -30,7 +30,7 @@ class InGameTestCase(unittest.TestCase):
                 EXPECTED_OUTPUT : "https://app.ticketmaster.com/discovery/v2/events.json?&keyword=pop corn"
             }
         ]
-    def test_add_user_success(self):
+    def test_add_parameter_success(self):
         """ success tests """
         for test in self.success_test_parameters:
             actual_result = api(test[INPUT_PARAMETER])
