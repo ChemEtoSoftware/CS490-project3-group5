@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.abspath('../../'))
 from app import DB
-from app import on_bookmark, Users, Bookmarks
+from app import on_bookmark
 import models
 
 from app import db_add_user
@@ -16,15 +16,15 @@ KEY_EXPECTED = 'expected'
 INPUT = "id, event_id"
 EXPECTED_OUTPUT = "expected"
 ID = 'id'
-EVENT_ID = 'event_id'
+EVENT_ID = 'eventID'
 
-FIRST_ADDITION = Bookmarks(id='234', event_id='567')
-SECOND_ADDITION = Bookmarks(id='678', event_id='907')
-THIRD_ADDITION = Bookmarks(id='1234', event_id='5678')
-INITIAL_PERSON = Bookmarks(id='1234', event_id='1234')
+FIRST_ADDITION = models.Bookmarks(id='234', event_id='567')
+SECOND_ADDITION = models.Bookmarks(id='678', event_id='907')
+THIRD_ADDITION = models.Bookmarks(id='1234', event_id='5678')
+INITIAL_PERSON = models.Bookmarks(id='1234', event_id='1234')
 
-initial_user = Users(id="1234567", email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
-expected_user = Users(id="7654321", email="12345@email.com",firstName="firstname",familyName="lastname",imageURL="https://lh3.googleusercontent.com/754321")
+initial_user = models.Users(id="1234567", email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
+expected_user = models.Users(id="7654321", email="12345@email.com",firstName="firstname",familyName="lastname",imageURL="https://lh3.googleusercontent.com/754321")
 class AddUserTestCase(unittest.TestCase):
     def setUp(self):
         self.success_test_params = [
@@ -39,7 +39,7 @@ class AddUserTestCase(unittest.TestCase):
                 KEY_EXPECTED: [initial_user, expected_user],
             },
         ]
-        # initial_user = Users(id=INITIAL_ID, email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
+        # initial_user = models.Users(id=INITIAL_ID, email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
         self.db_mock_init = [initial_user]
         
     def mocked_db_session_add(self, user):
@@ -57,7 +57,7 @@ class AddUserTestCase(unittest.TestCase):
             self.db_mock_init = [initial_user]
             with patch('app.DB.session.add', self.mocked_db_session_add):
                 with patch('app.DB.session.commit', self.mocked_db_session_commit):
-                    with patch('app.Users.query') as mocked_query:
+                    with patch('app.models.Users.query') as mocked_query:
                         mocked_query.all= self.mocked_user_query_all
                         print(self.db_mock_init)
                         db_add_user(test[KEY_INPUT])
@@ -101,7 +101,7 @@ class AddBookmarkToDB(unittest.TestCase):
         for test in self.success_test_params:
             with patch('app.DB.session.add', self.mocked_add):
                 with patch('app.DB.session.commit', self.mocked_commit):
-                    with patch('app.Bookmarks.query') as mocked_query:
+                    with patch('app.models.Bookmarks.query') as mocked_query:
                         mocked_query.all = self.mocked_query_all
                         actual_result = on_bookmark(test[INPUT])
                         expected_result = test[EXPECTED_OUTPUT]

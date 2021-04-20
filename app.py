@@ -25,10 +25,7 @@ APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB = SQLAlchemy(APP)
 import models
-if __name__ == "__main__":
-    DB.create_all()
-Users = models.get_users(DB)
-Bookmarks = models.get_bookmarks(DB)
+DB.create_all()
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -37,10 +34,10 @@ SOCKETIO = SocketIO(APP,
                     json=json,
                     manage_session=False)
 
-ALL_USERS = Users.query.all()
 ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
+
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
 def index(filename):
@@ -259,10 +256,10 @@ def on_bookmark(data):
     a bookmark to the DB'''
     user_id = data['id']
     bookmarked_event_id = data['eventID']
-    new_bookmarked_event_id = Bookmarks(id=user_id, event_id=bookmarked_event_id)
+    new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
     DB.session.add(new_bookmarked_event_id)
     DB.session.commit()
-    list_of_bookmarks = Bookmarks.query.all()
+    list_of_bookmarks = models.Bookmarks.query.all()
     print(list_of_bookmarks)
     return list_of_bookmarks
 
@@ -270,8 +267,24 @@ def on_bookmark(data):
 def retrieve_bookmarks(data):
     '''This function is for retrieving a
     bookmark from the DB'''
-    user_id = data['user_id']
-    print(user_id)
+    user_id = data['clientId']
+    event_ids = []
+    event_details = []
+    bookmarked_events = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
+    for bookmark in bookmarked_events:
+        event_ids.append(bookmark.event_id)
+    redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
+    for i_d in event_ids:
+        print(i_d)
+        redurl += i_d
+        redurl += '.json?apikey={}'.format(APIKEY)
+        print(redurl)
+        req = requests.get(redurl)
+        jsontext = req.json()
+        event_details.append(jsontext)
+        redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
+    print(event_details[3])
+    SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=True, include_self=True)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
@@ -280,11 +293,11 @@ def on_disconnect():
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    global ALL_USERS
+    all_users = models.Users.query.all()
     global LIST_OF_ACTIVE_USERS
     print("Data Recieved: \n", data)
-    if data["googleId"][-7:] in ALL_USERS:
-        ALL_USERS = db_add_user(data)
+    if data["googleId"][-7:] in all_users:
+        all_users = db_add_user(data)
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
@@ -292,7 +305,7 @@ def on_login(data):
         "Name":data["givenName"],
     }
     print("Current Users: \n")
-    for item in ALL_USERS:
+    for item in all_users:
         print(item)
 
 def db_add_user(data):
@@ -303,7 +316,7 @@ def db_add_user(data):
     truncated_imgurl = data["imageUrl"][truncate_len:]
     # init user data received from client into obj
     # id is a string of length 7 which is maximum integer size
-    user_data = Users(
+    user_data = models.Users(
         id=data["googleId"][-7:],
         email=data["email"],
         firstName=data["givenName"],
@@ -313,7 +326,7 @@ def db_add_user(data):
     # add user to DB and commit
     DB.session.add(user_data)
     DB.session.commit()
-    return Users.query.all() #returns queried users (ids)
+    return models.Users.query.all() #returns queried users (ids)
 
 @SOCKETIO.on('Logout')
 def on_logout(data):

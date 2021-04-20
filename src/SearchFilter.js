@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
+import { GetBookmarks } from './GetBookmarks';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
@@ -31,6 +32,14 @@ export function SearchFilterEvents(props) {
   const [stateCode, setStateCode] = useState('');
   const [countryCode, setCountryCode] = useState('');
   const [showHide, setShowHide] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  useEffect(() => {
+    socket.on('retrieve_bookmarks', (data) => {
+      // const eventArray = JSON.parse(data);
+      setInitialData(data);
+      setShowBookmarks(true);
+    });
+  }, [showBookmarks]);
 
   function handleSearch(e) {
     e.preventDefault();
@@ -110,6 +119,10 @@ export function SearchFilterEvents(props) {
         {' '}
       </div>
     );
+  }
+
+  function fetchBookmarks() {
+    socket.emit('retrieve_bookmarks', { clientId });
   }
 
   function displayFilteredSearch() {
@@ -202,10 +215,22 @@ export function SearchFilterEvents(props) {
           </div>
         </form>
       </div>
-
+      <div>
+        <div className="buttonHolder">
+          {' '}
+          <button type="button" className="search" onClick={fetchBookmarks}>Bookmarks</button>
+          {' '}
+        </div>
+      </div>
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} socket={socket} />}
+        {error === true
+          ? displayErrorMessage()
+          : [
+            (showBookmarks === true
+              ? null
+              : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} socket={socket} />)]}
+        {showBookmarks === true ? <GetBookmarks clientId={clientId} initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} /> : null}
       </div>
     </div>
 
@@ -214,7 +239,7 @@ export function SearchFilterEvents(props) {
 
 SearchFilterEvents.propTypes = {
   clientId: PropTypes.string,
-  socket: PropTypes.objectOf(PropTypes.object),
+  socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 SearchFilterEvents.defaultProps = {
