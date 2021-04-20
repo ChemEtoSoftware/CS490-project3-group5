@@ -83,11 +83,7 @@ InitialData.propTypes = {
   eventPage: PropTypes.string,
   setEventPage: PropTypes.func,
   clientId: PropTypes.string,
-<<<<<<< HEAD
-  socket: PropTypes.objectOf(PropTypes.object),
-=======
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
->>>>>>> Kevin_Pereira
 };
 
 InitialData.defaultProps = {

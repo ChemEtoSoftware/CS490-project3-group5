@@ -15,7 +15,14 @@ export function GetBookmarks(props) {
     setEventPage,
   } = props;
   return (
-    <ListBookmarks initialData={initialData} setEventPage={setEventPage} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} clientId={clientId} />
+    <ListBookmarks
+      initialData={initialData}
+      setEventPage={setEventPage}
+      setShowEventPage={setShowEventPage}
+      showEventPage={showEventPage}
+      eventPage={eventPage}
+      clientId={clientId}
+    />
   );
 }
 

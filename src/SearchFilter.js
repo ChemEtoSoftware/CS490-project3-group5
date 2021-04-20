@@ -1,9 +1,9 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
 import { GetBookmarks } from './GetBookmarks';
-import PropTypes from 'prop-types';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
@@ -254,14 +254,36 @@ export function SearchFilterEvents(props) {
           : [
             (showBookmarks === true
               ? null
-              : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} socket={socket} />)]}
-        {showBookmarks === true ? <GetBookmarks clientId={clientId} initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} /> : null}
+              : (
+                <InitialData
+                  initialData={initialData}
+                  setShowEventPage={setShowEventPage}
+                  showEventPage={showEventPage}
+                  eventPage={eventPage}
+                  setEventPage={setEventPage}
+                  clientId={clientId}
+                  socket={socket}
+                  //  eslint-disable-next-line
+                />
+              ))]}
+        {showBookmarks === true
+          ? (
+            <GetBookmarks
+              clientId={clientId}
+              initialData={initialData}
+              setShowEventPage={setShowEventPage}
+              showEventPage={showEventPage}
+              eventPage={eventPage}
+              setEventPage={setEventPage}
+            />
+          )
+          : null//  eslint-disable-next-line
+        }
       </div>
     </div>
 
   );
 }
-
 
 SearchFilterEvents.propTypes = {
   clientId: PropTypes.string,

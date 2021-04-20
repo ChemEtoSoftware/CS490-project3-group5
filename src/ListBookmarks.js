@@ -12,6 +12,7 @@ export function ListBookmarks(props) {
     eventPage,
     clientId,
   } = props;
+  console.log(initialData);
   function EventPage(currEvent) {
     function Bookmarks() {
     }
@@ -38,9 +39,9 @@ export function ListBookmarks(props) {
           // eslint-disable-next-line
           <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
             <List.Item key={currEvent.id}>
-              <Header>{currEvent.name}</Header>
-              <img src={currEvent.images[0].url} alt="" />
-              <p>{currEvent.dates.start.localDate}</p>
+              {currEvent.fault ? null : <Header>{currEvent.name}</Header>}
+              {currEvent.fault ? null : <img src={currEvent.images[0].url} alt="" />}
+              {currEvent.fault ? null : <p>{currEvent.dates.start.localDate}</p>}
             </List.Item>
           </div>
         ))}

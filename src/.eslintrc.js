@@ -37,5 +37,8 @@ module.exports = {
         some: ['nesting', 'id'],
       },
     }],
+    'jsx-wrap-multilines': 'off',
+    'jsx-indent-props': 'off',
+    'jsx-closing-bracket-location': 'off',
   },
 };

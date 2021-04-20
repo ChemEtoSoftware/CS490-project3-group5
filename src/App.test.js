@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import { SearchFilterEvents } from './SearchFilter';
+import io from 'socket.io-client';
+
+const socket = io();
 
 test('Test Loading Screen Dissappears on credential receipt', () => {
   render(<App />);
@@ -8,20 +12,12 @@ test('Test Loading Screen Dissappears on credential receipt', () => {
   expect(loading).toHaveLength(0); // expect no elements
   // const wait = await expect(screen.getByAltText('App Logo')).toBeInTheDocument();
 });
-/* test('Test if event container renders correctly', () => {
-  render(<App />);
-  const linkElement = screen.getByText('Login');
-  const input = screen.getByPlaceholderText('Put in a real name');
-  fireEvent.change(input, { target: { value: 'Kevin' } });
-  fireEvent.click(linkElement);
-  const square = screen.getByTestId(1);
-  expect(square).toBeInTheDocument();
-  fireEvent.click(square);
-  expect(square).toBeInTheDocument();
-  const X = screen.getByText('X');
-  expect(X).toBeInTheDocument();
+test('Test if event container renders correctly', () => {
+  const rerender = render(<SearchFilterEvents clientId='1234' socket={socket} />);
+  const element = screen.getByText('Filter Events');
+  expect(element).toBeInTheDocument();
 });
-  test('See if the leaderboard is updated based on a change in props', () => {
+/*  test('See if the leaderboard is updated based on a change in props', () => {
   const { rerender } = render(<Display name="Kevin" number="100"
   currentUser="Kevin" currentLetter="X" />);
   expect(screen.getByRole('row')).toHaveTextContent('Kevin');
