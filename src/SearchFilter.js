@@ -5,7 +5,8 @@ import { InitialData } from './InitialData';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
-export function SearchFilterEvents() {
+export function SearchFilterEvents(props) {
+  const { clientId, socket } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -228,21 +229,26 @@ export function SearchFilterEvents() {
 
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : (
-          <InitialData
-            initialData={initialData}
-            setShowEventPage={setShowEventPage}
-            showEventPage={showEventPage}
-            eventPage={eventPage}
-            setEventPage={setEventPage}
-          />
-        )}
+        {error === true ? displayErrorMessage() : <InitialData initialData={initialData} setShowEventPage={setShowEventPage} showEventPage={showEventPage} eventPage={eventPage} setEventPage={setEventPage} clientId={clientId} socket={socket} />}
       </div>
     </div>
 
   );
 }
 
+<<<<<<< HEAD
+=======
+SearchFilterEvents.propTypes = {
+  clientId: PropTypes.string,
+  socket: PropTypes.objectOf(PropTypes.object),
+};
+
+SearchFilterEvents.defaultProps = {
+  clientId: null,
+  socket: null,
+};
+
+>>>>>>> Trying to resolve dependency cycle
 export const foo = 'foo';
 // socket version
 

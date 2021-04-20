@@ -27,13 +27,15 @@ export function InitialData(props) {
     showEventPage,
     eventPage,
     setEventPage,
+    clientId,
+    socket,
   } = props;
   if (showEventPage) {
     return (
       <List>
         {initialData.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage)}>
+          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
             <List.Item key={currEvent.id}>
               <Header>{currEvent.name}</Header>
               <img src={currEvent.images[0].url} alt="" />
@@ -57,6 +59,8 @@ InitialData.propTypes = {
   setShowEventPage: PropTypes.func,
   eventPage: PropTypes.string,
   setEventPage: PropTypes.func,
+  clientId: PropTypes.string,
+  socket: PropTypes.objectOf(PropTypes.object),
 };
 
 InitialData.defaultProps = {
@@ -65,6 +69,8 @@ InitialData.defaultProps = {
   setShowEventPage: null,
   eventPage: '',
   setEventPage: null,
+  clientId: null,
+  socket: null,
 };
 
 export default InitialData;
