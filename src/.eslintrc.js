@@ -4,12 +4,12 @@ module.exports = {
     es2021: true,
     jest: true,
   },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
   extends: [
     'plugin:react/recommended',
@@ -37,12 +37,8 @@ module.exports = {
         some: ['nesting', 'id'],
       },
     }],
-  },
-  settings: {
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.vue'],
-      },
-    },
+    'jsx-wrap-multilines': 'off',
+    'jsx-indent-props': 'off',
+    'jsx-closing-bracket-location': 'off',
   },
 };

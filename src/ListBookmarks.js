@@ -1,41 +1,20 @@
-/*
 import React from 'react';
-import { List, Header } from 'semantic-ui-react';
-export const Movies = ({ initialData }) => {
-    return(
-        <List>
-        {initialData.map(initialData => {
-            return (
-            <List.Item key={initialData.title}>
-            <Header>{initialData.title}</Header>
-            </List.Item>
-            );
-        })}
-        </List>
-    );
-};
-*/
-import React from 'react';
-import { List, Header } from 'semantic-ui-react';
+import './App.css';
 import PropTypes from 'prop-types';
+import { List, Header } from 'semantic-ui-react';
 
-export function InitialData(props) {
+export function ListBookmarks(props) {
   const {
     initialData,
+    setEventPage,
     setShowEventPage,
     showEventPage,
     eventPage,
-    setEventPage,
     clientId,
-    socket,
   } = props;
+  console.log(initialData);
   function EventPage(currEvent) {
     function Bookmarks() {
-      const eventID = currEvent.id;
-      socket.emit('create_bookmark', {
-        id: clientId,
-        eventID,
-      });
     }
     setShowEventPage(false);
     setEventPage(
@@ -60,9 +39,9 @@ export function InitialData(props) {
           // eslint-disable-next-line
           <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
             <List.Item key={currEvent.id}>
-              <Header>{currEvent.name}</Header>
-              <img src={currEvent.images[0].url} alt="" />
-              <p>{currEvent.dates.start.localDate}</p>
+              {currEvent.fault ? null : <Header>{currEvent.name}</Header>}
+              {currEvent.fault ? null : <img src={currEvent.images[0].url} alt="" />}
+              {currEvent.fault ? null : <p>{currEvent.dates.start.localDate}</p>}
             </List.Item>
           </div>
         ))}
@@ -75,25 +54,22 @@ export function InitialData(props) {
     return (eventPage);
   }
 }
-
-InitialData.propTypes = {
+ListBookmarks.propTypes = {
   initialData: PropTypes.arrayOf(PropTypes.object),
+  clientId: PropTypes.string,
   showEventPage: PropTypes.bool,
   setShowEventPage: PropTypes.func,
   eventPage: PropTypes.string,
   setEventPage: PropTypes.func,
-  clientId: PropTypes.string,
-  socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
-InitialData.defaultProps = {
+ListBookmarks.defaultProps = {
   initialData: [],
+  clientId: null,
   showEventPage: true,
   setShowEventPage: null,
   eventPage: '',
   setEventPage: null,
-  clientId: null,
-  socket: null,
 };
 
-export default InitialData;
+export default ListBookmarks;

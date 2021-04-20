@@ -63,6 +63,7 @@ confidence=
 # --disable=W".
 disable=print-statement,
         import-error,
+        R0401,
         W0105,
         E1101,
         C0413,

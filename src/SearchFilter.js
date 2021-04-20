@@ -1,11 +1,14 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
+import { GetBookmarks } from './GetBookmarks';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
-export function SearchFilterEvents() {
+export function SearchFilterEvents(props) {
+  const { clientId, socket } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
@@ -29,6 +32,14 @@ export function SearchFilterEvents() {
   const [stateCode, setStateCode] = useState('');
   const [countryCode, setCountryCode] = useState('');
   const [showHide, setShowHide] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  useEffect(() => {
+    socket.on('retrieve_bookmarks', (data) => {
+      // const eventArray = JSON.parse(data);
+      setInitialData(data);
+      setShowBookmarks(true);
+    });
+  }, [showBookmarks]);
 
   function handleSearch(e) {
     e.preventDefault();
@@ -135,6 +146,10 @@ export function SearchFilterEvents() {
     );
   }
 
+  function fetchBookmarks() {
+    socket.emit('retrieve_bookmarks', { clientId });
+  }
+
   function displayFilteredSearch() {
     return (
       <div className="filters">
@@ -225,25 +240,61 @@ export function SearchFilterEvents() {
           </div>
         </form>
       </div>
-
+      <div>
+        <div className="buttonHolder">
+          {' '}
+          <button type="button" className="search" onClick={fetchBookmarks}>Bookmarks</button>
+          {' '}
+        </div>
+      </div>
       <div className="search">
         <h1>Events</h1>
-        {error === true ? displayErrorMessage() : (
-          <InitialData
-            initialData={initialData}
-            setShowEventPage={setShowEventPage}
-            showEventPage={showEventPage}
-            eventPage={eventPage}
-            setEventPage={setEventPage}
-          />
-        )}
+        {error === true
+          ? displayErrorMessage()
+          : [
+            (showBookmarks === true
+              ? null
+              : (
+                <InitialData
+                  initialData={initialData}
+                  setShowEventPage={setShowEventPage}
+                  showEventPage={showEventPage}
+                  eventPage={eventPage}
+                  setEventPage={setEventPage}
+                  clientId={clientId}
+                  socket={socket}
+                  //  eslint-disable-next-line
+                />
+              ))]}
+        {showBookmarks === true
+          ? (
+            <GetBookmarks
+              clientId={clientId}
+              initialData={initialData}
+              setShowEventPage={setShowEventPage}
+              showEventPage={showEventPage}
+              eventPage={eventPage}
+              setEventPage={setEventPage}
+            />
+          )
+          : null//  eslint-disable-next-line
+        }
       </div>
     </div>
 
   );
 }
 
-export const foo = 'foo';
+SearchFilterEvents.propTypes = {
+  clientId: PropTypes.string,
+  socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+SearchFilterEvents.defaultProps = {
+  clientId: null,
+  socket: null,
+};
+export default SearchFilterEvents;
 // socket version
 
 /* function handleSearch(e) {
