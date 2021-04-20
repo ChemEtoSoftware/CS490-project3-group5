@@ -45,8 +45,12 @@ In your terminal:
 
 1. Register this web application as a project on your TicketMaster Developer account: [Follow the link here](https://developer-acct.ticketmaster.com/user/login?destination=user)
 2. Register this web application as a project on your Google Developer account: [Follow the link here](https://developers.google.com/identity/sign-in/web/sign-in)
-3. Add your local testing environment URL as an authorized redirect URI and an authorized JavaScript origin URL in your app on the Google Cloud Platform,  
-
+3. Add your local testing environment URL as an authorized redirect URI and an authorized JavaScript origin URL in your app on the Google Cloud Platform.
+4. Put these variables in a `.env` file as follows: 
+   `export GOOGLE_CLIENT_ID="YOUR_CLIENT_ID"`
+   `export GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET"`
+   `export APIKEY='YOUR_API_KEY'`
+   
 ## Database Setup
 
 1. `sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs`
@@ -99,11 +103,13 @@ In your terminal:
    a) label-has-associated-control - This enforces that a label tag has a text label and an associated control. For us to layout our elements in an attractive form on the web app, it is important for us to put the labels and associated input text tags in separete containers; this feature is limiting how we layout all the elements on the page.
    b) label-has-for - This enforces that a label tag has an associated control. Some of the labels displayed on our web app are not associated with any other user interactions tags or elements on the page; this feature is limiting how we layout all the elements on the page.
    c) no-underscore-dangle - This enforces that there are no dangling underscores in identifiers. In order for us to extract the right data from the API response json object, we must serch through a key called `_embedded`; this feature is limiting what keys we search through in the json object that is returend from the API.
+   d) `App.test.js` ignored, unit tests were not linted following Project 2 Milestone 3 specifications. `.eslintrc.js`  is ignored, as hidden files should not be linted, as they are not code that is executed at runtime.
 
 ## Known Problems
 
 1. We have to still beautify our web application. A lot of the componenets and features of the app are currenlty in rigid containers but we are hoping to fix that by the end of Sprint 2.
 2. The event page is still a work in progress because a lot of the features to be displayed on the page are Sprint 2 user stories. Thus, the event page looks unlike the design mockups from our project specs.
+3. After clicking on an event div to bookmark, a user is unable to run a new search query, as the event div is not replaced by new results. To show the results, the user must refresh the page.
 
 ## Technical Issues 
 
