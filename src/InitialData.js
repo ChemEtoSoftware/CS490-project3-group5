@@ -31,9 +31,10 @@ export function InitialData(props) {
   } = props;
   function EventPage(currEvent) {
     function Bookmarks() {
+      const socketID = socket.id;
       const eventID = currEvent.id;
       socket.emit('create_bookmark', {
-        id: clientId,
+        id: socketID,
         eventID,
       });
     }

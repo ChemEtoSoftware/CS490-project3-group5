@@ -6,7 +6,7 @@ import { ListBookmarks } from './ListBookmarks';
 export function GetBookmarks(props) {
   const {
     clientId,
-    initialData,
+    Bookmarks,
     setShowEventPage,
     //  eslint-disable-next-line
     showEventPage,
@@ -16,7 +16,7 @@ export function GetBookmarks(props) {
   } = props;
   return (
     <ListBookmarks
-      initialData={initialData}
+      Bookmarks={Bookmarks}
       setEventPage={setEventPage}
       setShowEventPage={setShowEventPage}
       showEventPage={showEventPage}
@@ -27,7 +27,7 @@ export function GetBookmarks(props) {
 }
 
 GetBookmarks.propTypes = {
-  initialData: PropTypes.arrayOf(PropTypes.object),
+  Bookmarks: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
   showEventPage: PropTypes.bool,
   setShowEventPage: PropTypes.func,
@@ -36,7 +36,7 @@ GetBookmarks.propTypes = {
 };
 
 GetBookmarks.defaultProps = {
-  initialData: [],
+  Bookmarks: [],
   clientId: null,
   showEventPage: true,
   setShowEventPage: null,

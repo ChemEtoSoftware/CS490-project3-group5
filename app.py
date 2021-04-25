@@ -254,20 +254,26 @@ def api():
 def on_bookmark(data):
     '''This function is for adding
     a bookmark to the DB'''
-    user_id = data['id']
+    socket_id = data['id']
+    pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
+    user_id = pair['ID']
+    print(user_id)
     bookmarked_event_id = data['eventID']
     new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
     DB.session.add(new_bookmarked_event_id)
     DB.session.commit()
-    list_of_bookmarks = models.Bookmarks.query.all()
-    print(list_of_bookmarks)
+    list_of_bookmarks = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
+    for bookmark in list_of_bookmarks:
+        print(bookmark.event_id)
     return list_of_bookmarks
 
 @SOCKETIO.on('retrieve_bookmarks')
 def retrieve_bookmarks(data):
     '''This function is for retrieving a
     bookmark from the DB'''
-    user_id = data['clientId']
+    socket_id = data
+    pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
+    user_id = pair['ID']
     event_ids = []
     event_details = []
     bookmarked_events = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
@@ -275,16 +281,13 @@ def retrieve_bookmarks(data):
         event_ids.append(bookmark.event_id)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
-        print(i_d)
         redurl += i_d
         redurl += '.json?apikey={}'.format(APIKEY)
-        print(redurl)
         req = requests.get(redurl)
         jsontext = req.json()
         event_details.append(jsontext)
         redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
-    print(event_details[3])
-    SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=True, include_self=True)
+    SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=False, include_self=True)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
