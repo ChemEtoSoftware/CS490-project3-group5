@@ -264,6 +264,7 @@ export function SearchFilterEvents(props) {
                   showEventPage={showEventPage}
                   eventPage={eventPage}
                   clientId={clientId}
+                  socket={socket}
                 />
               )
               : (
