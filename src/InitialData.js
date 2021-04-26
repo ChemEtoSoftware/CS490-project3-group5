@@ -18,8 +18,13 @@ export const Movies = ({ initialData }) => {
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import { EventPage } from './EventContainer';
 
 export function InitialData(props) {
+  /* All these states and socket are
+  passed as props to prevent cyclical
+  import in EventContainer.js
+  This file displays ALL the initial data */
   const {
     initialData,
     setShowEventPage,
@@ -29,31 +34,6 @@ export function InitialData(props) {
     clientId,
     socket,
   } = props;
-  function EventPage(currEvent) {
-    function Bookmarks() {
-      const socketID = socket.id;
-      const eventID = currEvent.id;
-      socket.emit('create_bookmark', {
-        id: socketID,
-        eventID,
-      });
-    }
-    setShowEventPage(false);
-    setEventPage(
-      <List>
-        <div className="container">
-          <List.Item key={currEvent.id}>
-            <Header>{currEvent.name}</Header>
-            <img src={currEvent.images[0].url} alt="" />
-            <div className="buttonHolder">
-              <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
-            </div>
-            <p>{currEvent.dates.start.localDate}</p>
-          </List.Item>
-        </div>
-      </List>,
-    );
-  }
   if (showEventPage) {
     return (
       <List>

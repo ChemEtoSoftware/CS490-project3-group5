@@ -253,15 +253,22 @@ def api():
 @SOCKETIO.on('create_bookmark')
 def on_bookmark(data):
     '''This function is for adding
-    a bookmark to the DB'''
+    a bookmark to the DB, or for
+    removing it.'''
     socket_id = data['id']
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
     print(user_id)
     bookmarked_event_id = data['eventID']
-    new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
-    DB.session.add(new_bookmarked_event_id)
-    DB.session.commit()
+    exists = DB.session.query(models.Bookmarks).filter_by(
+        clientId=user_id, event_id=bookmarked_event_id).first()
+    if exists is None:
+        new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
+        DB.session.add(new_bookmarked_event_id)
+        DB.session.commit()
+    else:
+        DB.session.delete(exists)
+        DB.session.commit()
     list_of_bookmarks = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
     for bookmark in list_of_bookmarks:
         print(bookmark.event_id)
