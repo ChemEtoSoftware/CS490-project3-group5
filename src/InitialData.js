@@ -34,16 +34,21 @@ export function InitialData(props) {
     clientId,
     socket,
   } = props;
+  const i = 20;
+  const n = '20';
+  const n1 = '200';
+  const n2 = '2000';
+  const n3 = '20000';
   if (showEventPage) {
     return (
-      <List>
+      <List key={clientId * i}>
         {initialData.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+          <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
             <List.Item key={currEvent.id}>
-              <Header>{currEvent.name}</Header>
-              <img src={currEvent.images[0].url} alt="" />
-              <p>{currEvent.dates.start.localDate}</p>
+              <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+              <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
+              <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
             </List.Item>
           </div>
         ))}
