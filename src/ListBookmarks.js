@@ -5,6 +5,7 @@ import { List, Header } from 'semantic-ui-react';
 import { EventPage } from './EventContainer';
 
 export function ListBookmarks(props) {
+  // List bookmarks
   const {
     Bookmarks,
     setEventPage,

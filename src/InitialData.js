@@ -21,6 +21,10 @@ import PropTypes from 'prop-types';
 import { EventPage } from './EventContainer';
 
 export function InitialData(props) {
+  /* All these states and socket are
+  passed as props to prevent cyclical
+  import in EventContainer.js
+  This file displays ALL the initial data */
   const {
     initialData,
     setShowEventPage,

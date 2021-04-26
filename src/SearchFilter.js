@@ -34,6 +34,7 @@ export function SearchFilterEvents(props) {
   const [showHide, setShowHide] = useState(false);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [Bookmarks, setBookmarks] = useState([]);
+  // Retrieves users bookmark's after clicking button.
   useEffect(() => {
     socket.on('retrieve_bookmarks', (data) => {
       // const eventArray = JSON.parse(data);
@@ -147,6 +148,7 @@ export function SearchFilterEvents(props) {
     );
   }
 
+  // Function for retrieving bookmarks. Uses socketID.
   function fetchBookmarks() {
     const socketID = socket.id;
     socket.emit('retrieve_bookmarks', socketID);
@@ -250,6 +252,7 @@ export function SearchFilterEvents(props) {
           {' '}
         </div>
       </div>
+      {/* Either displays initial data or bookmarks. */}
       <div className="search">
         <h1>Events</h1>
         {error === true

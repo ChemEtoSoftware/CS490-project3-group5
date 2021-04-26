@@ -260,7 +260,8 @@ def on_bookmark(data):
     user_id = pair['ID']
     print(user_id)
     bookmarked_event_id = data['eventID']
-    exists = DB.session.query(models.Bookmarks).filter_by(clientId=user_id, event_id=bookmarked_event_id).first()
+    exists = DB.session.query(models.Bookmarks).filter_by(
+        clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:
         new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
         DB.session.add(new_bookmarked_event_id)

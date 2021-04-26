@@ -3,6 +3,9 @@ import './App.css';
 import { List, Header } from 'semantic-ui-react';
 
 export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket) {
+  /* Couldn't figure out how to pass variables as props in onclick,
+  so instead just use them directly. Bookmarks function can either
+  create or remove bookmark. This component displays single bookmark */
   function Bookmarks() {
     const socketID = socket.id;
     const eventID = currEvent.id;
