@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
-import { GetBookmarks } from './GetBookmarks';
+import { ListBookmarks } from './ListBookmarks';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
@@ -33,11 +33,12 @@ export function SearchFilterEvents(props) {
   const [countryCode, setCountryCode] = useState('');
   const [showHide, setShowHide] = useState(false);
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const [Bookmarks, setBookmarks] = useState([]);
   useEffect(() => {
     socket.on('retrieve_bookmarks', (data) => {
       // const eventArray = JSON.parse(data);
-      setInitialData(data);
-      setShowBookmarks(true);
+      console.log(data);
+      setBookmarks(data);
     });
   }, [showBookmarks]);
 
@@ -147,7 +148,9 @@ export function SearchFilterEvents(props) {
   }
 
   function fetchBookmarks() {
-    socket.emit('retrieve_bookmarks', { clientId });
+    const socketID = socket.id;
+    socket.emit('retrieve_bookmarks', socketID);
+    setShowBookmarks(true);
   }
 
   function displayFilteredSearch() {
@@ -253,7 +256,16 @@ export function SearchFilterEvents(props) {
           ? displayErrorMessage()
           : [
             (showBookmarks === true
-              ? null
+              ? (
+                <ListBookmarks
+                  Bookmarks={Bookmarks}
+                  setEventPage={setEventPage}
+                  setShowEventPage={setShowEventPage}
+                  showEventPage={showEventPage}
+                  eventPage={eventPage}
+                  clientId={clientId}
+                />
+              )
               : (
                 <InitialData
                   initialData={initialData}
@@ -266,19 +278,6 @@ export function SearchFilterEvents(props) {
                   //  eslint-disable-next-line
                 />
               ))]}
-        {showBookmarks === true
-          ? (
-            <GetBookmarks
-              clientId={clientId}
-              initialData={initialData}
-              setShowEventPage={setShowEventPage}
-              showEventPage={showEventPage}
-              eventPage={eventPage}
-              setEventPage={setEventPage}
-            />
-          )
-          : null//  eslint-disable-next-line
-        }
       </div>
     </div>
 

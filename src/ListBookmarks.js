@@ -5,17 +5,15 @@ import { List, Header } from 'semantic-ui-react';
 
 export function ListBookmarks(props) {
   const {
-    initialData,
+    Bookmarks,
     setEventPage,
     setShowEventPage,
     showEventPage,
     eventPage,
     clientId,
   } = props;
-  console.log(initialData);
+  console.log(Bookmarks);
   function EventPage(currEvent) {
-    function Bookmarks() {
-    }
     setShowEventPage(false);
     setEventPage(
       <List>
@@ -35,9 +33,9 @@ export function ListBookmarks(props) {
   if (showEventPage) {
     return (
       <List>
-        {initialData.map((currEvent) => (
+        {Bookmarks.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId)}>
             <List.Item key={currEvent.id}>
               {currEvent.fault ? null : <Header>{currEvent.name}</Header>}
               {currEvent.fault ? null : <img src={currEvent.images[0].url} alt="" />}
@@ -55,7 +53,7 @@ export function ListBookmarks(props) {
   }
 }
 ListBookmarks.propTypes = {
-  initialData: PropTypes.arrayOf(PropTypes.object),
+  Bookmarks: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
   showEventPage: PropTypes.bool,
   setShowEventPage: PropTypes.func,
@@ -64,7 +62,7 @@ ListBookmarks.propTypes = {
 };
 
 ListBookmarks.defaultProps = {
-  initialData: [],
+  Bookmarks: [],
   clientId: null,
   showEventPage: true,
   setShowEventPage: null,
