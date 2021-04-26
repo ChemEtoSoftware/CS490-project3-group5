@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 import { InitialData } from './InitialData';
-import { GetBookmarks } from './GetBookmarks';
+import { ListBookmarks } from './ListBookmarks';
 // import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
@@ -257,13 +257,13 @@ export function SearchFilterEvents(props) {
           : [
             (showBookmarks === true
               ? (
-                <GetBookmarks
-                  clientId={clientId}
+                <ListBookmarks
                   Bookmarks={Bookmarks}
+                  setEventPage={setEventPage}
                   setShowEventPage={setShowEventPage}
                   showEventPage={showEventPage}
                   eventPage={eventPage}
-                  setEventPage={setEventPage}
+                  clientId={clientId}
                 />
               )
               : (
