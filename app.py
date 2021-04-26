@@ -4,6 +4,7 @@
     as well as allowing them the chance to play each other.
 """
 import os
+import time
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -25,7 +26,10 @@ APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB = SQLAlchemy(APP)
 import models
-DB.create_all()
+if __name__ == "__main__":
+    DB.create_all()
+Users = models.get_users(DB)
+Bookmarks = models.get_bookmarks(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -260,16 +264,16 @@ def on_bookmark(data):
     user_id = pair['ID']
     print(user_id)
     bookmarked_event_id = data['eventID']
-    exists = DB.session.query(models.Bookmarks).filter_by(
+    exists = DB.session.query(Bookmarks).filter_by(
         clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:
-        new_bookmarked_event_id = models.Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
+        new_bookmarked_event_id = Bookmarks(clientId=user_id, event_id=bookmarked_event_id)
         DB.session.add(new_bookmarked_event_id)
         DB.session.commit()
     else:
         DB.session.delete(exists)
         DB.session.commit()
-    list_of_bookmarks = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
+    list_of_bookmarks = DB.session.query(Bookmarks).filter_by(clientId=user_id)
     for bookmark in list_of_bookmarks:
         print(bookmark.event_id)
     return list_of_bookmarks
@@ -283,11 +287,12 @@ def retrieve_bookmarks(data):
     user_id = pair['ID']
     event_ids = []
     event_details = []
-    bookmarked_events = DB.session.query(models.Bookmarks).filter_by(clientId=user_id)
+    bookmarked_events = DB.session.query(Bookmarks).filter_by(clientId=user_id)
     for bookmark in bookmarked_events:
         event_ids.append(bookmark.event_id)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
+        time.sleep(1/100)
         redurl += i_d
         redurl += '.json?apikey={}'.format(APIKEY)
         req = requests.get(redurl)
@@ -303,7 +308,7 @@ def on_disconnect():
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    all_users = models.Users.query.all()
+    all_users = Users.query.all()
     global LIST_OF_ACTIVE_USERS
     print("Data Recieved: \n", data)
     if data["googleId"][-7:] in all_users:
@@ -326,7 +331,7 @@ def db_add_user(data):
     truncated_imgurl = data["imageUrl"][truncate_len:]
     # init user data received from client into obj
     # id is a string of length 7 which is maximum integer size
-    user_data = models.Users(
+    user_data = Users(
         id=data["googleId"][-7:],
         email=data["email"],
         firstName=data["givenName"],
@@ -336,7 +341,7 @@ def db_add_user(data):
     # add user to DB and commit
     DB.session.add(user_data)
     DB.session.commit()
-    return models.Users.query.all() #returns queried users (ids)
+    return Users.query.all() #returns queried users (ids)
 
 @SOCKETIO.on('Logout')
 def on_logout(data):

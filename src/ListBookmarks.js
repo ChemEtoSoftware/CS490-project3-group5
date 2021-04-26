@@ -15,17 +15,22 @@ export function ListBookmarks(props) {
     clientId,
     socket,
   } = props;
+  const i = 2;
+  const n = '10';
+  const n1 = '100';
+  const n2 = '1000';
+  const n3 = '10000';
   console.log(Bookmarks);
   if (showEventPage) {
     return (
-      <List>
+      <List key={i * 10}>
         {Bookmarks.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+          <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
             <List.Item key={currEvent.id}>
-              {currEvent.fault ? null : <Header>{currEvent.name}</Header>}
-              {currEvent.fault ? null : <img src={currEvent.images[0].url} alt="" />}
-              {currEvent.fault ? null : <p>{currEvent.dates.start.localDate}</p>}
+              {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
+              {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
+              {currEvent.fault ? null : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
             </List.Item>
           </div>
         ))}
