@@ -30,7 +30,8 @@ export function ListBookmarks(props) {
             <List.Item key={currEvent.id}>
               {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
               {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
-              {currEvent.fault ? null : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
+              {currEvent.fault ? null
+                : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
             </List.Item>
           </div>
         ))}
