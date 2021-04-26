@@ -35,7 +35,7 @@ export function ListBookmarks(props) {
       <List>
         {Bookmarks.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+          <div className="container" onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId)}>
             <List.Item key={currEvent.id}>
               {currEvent.fault ? null : <Header>{currEvent.name}</Header>}
               {currEvent.fault ? null : <img src={currEvent.images[0].url} alt="" />}
