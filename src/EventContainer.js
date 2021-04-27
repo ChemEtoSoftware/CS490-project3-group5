@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { List, Header } from 'semantic-ui-react';
+// import GoogleMapReact from 'google-map-react';
 
 export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket) {
   /* Couldn't figure out how to pass variables as props in onclick,
@@ -34,6 +35,21 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
         </List.Item>
       </div>
     </List>,
+    /* <Wrapper>
+      <GoogleMapReact
+        defaultZoom={10}
+        defaultCenter={LOS_ANGELES_CENTER}
+      >
+        {places.map((place) => (
+          <Marker
+            key={place.id}
+            text={place.name}
+            lat={place.geometry.location.lat}
+            lng={place.geometry.location.lng}
+          />
+        ))}
+      </GoogleMapReact>
+    </Wrapper>, */
   );
 }
 export default EventPage;
