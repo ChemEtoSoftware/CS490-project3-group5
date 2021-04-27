@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
 from ratelimit import limits, sleep_and_retry
+from ratelimiter import RateLimiter
 import requests
 #from helpers import ordered_append, sum_of_arrays, add_to_db
 
@@ -41,6 +42,7 @@ SOCKETIO = SocketIO(APP,
 ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
+RATE_LIMITER = RateLimiter(max_calls=5, period=1)
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -294,12 +296,13 @@ def retrieve_bookmarks(data):
         event_ids.append(bookmark.event_id)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
-        redurl += i_d
-        redurl += '.json?apikey={}'.format(APIKEY)
-        req = requests.get(redurl)
-        jsontext = req.json()
-        event_details.append(jsontext)
-        redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
+        with RATE_LIMITER:
+            redurl += i_d
+            redurl += '.json?apikey={}'.format(APIKEY)
+            req = requests.get(redurl)
+            jsontext = req.json()
+            event_details.append(jsontext)
+            redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=False, include_self=True)
 @SOCKETIO.on('disconnect')
 def on_disconnect():
