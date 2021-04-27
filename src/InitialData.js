@@ -39,11 +39,14 @@ export function InitialData(props) {
     clientId,
     socket,
   } = props;
+  // const [markers, setMarkers] = useState([]);
   const i = 20;
   const n = '20';
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
+  /* function addMarkers(location){
+  } */
   if (showEventPage) {
     return (
       <div>
