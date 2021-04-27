@@ -66,6 +66,15 @@ In your terminal:
 8. To use SQL in Python: pip install psycopg2-binary
 9. In your terminal: `pip install Flask-SQLAlchemy==2.1`
 
+## Heroku Setup
+
+1. Create an account on Heroku: [Sign up for a free account](https://signup.heroku.com/login)
+2. Login and fill creds: heroku login -i
+3. Create a new Heroku app: heroku create
+4. Create a new remote DB on your Heroku app: heroku addons:create heroku-postgresql:hobby-dev (If that doesn't work, add a -a {your-app-name} to the end of the command, no braces)
+5. See the config vars set by Heroku for you: heroku config. Copy paste the value for `DATABASE_URL`
+6. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'`
+
 ## Database Initialization
 
 1. In the terminal, run python to open an interactive session
@@ -80,15 +89,6 @@ In your terminal:
 4. To make sure that this user was added to the Heroku database, connect to it using heroku pg:psql
 5. To see all tables, run the command \d; the person table should be in there
 6. To query the data in the person table, run the query SELECT * FROM users; the admin user should be in there
-
-## Heroku Setup
-
-1. Create an account on Heroku: [Sign up for a free account](https://signup.heroku.com/login)
-2. Login and fill creds: heroku login -i
-3. Create a new Heroku app: heroku create
-4. Create a new remote DB on your Heroku app: heroku addons:create heroku-postgresql:hobby-dev (If that doesn't work, add a -a {your-app-name} to the end of the command, no braces)
-5. See the config vars set by Heroku for you: heroku config. Copy paste the value for `DATABASE_URL`
-6. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'`
 
 ## Run Application
 
