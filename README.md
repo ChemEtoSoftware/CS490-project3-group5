@@ -66,6 +66,21 @@ In your terminal:
 8. To use SQL in Python: pip install psycopg2-binary
 9. In your terminal: `pip install Flask-SQLAlchemy==2.1`
 
+## Database Initialization
+
+1. In the terminal, run python to open an interactive session
+2. One by one, add the following lines: 
+`from app import DB` 
+`import models`
+`DB.create_all()`
+`admin = models.Users(id='0', email='admin@gmail.com', firstName='admin', familyName='user', imageURL='www.example.com')`
+`DB.session.add(admin)`
+`DB.session.commit()`
+3. To make sure this worked, run the following line in the same interactive session (If you see the admin as a Users entry, then it worked!): models.Users.query.all()
+4. To make sure that this user was added to the Heroku database, connect to it using heroku pg:psql
+5. To see all tables, run the command \d; the person table should be in there
+6. To query the data in the person table, run the query SELECT * FROM users; the admin user should be in there
+
 ## Heroku Setup
 
 1. Create an account on Heroku: [Sign up for a free account](https://signup.heroku.com/login)
