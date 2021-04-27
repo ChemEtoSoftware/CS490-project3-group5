@@ -4,13 +4,13 @@
     as well as allowing them the chance to play each other.
 """
 import os
-import time
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
+from ratelimit import limits, sleep_and_retry
 import requests
 #from helpers import ordered_append, sum_of_arrays, add_to_db
 
@@ -279,6 +279,8 @@ def on_bookmark(data):
     return list_of_bookmarks
 
 @SOCKETIO.on('retrieve_bookmarks')
+@sleep_and_retry
+@limits(calls=5, period=1)
 def retrieve_bookmarks(data):
     '''This function is for retrieving a
     bookmark from the DB'''
@@ -292,7 +294,6 @@ def retrieve_bookmarks(data):
         event_ids.append(bookmark.event_id)
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
-        time.sleep(1/100)
         redurl += i_d
         redurl += '.json?apikey={}'.format(APIKEY)
         req = requests.get(redurl)
