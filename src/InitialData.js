@@ -18,6 +18,11 @@ export const Movies = ({ initialData }) => {
 import React from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import './map.css';
+import {
+  MapContainer, TileLayer, Marker, Popup,
+}
+  from 'react-leaflet';
 import { EventPage } from './EventContainer';
 
 export function InitialData(props) {
@@ -41,18 +46,35 @@ export function InitialData(props) {
   const n3 = '20000';
   if (showEventPage) {
     return (
-      <List key={clientId * i}>
-        {initialData.map((currEvent) => (
-          // eslint-disable-next-line
-          <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
-            <List.Item key={currEvent.id}>
-              <Header key={currEvent.id + n1}>{currEvent.name}</Header>
-              <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
-              <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
-            </List.Item>
-          </div>
-        ))}
-      </List>
+      <div>
+        <List key={clientId * i}>
+          {initialData.map((currEvent) => (
+            // eslint-disable-next-line
+            <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+              <List.Item key={currEvent.id}>
+                <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+                <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
+                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+              </List.Item>
+            </div>
+          ))}
+        </List>
+        <div id="mapid">
+          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[51.505, -0.09]}>
+              <Popup>
+                A pretty CSS3 popup.
+                <br />
+                Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
+      </div>
     );
   //  eslint-disable-next-line
   }
