@@ -40,5 +40,6 @@ module.exports = {
     'jsx-wrap-multilines': 'off',
     'jsx-indent-props': 'off',
     'jsx-closing-bracket-location': 'off',
+    'max-len': 'off',
   },
 };
