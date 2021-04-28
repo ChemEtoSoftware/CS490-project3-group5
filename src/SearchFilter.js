@@ -285,10 +285,6 @@ export function SearchFilterEvents(props) {
                 <InitialData
                   initialData={initialData}
                   locations={locations}
-                  setShowEventPage={setShowEventPage}
-                  showEventPage={showEventPage}
-                  eventPage={eventPage}
-                  setEventPage={setEventPage}
                   clientId={clientId}
                   socket={socket}
                   //  eslint-disable-next-line
