@@ -4,6 +4,7 @@
     as well as allowing them the chance to play each other.
 """
 import os
+import requests
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -14,7 +15,6 @@ from ratelimit import limits, sleep_and_retry
 from ratelimiter import RateLimiter
 from geopy.geocoders import Nominatim
 from uszipcode import SearchEngine
-import requests
 
 #Prevents server overload
 Payload.max_decode_packets = 200
