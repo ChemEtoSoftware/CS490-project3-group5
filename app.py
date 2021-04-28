@@ -111,24 +111,29 @@ def api_post():
 
 @APP.route('/location', methods=['POST'])
 def get_lat_long():
-    """ ger user location """
+    """ get user location """
     global USER_STATE
     location_json = request.get_json()
-    latitude = location_json.get('lat')
-    longitude = location_json.get('long')
-    geolocator = Nominatim(user_agent="EventGuru")
-    coordinates = "" + str(latitude) + " " + str(longitude)
-    location = geolocator.reverse(coordinates)
-    print(location.address)
-    location_list = location.address.split(", ")
-    print(location_list)
-    zip_code = location_list[-2]
-    searchengine = SearchEngine(simple_zipcode=True)
-    zipcode = searchengine.by_zipcode(zip_code)
-    zipcode_dict = zipcode.to_dict()
-    USER_STATE = zipcode_dict["state"]
-    print(zipcode_dict["state"])
-    return zipcode_dict
+    if len(location_json) == 2:
+        latitude = location_json.get('lat')
+        longitude = location_json.get('long')
+        geolocator = Nominatim(user_agent="EventGuru")
+        coordinates = "" + str(latitude) + " " + str(longitude)
+        location = geolocator.reverse(coordinates)
+        print(location.address)
+        location_list = location.address.split(", ")
+        print(location_list)
+        zip_code = location_list[-2]
+        searchengine = SearchEngine(simple_zipcode=True)
+        zipcode = searchengine.by_zipcode(zip_code)
+        zipcode_dict = zipcode.to_dict()
+        USER_STATE = zipcode_dict["state"]
+        print(zipcode_dict["state"])
+        return zipcode_dict
+    else: 
+        USER_STATE = ""
+        return USER_STATE
+    
 
 @SOCKETIO.on('connect')
 def on_connect():
