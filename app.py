@@ -14,7 +14,6 @@ from ratelimit import limits, sleep_and_retry
 from ratelimiter import RateLimiter
 from geopy.geocoders import Nominatim
 from uszipcode import SearchEngine
-import geocoder
 import requests
 #from helpers import ordered_append, sum_of_arrays, add_to_db
 
@@ -48,7 +47,7 @@ PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
 RATE_LIMITER = RateLimiter(max_calls=5, period=1)
 
-user_state = ''
+USER_STATE = ''
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -111,10 +110,11 @@ def api_post():
     return jsontext
     #print(keyword)
     #return keyword
-    
+
 @APP.route('/location', methods=['POST'])
 def get_lat_long():
-    global user_state
+    """ ger user location """
+    global USER_STATE
     location_json = request.get_json()
     latitude = location_json.get('lat')
     longitude = location_json.get('long')
@@ -124,15 +124,13 @@ def get_lat_long():
     print(location.address)
     location_list = location.address.split(", ")
     print(location_list)
-    z = location_list[-2]
-    search = SearchEngine(simple_zipcode=True)
-    zipcode = search.by_zipcode(z)
-    zipcodeDict = zipcode.to_dict()
-    user_state = zipcodeDict["state"]
-    print(zipcodeDict["state"])
-    return zipcodeDict
-    
-    
+    zip_code = location_list[-2]
+    searchengine = SearchEngine(simple_zipcode=True)
+    zipcode = searchengine.by_zipcode(zip_code)
+    zipcode_dict = zipcode.to_dict()
+    USER_STATE = zipcode_dict["state"]
+    print(zipcode_dict["state"])
+    return zipcode_dict
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -249,8 +247,8 @@ def search(data):
 
 @APP.route('/api', methods=['GET'])
 def api():
-    global user_state
     """api search"""
+    global USER_STATE
     #to send query request to TicketMaster API
     '''keyword = session.get("keyword", None)
     postalcode = session.get("postalcode", None)
@@ -261,8 +259,8 @@ def api():
     statecode = session.get("statecode", None)
     countrycode = session.get("countrycode", None)'''
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    redurl += "&stateCode={}".format(user_state)
-    print("GOT LOCATION:", user_state)
+    redurl += "&stateCode={}".format(USER_STATE)
+    print("GOT LOCATION:", USER_STATE)
     '''if keyword:
         redurl += "&keyword={}".format(keyword)
     if postalcode:
