@@ -53,7 +53,10 @@ export function InitialData(props) {
         <List key={clientId * i}>
           {initialData.map((currEvent) => (
             // eslint-disable-next-line
-            <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+            <div className="container" key={currEvent.id + n} onClick={() => {
+              return EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket);
+            }}
+            >
               <List.Item key={currEvent.id}>
                 <Header key={currEvent.id + n1}>{currEvent.name}</Header>
                 <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />

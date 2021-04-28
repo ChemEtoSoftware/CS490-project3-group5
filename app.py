@@ -126,6 +126,12 @@ def on_connect():
     print("Emitting Credentials to Client")
     SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
 
+@SOCKETIO.on('Eventload')
+def loadEvent(data):
+    """Event clicked, use data to load comments and emit to componnent"""
+    print("EMITTING EVENTLOAD")
+    print(data)
+
 @SOCKETIO.on('apiSearch')
 def search(data):
     """api search"""

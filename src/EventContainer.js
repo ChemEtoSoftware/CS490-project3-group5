@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { List, Header } from 'semantic-ui-react';
+import { Comment } from './Comment';
 // import GoogleMapReact from 'google-map-react';
 
 export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket) {
@@ -23,18 +24,21 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
   const n4 = '400000';
   setShowEventPage(false);
   setEventPage(
-    <List key={clientId * i}>
-      <div className="container" key={clientId + i}>
-        <List.Item key={currEvent.id + n}>
-          <Header key={currEvent.id + n1}>{currEvent.name}</Header>
-          <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
-          <div key={currEvent.id + n3} className="buttonHolder">
-            <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
-          </div>
-          <p key={currEvent.id + n4}>{currEvent.dates.start.localDate}</p>
-        </List.Item>
-      </div>
-    </List>,
+    <div>
+      <List key={clientId * i}>
+        <div className="container" key={clientId + i}>
+          <List.Item key={currEvent.id + n}>
+            <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+            <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
+            <div key={currEvent.id + n3} className="buttonHolder">
+              <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
+            </div>
+            <p key={currEvent.id + n4}>{currEvent.dates.start.localDate}</p>
+          </List.Item>
+        </div>
+      </List>
+      <Comment clientId={clientId} eventId={currEvent.id} socket={socket} />
+    </div>,
     /* <Wrapper>
       <GoogleMapReact
         defaultZoom={10}

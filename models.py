@@ -23,3 +23,17 @@ def get_bookmarks(d_b):
         def __repr__(self):
             return '<Bookmark %r>' % self.id
     return Bookmarks
+
+def get_comments(d_b):
+    """ defines comment table"""
+    class Comments(d_b.model):
+        """creates a comment"""
+        commentId = d_b.Column(d_b.String(80), primary_key=True)
+        event_id = d_b.Column(d_b.String(80), nullable=False)
+        text = d_b.Column(d_b.String(150), nullable=False)
+        head = d_b.Column(d_b.String(80), nullable=True)
+        tail = d_b.Column(d_b.String(80),nullable=True)
+        depth = d_b.Column(d_b.Integer, nullable=False)
+        def __repr__(self):
+            return '<Comment %r>' % self.commentId
+    return Comments
