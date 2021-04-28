@@ -15,8 +15,10 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
-import React from 'react';
-import { List, Header } from 'semantic-ui-react';
+/* eslint-disable no-underscore-dangle, jsx-a11y/click-events-have-key-events,
+jsx-a11y/no-static-element-interactions */
+import React, { useState } from 'react';
+import { List, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import './map.css';
 import {
@@ -32,79 +34,89 @@ export function InitialData(props) {
   This file displays ALL the initial data */
   const {
     initialData,
-    setShowEventPage,
-    showEventPage,
-    eventPage,
-    setEventPage,
+    locations,
     clientId,
     socket,
+    initialMapMarker,
   } = props;
-  // const [markers, setMarkers] = useState([]);
-  const i = 20;
+  const [eventPage, setEventPage] = useState([]);
+  const [showPage, setShowPage] = useState(false);
+  // const i = 20;
   const n = '20';
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
-  /* function addMarkers(location){
-  } */
-  if (showEventPage) {
-    return (
+  function renderPage(currEvent) {
+    setShowPage(true);
+    setEventPage(
       <div>
-        <List key={clientId * i}>
+        <EventPage
+          currEvent={currEvent}
+          clientId={clientId}
+          socket={socket}
+        />
+      </div>,
+    );
+  }
+  if (!showPage) {
+    return (
+      <div className="container">
+        <List horizontal>
           {initialData.map((currEvent) => (
-            // eslint-disable-next-line
-            <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
-              <List.Item key={currEvent.id}>
-                <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+            <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+              <List.Item as={currEvent.id}>
                 <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
-                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                <Icon name="currEventname" />
+                <List.Content>
+                  <List.Header key={currEvent.id + n1}>{currEvent.name}</List.Header>
+                  <List.Description>
+                    <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                  </List.Description>
+                </List.Content>
               </List.Item>
             </div>
           ))}
         </List>
         <div id="mapid">
-          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+          <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
             <TileLayer
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[51.505, -0.09]}>
-              <Popup>
-                A pretty CSS3 popup.
-                <br />
-                Easily customizable.
-              </Popup>
-            </Marker>
+            {locations.map((currLocation, idx) => (
+              <Marker key={`marker-${idx * 2}`} position={[currLocation.lat, currLocation.long]}>
+                <Popup>
+                  A pretty CSS3 popup.
+                  <br />
+                  Easily customizable.
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
         </div>
       </div>
     );
-  //  eslint-disable-next-line
+    //  eslint-disable-next-line
   }
   //  eslint-disable-next-line
-  else {
-    return (eventPage);
+  else{
+    return eventPage;
   }
 }
-
 InitialData.propTypes = {
   initialData: PropTypes.arrayOf(PropTypes.object),
-  showEventPage: PropTypes.bool,
-  setShowEventPage: PropTypes.func,
-  eventPage: PropTypes.string,
-  setEventPage: PropTypes.func,
+  locations: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  initialMapMarker: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 InitialData.defaultProps = {
   initialData: [],
-  showEventPage: true,
-  setShowEventPage: null,
-  eventPage: '',
-  setEventPage: null,
+  locations: [],
   clientId: null,
   socket: null,
+  initialMapMarker: { lat: 51.00, long: -0.9 },
 };
 
 export default InitialData;

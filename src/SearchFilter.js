@@ -8,20 +8,28 @@ import { ListBookmarks } from './ListBookmarks';
 const fetch = require('node-fetch');
 
 export function SearchFilterEvents(props) {
-  const { clientId, socket } = props;
+  const { clientId, socket, initialMapMarker } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
-  const [showEventPage, setShowEventPage] = useState(true);
-  const [eventPage, setEventPage] = useState('');
-
+  const [locations, setLocations] = useState([]);
+  let i;
   useEffect(() => {
     fetch('/api')
       .then((response) => response.json())
-      .then((data) => setInitialData(data._embedded.events))
-      .catch(() => {
+      .then((data) => {
+        const prev = [...data._embedded.events];
+        setInitialData(prev);
+        for (i = 0; i < prev.length; i += 1) {
+          const curr = prev[i]._embedded.venues[0].location;
+          const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
+          setLocations((currLocation) => [...currLocation, dict]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setError(true);
       });
-  }, [eventPage]);
+  }, []);
 
   const [keyword, setKeyword] = useState('');
   const [postalCode, setPostalCode] = useState('');
@@ -65,8 +73,18 @@ export function SearchFilterEvents(props) {
       }),
     })
       .then((response) => response.json())
-      .then((data) => setInitialData(data._embedded.events))
-      .catch(() => {
+      .then((data) => {
+        const prev = [...data._embedded.events];
+        setInitialData(prev);
+        console.log(prev);
+        for (i = 0; i < prev.length; i += 1) {
+          const curr = prev[i]._embedded.venues[0].location;
+          const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
+          setLocations((currLocation) => [...currLocation, dict]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setError(true);
       });
     // window.location.reload(true);
@@ -262,10 +280,6 @@ export function SearchFilterEvents(props) {
               ? (
                 <ListBookmarks
                   Bookmarks={Bookmarks}
-                  setEventPage={setEventPage}
-                  setShowEventPage={setShowEventPage}
-                  showEventPage={showEventPage}
-                  eventPage={eventPage}
                   clientId={clientId}
                   socket={socket}
                 />
@@ -273,12 +287,10 @@ export function SearchFilterEvents(props) {
               : (
                 <InitialData
                   initialData={initialData}
-                  setShowEventPage={setShowEventPage}
-                  showEventPage={showEventPage}
-                  eventPage={eventPage}
-                  setEventPage={setEventPage}
+                  locations={locations}
                   clientId={clientId}
                   socket={socket}
+                  initialMapMarker={initialMapMarker}
                   //  eslint-disable-next-line
                 />
               ))]}
@@ -291,11 +303,13 @@ export function SearchFilterEvents(props) {
 SearchFilterEvents.propTypes = {
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  initialMapMarker: PropTypes.objectOf(PropTypes.object),
 };
 
 SearchFilterEvents.defaultProps = {
   clientId: null,
   socket: null,
+  initialMapMarker: { lat: 51.00, long: -0.9 },
 };
 export default SearchFilterEvents;
 // socket version
