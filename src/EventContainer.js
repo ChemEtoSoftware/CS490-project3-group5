@@ -1,12 +1,15 @@
-import React from 'react';
+/* eslint-disable */
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { List, Header } from 'semantic-ui-react';
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 // import GoogleMapReact from 'google-map-react';
 
 export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket) {
   /* Couldn't figure out how to pass variables as props in onclick,
   so instead just use them directly. Bookmarks function can either
   create or remove bookmark. This component displays single bookmark */
+  
   function Bookmarks() {
     const socketID = socket.id;
     const eventID = currEvent.id;
@@ -21,6 +24,13 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
   const n2 = '4000';
   const n3 = '40000';
   const n4 = '400000';
+  
+  const updateDislikes = () => {
+    console.log("HIIIIII")
+    socket.emit('dislike_event', { eventID: currEvent.id, isLiked: false });
+    //socket.emit('showBoardData');
+  };
+  
   setShowEventPage(false);
   setEventPage(
     <List key={clientId * i}>
@@ -32,6 +42,27 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
             <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
           </div>
           <p key={currEvent.id + n4}>{currEvent.dates.start.localDate}</p>
+          <div className="like-dislike">
+            <h3>
+              <button>
+              <FaThumbsUp />
+              </button>
+              likes
+              <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <button
+                label="dislikeButton"
+                type="button"
+                onClick={() => {
+                  console.log(currEvent.id);
+                  //socket.emit('dislikeEvent', { eventID: currEvent.id, isLiked: false });
+                  updateDislikes();
+                }}
+              >
+                <FaThumbsDown
+              /></button>
+              dislikes
+            </h3>
+          </div>
         </List.Item>
       </div>
     </List>,
