@@ -32,6 +32,7 @@ export function InitialData(props) {
   This file displays ALL the initial data */
   const {
     initialData,
+    locations,
     setShowEventPage,
     showEventPage,
     eventPage,
@@ -39,14 +40,12 @@ export function InitialData(props) {
     clientId,
     socket,
   } = props;
-  // const [markers, setMarkers] = useState([]);
   const i = 20;
   const n = '20';
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
-  /* function addMarkers(location){
-  } */
+  console.log(locations);
   if (showEventPage) {
     return (
       <div>
@@ -68,13 +67,15 @@ export function InitialData(props) {
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[51.505, -0.09]}>
-              <Popup>
-                A pretty CSS3 popup.
-                <br />
-                Easily customizable.
-              </Popup>
-            </Marker>
+            {locations.map((currLocation, idx) => (
+              <Marker key={`marker-${idx * 2}`} position={[currLocation.lat, currLocation.long]}>
+                <Popup>
+                  A pretty CSS3 popup.
+                  <br />
+                  Easily customizable.
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
         </div>
       </div>
@@ -89,6 +90,7 @@ export function InitialData(props) {
 
 InitialData.propTypes = {
   initialData: PropTypes.arrayOf(PropTypes.object),
+  locations: PropTypes.arrayOf(PropTypes.object),
   showEventPage: PropTypes.bool,
   setShowEventPage: PropTypes.func,
   eventPage: PropTypes.string,
@@ -99,6 +101,7 @@ InitialData.propTypes = {
 
 InitialData.defaultProps = {
   initialData: [],
+  locations: [],
   showEventPage: true,
   setShowEventPage: null,
   eventPage: '',
