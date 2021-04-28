@@ -32,6 +32,7 @@ if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
 Bookmarks = models.get_bookmarks(DB)
+Comments = models.get_comments(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -149,12 +150,6 @@ def on_connect():
     session["countrycode"] = ""
     print("Emitting Credentials to Client")
     SOCKETIO.emit('credInfo', os.getenv('GOOGLE_CLIENT_ID'), broadcast=False, include_self=True)
-
-@SOCKETIO.on('Eventload')
-def loadEvent(data):
-    """Event clicked, use data to load comments and emit to componnent"""
-    print("EMITTING EVENTLOAD")
-    print(data)
 
 @SOCKETIO.on('apiSearch')
 def search(data):
@@ -344,6 +339,41 @@ def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
 
+@SOCKETIO.on('Eventload')
+def loadEvent(data):
+    """Event clicked, use data to load comments and emit to componnent"""
+    # data = clientId, eventId, uniqueID
+    # use clientId to load commenting user's photo and name
+    imageAddon = "'https://lh3.googleusercontent.com"
+    commentUserData = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
+    # use eventId to load existing comments associated with that event
+    # existingComments = Comments.query.filter_by(event_id=data["eventId"])
+    # for comm in existingComments:
+    #     print(comm)
+    print("EMITTING EVENTLOAD")
+    print(data)
+@SOCKETIO.on('comment')
+def comment_submit(data):
+    """this runs on receipt of a new comment"""
+    # load information from comment
+    text = data["comment"]
+    eventId = data["eventId"]
+    clientId = data["clientId"]
+    # set defaults for temporary working comments
+    head = clientId
+    tail = '0'
+    depth = 0
+    comment_data = Comments(
+        commentId = 0,
+        eventId=eventId,
+        text=text,
+        head=head,
+        tail=tail,
+        depth=depth)
+    DB.session.add(comment_data)
+    DB.session.commit()
+    print(Comments.query.all())
+    
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
@@ -357,6 +387,7 @@ def on_login(data):
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
         "ID":data["googleId"][-7:],
         "Name":data["givenName"],
+        "Image":data["imageUrl"],
     }
     print("Current Users: \n")
     for item in all_users:

@@ -26,7 +26,7 @@ def get_bookmarks(d_b):
 
 def get_comments(d_b):
     """ defines comment table"""
-    class Comments(d_b.model):
+    class Comments(d_b.Model):
         """creates a comment"""
         commentId = d_b.Column(d_b.String(80), primary_key=True)
         event_id = d_b.Column(d_b.String(80), nullable=False)
