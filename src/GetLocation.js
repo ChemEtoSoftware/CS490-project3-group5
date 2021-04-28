@@ -34,7 +34,8 @@ export function GetLocation(props) {
 
   return (
     <div>
-      {locTrue === true ? <SearchFilterEvents clientId={clientId} socket={socket} /> : getLocation()}
+      {locTrue === true ? <SearchFilterEvents clientId={clientId} socket={socket} />
+        : getLocation()}
     </div>
   );
 

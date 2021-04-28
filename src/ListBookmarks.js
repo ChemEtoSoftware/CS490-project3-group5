@@ -1,32 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 import { List, Header } from 'semantic-ui-react';
+import './map.css';
 import { EventPage } from './EventContainer';
 
 export function ListBookmarks(props) {
   // List bookmarks
   const {
     Bookmarks,
-    setEventPage,
-    setShowEventPage,
-    showEventPage,
-    eventPage,
     clientId,
     socket,
   } = props;
+  const [eventPage, setEventPage] = useState([]);
+  const [showPage, setShowPage] = useState(false);
   const i = 2;
   const n = '10';
   const n1 = '100';
   const n2 = '1000';
   const n3 = '10000';
   console.log(Bookmarks);
-  if (showEventPage) {
+  function renderPage(currEvent) {
+    console.log('hey');
+    setShowPage(true);
+    setEventPage(
+      <div>
+        <EventPage
+          currEvent={currEvent}
+          clientId={clientId}
+          socket={socket}
+        />
+      </div>,
+    );
+  }
+  if (showPage) {
     return (
       <List key={i * 10}>
         {Bookmarks.map((currEvent) => (
           // eslint-disable-next-line
-          <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+          <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
             <List.Item key={currEvent.id}>
               {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
               {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
