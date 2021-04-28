@@ -15,9 +15,11 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
+/* eslint-disable */
 /* eslint-disable no-underscore-dangle, jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-static-element-interactions */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
 import { List, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import './map.css';
@@ -26,6 +28,8 @@ import {
 }
   from 'react-leaflet';
 import { EventPage } from './EventContainer';
+
+const socket = io(); // Connects to socket connection io()
 
 export function InitialData(props) {
   /* All these states and socket are
@@ -47,6 +51,8 @@ export function InitialData(props) {
   const n2 = '2000';
   const n3 = '20000';
   function renderPage(currEvent) {
+    console.log("On click render page");
+    socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>
@@ -58,6 +64,8 @@ export function InitialData(props) {
       </div>,
     );
   }
+  
+  
   if (!showPage) {
     return (
       <div className="container">
