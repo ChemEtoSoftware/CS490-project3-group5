@@ -75,6 +75,21 @@ In your terminal:
 5. See the config vars set by Heroku for you: heroku config. Copy paste the value for `DATABASE_URL`
 6. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'`
 
+## Database Initialization
+
+1. In the terminal, run python to open an interactive session
+2. One by one, add the following lines: 
+`from app import DB` 
+`import models`
+`DB.create_all()`
+`admin = models.Users(id='0', email='admin@gmail.com', firstName='admin', familyName='user', imageURL='www.example.com')`
+`DB.session.add(admin)`
+`DB.session.commit()`
+3. To make sure this worked, run the following line in the same interactive session (If you see the admin as a Users entry, then it worked!): models.Users.query.all()
+4. To make sure that this user was added to the Heroku database, connect to it using heroku pg:psql
+5. To see all tables, run the command \d; the person table should be in there
+6. To query the data in the person table, run the query SELECT * FROM users; the admin user should be in there
+
 ## Run Application
 
 1. Run command in terminal (in your project directory): `python app.py`
