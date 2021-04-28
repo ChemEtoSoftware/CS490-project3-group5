@@ -4,7 +4,6 @@
     as well as allowing them the chance to play each other.
 """
 import os
-import time
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -277,7 +276,7 @@ def on_bookmark(data):
     list_of_bookmarks = DB.session.query(Bookmarks).filter_by(clientId=user_id)
     for bookmark in list_of_bookmarks:
         print(bookmark.event_id)
-    return
+    return list_of_bookmarks
 
 @SOCKETIO.on('retrieve_bookmarks')
 @sleep_and_retry
