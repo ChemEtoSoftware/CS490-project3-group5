@@ -5,7 +5,6 @@
 """
 import os
 import requests
-import geopy
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
