@@ -4,6 +4,7 @@
     as well as allowing them the chance to play each other.
 """
 import os
+import time
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -13,11 +14,9 @@ from engineio.payload import Payload
 from ratelimit import limits, sleep_and_retry
 from ratelimiter import RateLimiter
 import requests
-#from helpers import ordered_append, sum_of_arrays, add_to_db
 
 #Prevents server overload
 Payload.max_decode_packets = 200
-
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
 APP = Flask(__name__, static_folder='./build/static')
@@ -42,7 +41,7 @@ SOCKETIO = SocketIO(APP,
 ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
-RATE_LIMITER = RateLimiter(max_calls=5, period=1)
+RATE_LIMITER = RateLimiter(max_calls=1, period=1)
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -265,7 +264,7 @@ def on_bookmark(data):
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
     print(user_id)
-    bookmarked_event_id = data['eventID']
+    bookmarked_event_id = [data['eventID']]
     exists = DB.session.query(Bookmarks).filter_by(
         clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:
@@ -278,7 +277,7 @@ def on_bookmark(data):
     list_of_bookmarks = DB.session.query(Bookmarks).filter_by(clientId=user_id)
     for bookmark in list_of_bookmarks:
         print(bookmark.event_id)
-    return list_of_bookmarks
+    return
 
 @SOCKETIO.on('retrieve_bookmarks')
 @sleep_and_retry
@@ -286,6 +285,7 @@ def on_bookmark(data):
 def retrieve_bookmarks(data):
     '''This function is for retrieving a
     bookmark from the DB'''
+    print("Inside function")
     socket_id = data
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
@@ -297,6 +297,7 @@ def retrieve_bookmarks(data):
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
         with RATE_LIMITER:
+            print("Inside loop")
             redurl += i_d
             redurl += '.json?apikey={}'.format(APIKEY)
             req = requests.get(redurl)

@@ -13,15 +13,26 @@ export function SearchFilterEvents(props) {
   const [error, setError] = useState(false);
   const [showEventPage, setShowEventPage] = useState(true);
   const [eventPage, setEventPage] = useState('');
-
+  const [locations, setLocations] = useState([]);
+  let i;
   useEffect(() => {
     fetch('/api')
       .then((response) => response.json())
-      .then((data) => setInitialData(data._embedded.events))
-      .catch(() => {
+      .then((data) => {
+        const prev = [...data._embedded.events];
+        setInitialData(prev);
+        console.log(prev);
+        for (i = 0; i < prev.length; i += 1) {
+          const curr = prev[i]._embedded.venues[0].location;
+          const dict = { lat: curr.latitude, long: curr.longitude };
+          setLocations((currLocation) => [...currLocation, dict]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setError(true);
       });
-  }, [eventPage]);
+  }, []);
 
   const [keyword, setKeyword] = useState('');
   const [postalCode, setPostalCode] = useState('');
@@ -273,6 +284,7 @@ export function SearchFilterEvents(props) {
               : (
                 <InitialData
                   initialData={initialData}
+                  locations={locations}
                   setShowEventPage={setShowEventPage}
                   showEventPage={showEventPage}
                   eventPage={eventPage}
