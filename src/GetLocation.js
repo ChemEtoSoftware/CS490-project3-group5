@@ -7,10 +7,12 @@ const fetch = require('node-fetch');
 export function GetLocation(props) {
   const { clientId, socket } = props;
   const [locTrue, updateLoc] = useState(false);
+  const [initialMapMarker, setInitialMapMarker] = useState({ lat: 51.00, long: -0.9 });
 
   function showPosition(position) {
-    // console.log(position.coords.latitude);
-    // console.log(position.coords.longitude);
+    const lat = position.coords.latitude;
+    const long = position.coords.longitude;
+    setInitialMapMarker({ lat, long });
     fetch('/location', {
       method: 'POST',
       mode: 'cors',
@@ -34,7 +36,8 @@ export function GetLocation(props) {
 
   return (
     <div>
-      {locTrue === true ? <SearchFilterEvents clientId={clientId} socket={socket} /> : getLocation()}
+      {locTrue === true ? <SearchFilterEvents clientId={clientId} socket={socket} initialMapMarker={initialMapMarker} />
+        : getLocation()}
     </div>
   );
 

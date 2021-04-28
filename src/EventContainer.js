@@ -1,9 +1,14 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 import { List, Header } from 'semantic-ui-react';
 import { Comment } from './Comment';
-// import GoogleMapReact from 'google-map-react';
+
+// import {
+//   MapContainer, TileLayer, Marker, Popup,
+// }
+//   from 'react-leaflet';
 
 export function EventPage(props) {
   /* Couldn't figure out how to pass variables as props in onclick,
@@ -47,6 +52,8 @@ export function EventPage(props) {
   //     </List>
   //     <Comment clientId={clientId} eventId={currEvent.id} socket={socket} />
   //   </div>,
+  const lat = currEvent._embedded.venues[0].location.latitude;
+  const long = currEvent._embedded.venues[0].location.longitude;
   return (
     <div>
       <List key={clientId * i}>
@@ -74,10 +81,22 @@ export function EventPage(props) {
             text={place.name}
             lat={place.geometry.location.lat}
             lng={place.geometry.location.lng}
+      <div id="mapid">
+        <MapContainer center={[lat, long]} zoom={13} scrollWheelZoom={false}>
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        ))}
-      </GoogleMapReact>
-    </Wrapper>, */
+          <Marker key={`marker-${currEvent.id}`} position={[lat, long]}>
+            <Popup>
+              A pretty CSS3 popup.
+              <br />
+              Easily customizable.
+            </Popup>
+          </Marker>
+        </MapContainer>
+      </div>
+    </div> */
   );
 }
 EventPage.propTypes = {
