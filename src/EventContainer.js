@@ -52,8 +52,8 @@ export function EventPage(props) {
   //     </List>
   //     <Comment clientId={clientId} eventId={currEvent.id} socket={socket} />
   //   </div>,
-  const lat = currEvent._embedded.venues[0].location.latitude;
-  const long = currEvent._embedded.venues[0].location.longitude;
+  // const lat = currEvent._embedded.venues[0].location.latitude;
+  // const long = currEvent._embedded.venues[0].location.longitude;
   return (
     <div>
       <List key={clientId * i}>

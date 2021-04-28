@@ -30,6 +30,7 @@ def get_comments(d_b):
         """creates a comment"""
         commentId = d_b.Column(d_b.String(80), primary_key=True)
         event_id = d_b.Column(d_b.String(80), nullable=False)
+        username = d_b.Column(d_b.String(80), nullable=False)
         text = d_b.Column(d_b.String(150), nullable=False)
         head = d_b.Column(d_b.String(80), nullable=True)
         tail = d_b.Column(d_b.String(80),nullable=True)

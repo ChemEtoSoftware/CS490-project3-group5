@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 
 export function Comment(props) {
 //   const { setLogin, socket, authID } = props;
-  const inputRef = useRef(null);
+  const inputRef = useRef(null);//useRef for input box
   const { socket, eventId, clientId } = props;
-  const [comments, setComments] = useState([]);
-  const [showExistingComments, setShowExistingComm] = useState(false);
-
+  const [comments, setComments] = useState([]);//saves existing comments in state variable
+  const [showExistingComments, setShowExistingComm] = useState(false);//toggle for showing exist com
+  const [showCommentBox, setShowCommentBox] = useState(false);//toggle for showing commentbox
   function onClick() {
     if (inputRef.current === null || inputRef.current.value === '') {
       alert('Theres nothing to comment!');
@@ -23,6 +23,21 @@ export function Comment(props) {
       };
       socket.emit('comment', data);
     }
+  }
+  function conditionalCommentBox() {
+    if()
+    return(<div>
+      <form>
+        <div>
+          <textarea name="comments" id="comments" ref={inputRef}>
+            Hey... say something!
+          </textarea>
+        </div>
+        <button type="button" onClick={() => onClick()}>
+          Add Comment
+        </button>
+      </form>
+    </div>);
   }
   useEffect(() => {
     console.log('Emitting Eventload');
@@ -40,18 +55,7 @@ export function Comment(props) {
     return () => socket.removeEventListener('EventLoad');
   }, []);
   return (
-    <div>
-      <form>
-        <div>
-          <textarea name="comments" id="comments" ref={inputRef}>
-            Hey... say something!
-          </textarea>
-        </div>
-        <button type="submit" value="Submit" onClick={() => { onClick(); }}>
-          Add Comment
-        </button>
-      </form>
-    </div>
+    conditionalCommentBox();
   );
 }
 
