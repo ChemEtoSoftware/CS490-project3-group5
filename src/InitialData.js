@@ -15,8 +15,10 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
+/* eslint-disable no-underscore-dangle, jsx-a11y/click-events-have-key-events,
+jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
-import { List, Header } from 'semantic-ui-react';
+import { List, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import './map.css';
 import {
@@ -35,17 +37,16 @@ export function InitialData(props) {
     locations,
     clientId,
     socket,
+    initialMapMarker,
   } = props;
   const [eventPage, setEventPage] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const i = 20;
+  // const i = 20;
   const n = '20';
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
-  console.log(locations);
   function renderPage(currEvent) {
-    console.log('hey');
     setShowPage(true);
     setEventPage(
       <div>
@@ -59,21 +60,25 @@ export function InitialData(props) {
   }
   if (!showPage) {
     return (
-      <div>
-        <List key={clientId * i}>
+      <div className="container">
+        <List horizontal>
           {initialData.map((currEvent) => (
-            // eslint-disable-next-line
-            <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-              <List.Item key={currEvent.id}>
-                <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+            <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+              <List.Item as={currEvent.id}>
                 <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
-                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                <Icon name="currEventname" />
+                <List.Content>
+                  <List.Header key={currEvent.id + n1}>{currEvent.name}</List.Header>
+                  <List.Description>
+                    <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                  </List.Description>
+                </List.Content>
               </List.Item>
             </div>
           ))}
         </List>
         <div id="mapid">
-          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+          <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
             <TileLayer
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -103,6 +108,7 @@ InitialData.propTypes = {
   locations: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  initialMapMarker: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 InitialData.defaultProps = {
@@ -110,6 +116,7 @@ InitialData.defaultProps = {
   locations: [],
   clientId: null,
   socket: null,
+  initialMapMarker: { lat: 51.00, long: -0.9 },
 };
 
 export default InitialData;
