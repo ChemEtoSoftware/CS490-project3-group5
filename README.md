@@ -36,6 +36,13 @@ In your terminal:
 10. `pip install -r requirements.txt`
 11. `cd` into react-starter directory. Run `npm install socket.io-client --save`
 12. `pip install pylint`
+13. `pip install ratelimit`
+14. `npm install react-leaflet`
+15. `npm install -D @types/leaflet`
+16. `pip install ratelimiter`
+17. `pip install geocoder`
+18. `pip install geopy`
+19. `pip install uszipcode`
 
 ## Setup
 

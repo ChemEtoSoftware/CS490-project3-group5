@@ -1,9 +1,10 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { SearchFilterEvents } from './SearchFilter';
+/* import { SearchFilterEvents } from './SearchFilter'; */
 import { Login } from './Login';
 import { Logout } from './Logout';
+import { GetLocation } from './GetLocation';
 // import { InitialData } from './InitialData';
 
 export const socket = io();
@@ -49,7 +50,7 @@ function App() {
     if (isLoggedIn && canRender) {
       return (
         <div>
-          <SearchFilterEvents clientId={authID} socket={socket} />
+          <GetLocation clientId={authID} socket={socket} />
           <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
         </div>
       );

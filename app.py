@@ -12,6 +12,9 @@ from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
 from ratelimit import limits, sleep_and_retry
 from ratelimiter import RateLimiter
+from geopy.geocoders import Nominatim
+from uszipcode import SearchEngine
+import geocoder
 import requests
 #from helpers import ordered_append, sum_of_arrays, add_to_db
 
@@ -24,6 +27,7 @@ APP = Flask(__name__, static_folder='./build/static')
 APP.secret_key = os.urandom(24)
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 DB = SQLAlchemy(APP)
 import models
@@ -43,6 +47,8 @@ ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
 RATE_LIMITER = RateLimiter(max_calls=5, period=1)
+
+user_state = ''
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -105,6 +111,28 @@ def api_post():
     return jsontext
     #print(keyword)
     #return keyword
+    
+@APP.route('/location', methods=['POST'])
+def get_lat_long():
+    global user_state
+    location_json = request.get_json()
+    latitude = location_json.get('lat')
+    longitude = location_json.get('long')
+    geolocator = Nominatim(user_agent="EventGuru")
+    coordinates = "" + str(latitude) + " " + str(longitude)
+    location = geolocator.reverse(coordinates)
+    print(location.address)
+    location_list = location.address.split(", ")
+    print(location_list)
+    z = location_list[-2]
+    search = SearchEngine(simple_zipcode=True)
+    zipcode = search.by_zipcode(z)
+    zipcodeDict = zipcode.to_dict()
+    user_state = zipcodeDict["state"]
+    print(zipcodeDict["state"])
+    return zipcodeDict
+    
+    
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -221,18 +249,21 @@ def search(data):
 
 @APP.route('/api', methods=['GET'])
 def api():
+    global user_state
     """api search"""
     #to send query request to TicketMaster API
-    keyword = session.get("keyword", None)
+    '''keyword = session.get("keyword", None)
     postalcode = session.get("postalcode", None)
     radius = session.get("radius", None)
     startdate = session.get("startdate", None)
     enddate = session.get("enddate", None)
     city = session.get("city", None)
     statecode = session.get("statecode", None)
-    countrycode = session.get("countrycode", None)
+    countrycode = session.get("countrycode", None)'''
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    if keyword:
+    redurl += "&stateCode={}".format(user_state)
+    print("GOT LOCATION:", user_state)
+    '''if keyword:
         redurl += "&keyword={}".format(keyword)
     if postalcode:
         redurl += "&postalCode={}".format(postalcode)
@@ -249,7 +280,7 @@ def api():
     if statecode:
         redurl += "&stateCode={}".format(statecode)
     if countrycode:
-        redurl += "&countryCode={}".format(countrycode)
+        redurl += "&countryCode={}".format(countrycode)'''
     req = requests.get(redurl)
     jsontext = req.json()
     return jsontext
