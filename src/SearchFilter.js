@@ -8,7 +8,7 @@ import { ListBookmarks } from './ListBookmarks';
 const fetch = require('node-fetch');
 
 export function SearchFilterEvents(props) {
-  const { clientId, socket } = props;
+  const { clientId, socket, initialMapMarker } = props;
   const [initialData, setInitialData] = useState([]);
   const [error, setError] = useState(false);
   const [locations, setLocations] = useState([]);
@@ -19,7 +19,6 @@ export function SearchFilterEvents(props) {
       .then((data) => {
         const prev = [...data._embedded.events];
         setInitialData(prev);
-        console.log(prev);
         for (i = 0; i < prev.length; i += 1) {
           const curr = prev[i]._embedded.venues[0].location;
           const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
@@ -291,6 +290,7 @@ export function SearchFilterEvents(props) {
                   locations={locations}
                   clientId={clientId}
                   socket={socket}
+                  initialMapMarker={initialMapMarker}
                   //  eslint-disable-next-line
                 />
               ))]}
@@ -303,11 +303,13 @@ export function SearchFilterEvents(props) {
 SearchFilterEvents.propTypes = {
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  initialMapMarker: PropTypes.objectOf(PropTypes.object),
 };
 
 SearchFilterEvents.defaultProps = {
   clientId: null,
   socket: null,
+  initialMapMarker: { lat: 51.00, long: -0.9 },
 };
 export default SearchFilterEvents;
 // socket version

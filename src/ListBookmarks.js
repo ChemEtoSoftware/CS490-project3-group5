@@ -21,7 +21,6 @@ export function ListBookmarks(props) {
   const n3 = '10000';
   console.log(Bookmarks);
   function renderPage(currEvent) {
-    console.log('hey');
     setShowPage(true);
     setEventPage(
       <div>
@@ -33,21 +32,23 @@ export function ListBookmarks(props) {
       </div>,
     );
   }
-  if (showPage) {
+  if (!showPage) {
     return (
-      <List key={i * 10}>
-        {Bookmarks.map((currEvent) => (
-          // eslint-disable-next-line
-          <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-            <List.Item key={currEvent.id}>
-              {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
-              {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
-              {currEvent.fault ? null
-                : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
-            </List.Item>
-          </div>
-        ))}
-      </List>
+      <div className="container">
+        <List horizontal key={i * 10}>
+          {Bookmarks.map((currEvent) => (
+            // eslint-disable-next-line
+            <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+              <List.Item key={currEvent.id}>
+                {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
+                {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
+                {currEvent.fault ? null
+                  : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
+              </List.Item>
+            </div>
+          ))}
+        </List>
+      </div>
     );
   //  eslint-disable-next-line
   }
