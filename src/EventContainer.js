@@ -1,13 +1,21 @@
 import React from 'react';
 import './App.css';
+import PropTypes from 'prop-types';
 import { List, Header } from 'semantic-ui-react';
 import { Comment } from './Comment';
 // import GoogleMapReact from 'google-map-react';
 
-export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket) {
+export function EventPage(props) {
   /* Couldn't figure out how to pass variables as props in onclick,
   so instead just use them directly. Bookmarks function can either
   create or remove bookmark. This component displays single bookmark */
+  console.log('Hello');
+  const {
+    currEvent,
+    clientId,
+    socket,
+  } = props;
+  console.log(currEvent);
   function Bookmarks() {
     const socketID = socket.id;
     const eventID = currEvent.id;
@@ -22,8 +30,24 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
   const n2 = '4000';
   const n3 = '40000';
   const n4 = '400000';
-  setShowEventPage(false);
-  setEventPage(
+  // setShowEventPage(false);
+  // setEventPage(
+  //   <div>
+  //     <List key={clientId * i}>
+  //       <div className="container" key={clientId + i}>
+  //         <List.Item key={currEvent.id + n}>
+  //           <Header key={currEvent.id + n1}>{currEvent.name}</Header>
+  //           <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
+  //           <div key={currEvent.id + n3} className="buttonHolder">
+  //             <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
+  //           </div>
+  //           <p key={currEvent.id + n4}>{currEvent.dates.start.localDate}</p>
+  //         </List.Item>
+  //       </div>
+  //     </List>
+  //     <Comment clientId={clientId} eventId={currEvent.id} socket={socket} />
+  //   </div>,
+  return (
     <div>
       <List key={clientId * i}>
         <div className="container" key={clientId + i}>
@@ -38,7 +62,7 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
         </div>
       </List>
       <Comment clientId={clientId} eventId={currEvent.id} socket={socket} />
-    </div>,
+    </div>
     /* <Wrapper>
       <GoogleMapReact
         defaultZoom={10}
@@ -56,4 +80,15 @@ export function EventPage(currEvent, setEventPage, setShowEventPage, clientId, s
     </Wrapper>, */
   );
 }
+EventPage.propTypes = {
+  currEvent: PropTypes.objectOf(PropTypes.object),
+  clientId: PropTypes.string,
+  socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+EventPage.defaultProps = {
+  currEvent: '',
+  clientId: null,
+  socket: null,
+};
 export default EventPage;
