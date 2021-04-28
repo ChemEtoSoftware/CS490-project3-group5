@@ -15,10 +15,10 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
-/* eslint-disable no-underscore-dangle, jsx-a11y/click-events-have-key-events,
-jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable */
 import React, { useState } from 'react';
-import { List, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import './map.css';
 import {
@@ -60,23 +60,18 @@ export function InitialData(props) {
   }
   if (!showPage) {
     return (
-      <div className="container">
-        <List horizontal>
+      <div className="container-fluid">
+        <ul className="list-inline">
           {initialData.map((currEvent) => (
-            <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-              <List.Item as={currEvent.id}>
-                <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
-                <Icon name="currEventname" />
-                <List.Content>
-                  <List.Header key={currEvent.id + n1}>{currEvent.name}</List.Header>
-                  <List.Description>
-                    <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
-                  </List.Description>
-                </List.Content>
-              </List.Item>
-            </div>
+            <li>
+              <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                <img key={currEvent.id + n2} src={currEvent.images[0].url} className="img-responsive" alt="" />
+                <h3 key={currEvent.id + n1}>{currEvent.name}</h3>
+                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+              </div>
+            </li>
           ))}
-        </List>
+        </ul>
         <div id="mapid">
           <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
             <TileLayer
