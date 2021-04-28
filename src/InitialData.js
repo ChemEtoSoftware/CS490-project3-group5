@@ -63,7 +63,7 @@ export function InitialData(props) {
       <div className="container-fluid">
         <ul className="list-inline">
           {initialData.map((currEvent) => (
-            <li>
+            <li className="event">
               <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
                 <img key={currEvent.id + n2} src={currEvent.images[0].url} className="img-responsive" alt="" />
                 <h3 key={currEvent.id + n1}>{currEvent.name}</h3>
