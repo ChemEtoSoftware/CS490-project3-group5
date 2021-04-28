@@ -4,6 +4,7 @@
     as well as allowing them the chance to play each other.
 """
 import os
+import requests
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -12,18 +13,18 @@ from dotenv import load_dotenv, find_dotenv
 from engineio.payload import Payload
 from ratelimit import limits, sleep_and_retry
 from ratelimiter import RateLimiter
-import requests
-#from helpers import ordered_append, sum_of_arrays, add_to_db
+from geopy.geocoders import Nominatim
+from uszipcode import SearchEngine
 
 #Prevents server overload
 Payload.max_decode_packets = 200
-
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
 APP = Flask(__name__, static_folder='./build/static')
 APP.secret_key = os.urandom(24)
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 DB = SQLAlchemy(APP)
 import models
@@ -42,7 +43,9 @@ SOCKETIO = SocketIO(APP,
 ACTIVE_USER_SOCKET_PAIRS = dict()
 PREVIOUS_ARR = ["", "", "", "", "", "", "", "", ""]
 LIST_OF_ACTIVE_USERS = []
-RATE_LIMITER = RateLimiter(max_calls=5, period=1)
+RATE_LIMITER = RateLimiter(max_calls=1, period=1)
+
+USER_STATE = ''
 
 @APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
@@ -105,6 +108,27 @@ def api_post():
     return jsontext
     #print(keyword)
     #return keyword
+
+@APP.route('/location', methods=['POST'])
+def get_lat_long():
+    """ ger user location """
+    global USER_STATE
+    location_json = request.get_json()
+    latitude = location_json.get('lat')
+    longitude = location_json.get('long')
+    geolocator = Nominatim(user_agent="EventGuru")
+    coordinates = "" + str(latitude) + " " + str(longitude)
+    location = geolocator.reverse(coordinates)
+    print(location.address)
+    location_list = location.address.split(", ")
+    print(location_list)
+    zip_code = location_list[-2]
+    searchengine = SearchEngine(simple_zipcode=True)
+    zipcode = searchengine.by_zipcode(zip_code)
+    zipcode_dict = zipcode.to_dict()
+    USER_STATE = zipcode_dict["state"]
+    print(zipcode_dict["state"])
+    return zipcode_dict
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -228,17 +252,20 @@ def search(data):
 @APP.route('/api', methods=['GET'])
 def api():
     """api search"""
+    global USER_STATE
     #to send query request to TicketMaster API
-    keyword = session.get("keyword", None)
+    '''keyword = session.get("keyword", None)
     postalcode = session.get("postalcode", None)
     radius = session.get("radius", None)
     startdate = session.get("startdate", None)
     enddate = session.get("enddate", None)
     city = session.get("city", None)
     statecode = session.get("statecode", None)
-    countrycode = session.get("countrycode", None)
+    countrycode = session.get("countrycode", None)'''
     redurl = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey={}'.format(APIKEY)
-    if keyword:
+    redurl += "&stateCode={}".format(USER_STATE)
+    print("GOT LOCATION:", USER_STATE)
+    '''if keyword:
         redurl += "&keyword={}".format(keyword)
     if postalcode:
         redurl += "&postalCode={}".format(postalcode)
@@ -255,7 +282,7 @@ def api():
     if statecode:
         redurl += "&stateCode={}".format(statecode)
     if countrycode:
-        redurl += "&countryCode={}".format(countrycode)
+        redurl += "&countryCode={}".format(countrycode)'''
     req = requests.get(redurl)
     jsontext = req.json()
     return jsontext
@@ -271,7 +298,7 @@ def on_bookmark(data):
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
     print(user_id)
-    bookmarked_event_id = data['eventID']
+    bookmarked_event_id = [data['eventID']]
     exists = DB.session.query(Bookmarks).filter_by(
         clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:
@@ -292,6 +319,7 @@ def on_bookmark(data):
 def retrieve_bookmarks(data):
     '''This function is for retrieving a
     bookmark from the DB'''
+    print("Inside function")
     socket_id = data
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
@@ -303,6 +331,7 @@ def retrieve_bookmarks(data):
     redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     for i_d in event_ids:
         with RATE_LIMITER:
+            print("Inside loop")
             redurl += i_d
             redurl += '.json?apikey={}'.format(APIKEY)
             req = requests.get(redurl)
