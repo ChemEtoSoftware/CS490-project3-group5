@@ -15,7 +15,7 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
-import React from 'react';
+import React, { useState } from 'react';
 import { List, Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import './map.css';
@@ -33,26 +33,37 @@ export function InitialData(props) {
   const {
     initialData,
     locations,
-    setShowEventPage,
-    showEventPage,
-    eventPage,
-    setEventPage,
     clientId,
     socket,
   } = props;
+  const [eventPage, setEventPage] = useState([]);
+  const [showPage, setShowPage] = useState(false);
   const i = 20;
   const n = '20';
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
   console.log(locations);
-  if (showEventPage) {
+  function renderPage(currEvent) {
+    console.log('hey');
+    setShowPage(true);
+    setEventPage(
+      <div>
+        <EventPage
+          currEvent={currEvent}
+          clientId={clientId}
+          socket={socket}
+        />
+      </div>,
+    );
+  }
+  if (!showPage) {
     return (
       <div>
         <List key={clientId * i}>
           {initialData.map((currEvent) => (
             // eslint-disable-next-line
-            <div className="container" key={currEvent.id + n} onClick={() => EventPage(currEvent, setEventPage, setShowEventPage, clientId, socket)}>
+            <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
               <List.Item key={currEvent.id}>
                 <Header key={currEvent.id + n1}>{currEvent.name}</Header>
                 <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
@@ -80,21 +91,16 @@ export function InitialData(props) {
         </div>
       </div>
     );
-  //  eslint-disable-next-line
+    //  eslint-disable-next-line
   }
   //  eslint-disable-next-line
-  else {
-    return (eventPage);
+  else{
+    return eventPage;
   }
 }
-
 InitialData.propTypes = {
   initialData: PropTypes.arrayOf(PropTypes.object),
   locations: PropTypes.arrayOf(PropTypes.object),
-  showEventPage: PropTypes.bool,
-  setShowEventPage: PropTypes.func,
-  eventPage: PropTypes.string,
-  setEventPage: PropTypes.func,
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
@@ -102,10 +108,6 @@ InitialData.propTypes = {
 InitialData.defaultProps = {
   initialData: [],
   locations: [],
-  showEventPage: true,
-  setShowEventPage: null,
-  eventPage: '',
-  setEventPage: null,
   clientId: null,
   socket: null,
 };
