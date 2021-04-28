@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
-import { List, Header } from 'semantic-ui-react';
 import './map.css';
 import { EventPage } from './EventContainer';
 
@@ -14,7 +15,6 @@ export function ListBookmarks(props) {
   } = props;
   const [eventPage, setEventPage] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const i = 2;
   const n = '10';
   const n1 = '100';
   const n2 = '1000';
@@ -34,20 +34,18 @@ export function ListBookmarks(props) {
   }
   if (!showPage) {
     return (
-      <div className="container">
-        <List horizontal key={i * 10}>
+      <div className="container-fluid">
+        <ul className="events">
           {Bookmarks.map((currEvent) => (
-            // eslint-disable-next-line
-            <div className="container" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-              <List.Item key={currEvent.id}>
-                {currEvent.fault ? null : <Header key={currEvent.id + n1}>{currEvent.name}</Header>}
-                {currEvent.fault ? null : <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />}
-                {currEvent.fault ? null
-                  : <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>}
-              </List.Item>
-            </div>
+            <li>
+              <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+                <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
+                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+              </div>
+            </li>
           ))}
-        </List>
+        </ul>
       </div>
     );
   //  eslint-disable-next-line
