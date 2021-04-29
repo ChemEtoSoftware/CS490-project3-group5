@@ -60,6 +60,7 @@ export function SearchFilterEvents(props) {
     e.preventDefault();
     setError(false);
     setShowHide(false);
+    setShowBookmarks(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',
