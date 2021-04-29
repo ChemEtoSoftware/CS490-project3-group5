@@ -394,8 +394,7 @@ def on_logout(data):
 
 @SOCKETIO.on('dislike_event')
 def on_dislike_event(data):
-    #when server listens to events like/dislike button being clicked
-
+    '''when server listens to events like/dislike button being clicked'''
     events, likes, dislikes = db_events()
     current_event = data['eventID']
     #print(current_event)
@@ -416,8 +415,7 @@ def on_dislike_event(data):
         events, likes, dislikes = db_events() #should be updated like/dislike
         print("This is the data that exists " + str(events) + str(likes) + str(dislikes))
         print("Num of likes for event: " + str(curr_event) + str(curr_event.likes))
-        SOCKETIO.emit('update_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
-        #SOCKETIO.emit('event_list', {'events': events, 'likes': likes, 'dislikes': dislikes})
+        SOCKETIO.emit('update_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
     else:
         if data['isLiked'] is True:
             like_event = LikesDislikes(eventID=data['eventID'], likes=1, dislikes=0)
@@ -432,11 +430,9 @@ def on_dislike_event(data):
             events.append(current_event)
             print(dislike_event)
         print("This is the new data " + str(events) + str(likes) + str(dislikes))
-        SOCKETIO.emit('update_likes_dislikes', { 'likes': [curr_event.likes], 'dislikes': [curr_event.dislikes] })
-        #SOCKETIO.emit('update_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
-        #SOCKETIO.emit('event_list', {'events': events, 'likes': likes, 'dislikes': dislikes})
+        SOCKETIO.emit('update_likes_dislikes', {'likes': [curr_event.likes], 'dislikes': [curr_event.dislikes]}) # pylint: disable=line-too-long
 def db_events():
-    #to access the events, likes, dislikes for every eventID
+    '''to access the events, likes, dislikes for every eventID'''
     print("Inside db_events")
     events = []
     likes = []
@@ -454,29 +450,26 @@ def db_events():
     #print(likes)
     #print(dislikes)
     return events, likes, dislikes
-    
 @SOCKETIO.on('request_data')
 def on_request_data(data):
+    '''to load up initial DB data to client'''
     print("inside request data")
     events, likes, dislikes = db_events()
     current_event = data['eventID']
     if current_event in events:
         print("This event exists {}".format(current_event))
         curr_event = DB.session.query(LikesDislikes).get(data['eventID'])
-        SOCKETIO.emit('show_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
+        SOCKETIO.emit('show_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
     else:
         initialize_event = LikesDislikes(eventID=data['eventID'], likes=0, dislikes=0)
         DB.session.add(initialize_event)
         DB.session.commit()
         events.append(current_event)
         print(initialize_event)
-        SOCKETIO.emit('show_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
-   
-   
-    #SOCKETIO.emit('show_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
+        SOCKETIO.emit('show_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
+    # SOCKETIO.emit('show_likes_dislikes',
+    # { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
     return events, likes, dislikes
-    
-    
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg
@@ -484,71 +477,4 @@ if __name__ == "__main__":
         APP,
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
-    )    
-
-
-
-
-
-'''
-@SOCKETIO.on('dislike_event')
-def on_dislike_event(data):
-    #when server listens to events like/dislike button being clicked
-
-    events, likes, dislikes = db_events()
-    current_event = data['eventID']
-    #print(current_event)
-    print(data['isLiked'])
-
-    if current_event in events:
-        print("This event exists {}".format(current_event))
-        #print(current_event.likes)
-        #print(LikesDislikes.query.filter_by(dislikes=3).first())
-        curr_event = DB.session.query(LikesDislikes).get(data['eventID'])
-        print("this is the current event: " + str(curr_event))
-        if data['isLiked'] is True:
-            curr_event.likes = curr_event.likes + 1
-            DB.session.commit()
-        elif data['isLiked'] is False:
-            curr_event.dislikes = curr_event.dislikes + 1
-            DB.session.commit()
-        events, likes, dislikes = db_events() #should be updated like/dislike
-        print("This is the data that exists " + str(events) + str(likes) + str(dislikes))
-        print("Num of likes for event: " + str(curr_event) + str(curr_event.likes))
-        #SOCKETIO.emit('update_likes_dislikes', { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
-        SOCKETIO.emit('event_list', {'events': events, 'likes': likes, 'dislikes': dislikes})
-    else:
-        if data['isLiked'] is True:
-            like_event = LikesDislikes(eventID=data['eventID'], likes=1, dislikes=0)
-            DB.session.add(like_event)
-            DB.session.commit()
-            events.append(current_event)
-            print(like_event)
-        elif data['isLiked'] is False:
-            dislike_event = LikesDislikes(eventID=data['eventID'], likes=0, dislikes=1)
-            DB.session.add(dislike_event)
-            DB.session.commit()
-            events.append(current_event)
-            print(dislike_event)
-        print("This is the new data " + str(events) + str(likes) + str(dislikes))
-        SOCKETIO.emit('event_list', {'events': events, 'likes': likes, 'dislikes': dislikes})
-def db_events():
-    #to access the events, likes, dislikes for every eventID
-    print("Inside db_events")
-    events = []
-    likes = []
-    dislikes = []
-    #all_people = models.Users.query.all()
-    #all_events = DB.session.query(LikesDislikes)
-    all_events = LikesDislikes.query.all()
-    DB.session.commit()
-    print(all_events)  # [<LikesDislikes 'admin'>, <LikesDislikes 'guest'>]
-    for event in all_events:
-        events.append(event.eventID)
-        likes.append(event.likes)
-        dislikes.append(event.dislikes)
-    #print(events)
-    #print(likes)
-    #print(dislikes)
-    return events, likes, dislikes
-'''    
+    )
