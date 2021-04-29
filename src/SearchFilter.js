@@ -1,4 +1,5 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_embedded"] }] */
+/* eslint-disable prefer-destructuring */
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
@@ -21,7 +22,12 @@ export function SearchFilterEvents(props) {
         setInitialData(prev);
         for (i = 0; i < prev.length; i += 1) {
           const curr = prev[i]._embedded.venues[0].location;
-          const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
+          const address = prev[i]._embedded.venues[0].address;
+          const city = prev[i]._embedded.venues[0].city;
+          const state = prev[i]._embedded.venues[0].state;
+          const dict = {
+            lat: curr.latitude, long: curr.longitude, name: prev[i].name, address, city, state,
+          };
           setLocations((currLocation) => [...currLocation, dict]);
         }
       })
@@ -55,6 +61,7 @@ export function SearchFilterEvents(props) {
     e.preventDefault();
     setError(false);
     setShowHide(false);
+    setShowBookmarks(false);
     fetch('/api/post', {
       method: 'POST',
       mode: 'cors',

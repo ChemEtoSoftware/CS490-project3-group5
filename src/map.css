@@ -1,1 +1,14 @@
-#mapid { height: 100vh; width: 100vh}
+.leaflet-container {
+  width: 25%;
+  height: 25vh;
+}
+.events{
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto;
+    row-gap: 100px;
+    column-gap: 50px;
+}
+ul {
+    list-style-type: none;
+}
