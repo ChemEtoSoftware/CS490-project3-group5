@@ -63,7 +63,6 @@ PyYAML==5.3.1
 ratelim==0.1.6
 ratelimit==2.2.1
 ratelimiter==1.2.0.post0
-react-icons==4.2.0
 requests==2.25.1
 requests-file==1.5.1
 rsa==4.5
