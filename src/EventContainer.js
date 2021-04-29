@@ -10,6 +10,7 @@ import {
   MapContainer, TileLayer, Marker, Popup,
 }
   from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // const socket = io(); // Connects to socket connection io()
 
@@ -24,6 +25,7 @@ export function EventPage(props) {
   } = props;
   console.log(currEvent);
   function Bookmarks() {
+    alert('Bookmark has been added to database');
     const socketID = socket.id;
     const eventID = currEvent.id;
     socket.emit('create_bookmark', {
@@ -121,7 +123,7 @@ export function EventPage(props) {
           </List.Item>
         </div>
       </List>
-      <div id="mapid">
+      <div className="mapid">
         <MapContainer center={[lat, long]} zoom={13} scrollWheelZoom={false}>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
