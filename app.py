@@ -296,7 +296,7 @@ def on_bookmark(data):
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
     print(user_id)
-    bookmarked_event_id = [data['eventID']]
+    bookmarked_event_id = data['eventID']
     exists = DB.session.query(Bookmarks).filter_by(
         clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:
