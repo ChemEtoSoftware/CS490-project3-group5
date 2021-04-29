@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { ListItem } from './ListItem';
 // import io from 'socket.io-client';
 
 export function Comment(props) {
   const inputRef = useRef(null);
   const { socket, eventId, clientId } = props;
-  const [comments, setComments] = useState({});
+  const [comments, setComments] = useState([]);
   const [showExistingComments, setShowExistingComm] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [userImage, setUserImage] = useState('');
@@ -27,8 +28,16 @@ export function Comment(props) {
   }
   function conditionalExistingComments() {
     if (showExistingComments) {
+      console.log('Comments', comments);
       return (
-        <h1>Comments</h1>
+        <div>
+          <h1>Comments</h1>
+          <ul>
+            {comments.map((item, index) => (
+              <ListItem ind={index} name={item} />
+            ))}
+          </ul>
+        </div>
       );
     }
     return null;
@@ -64,38 +73,28 @@ export function Comment(props) {
     socket.on('EventLoad', (data) => {
       // Eventload is socketId, clientId, eventId
       // check if there exists comments before setshowExistingComm becomes true
+      if (showExistingComments) {
+        setComments(data.comments);
+      }
       if (data.eventId === eventId) {
         console.log(data.Image);
         setUserImage(data.Image);
         setUserName(data.Name);
-        if (data.Pairs !== 'None') {
-          setComments(data.Pairs);
-          console.log(comments);
+        setShowCommentBox(true);
+        if (data.comments[0] === 'True') {
+          setComments(data.comments);
           setShowExistingComm(true);
         }
-        setShowCommentBox(true);
       }
     });
-    return () => {
-      socket.removeEventListener('EventLoad');
-    };
-  }, []);
-  useEffect(() => {
-    socket.on('CommentLoad', (data) => {
-      if (data.eventId === eventId) {
-        console.log(data);
-        setComments(data);
-        console.log(comments);
-      }
-    });
-    return () => {
-      socket.removeEventListener('CommentLoad');
-    };
-  }, []);
+    // return () => {
+    //   socket.removeEventListener('EventLoad');
+    // };
+  }, [comments]);
   return (
     <div>
-      {conditionalCommentBox()}
       {conditionalExistingComments()}
+      {conditionalCommentBox()}
     </div>
   );
 }

@@ -353,22 +353,21 @@ def loadEvent(data):
     # use eventId to load existing comments associated with that event
     commentUserData['eventId'] = data["eventId"]
     existingComments = Comments.query.filter_by(event_id=data["eventId"])
-    sendListPairs=dict()
-    sendListPairs['eventId']=data["eventId"]
+    sendListPairs=[]
     if existingComments:
-        sendListPairs['check']='True'
+        sendListPairs.append('True')
         for comm in existingComments:
             commName = comm.username
             commText = comm.text
-            sendListPairs[comm.commentId]={commName, commText}
+            sendListPairs.append(commName+': '+commText)
             print(sendListPairs)
     else:
-        sendListPairs['check']='None'
+        sendListPairs.append('None')
         print('No comments exist for event')
-    # print(dict(sendListPairs))
-    json_object = json.dumps(sendListPairs, indent = 4)  
+    commentUserData["comments"] = sendListPairs
+    print(commentUserData)
     SOCKETIO.emit('EventLoad', commentUserData, broadcast=False, include_self=True)
-    SOCKETIO.emit('CommentLoad',json_object,broadcast=False, include_self=True)
+    # SOCKETIO.emit('CommentLoad',sendListPairs,broadcast=False, include_self=True)
     print('EMITTING EVENTLOAD')
     print(data)
 
@@ -396,6 +395,21 @@ def comment_submit(data):
         depth=depth)
     DB.session.add(comment_data)
     DB.session.commit()
+    existingComments = Comments.query.filter_by(event_id=eventId)
+    commentUserData={}
+    sendListPairs=[]
+    if existingComments:
+        sendListPairs.append('True')
+        for comm in existingComments:
+            commName = comm.username
+            commText = comm.text
+            sendListPairs.append(commName+': '+commText)
+    else:
+        sendListPairs.append('None')
+        print('No comments exist for event')
+    commentUserData["comments"] = sendListPairs
+    print(commentUserData)
+    SOCKETIO.emit('EventLoad', commentUserData, broadcast=False, include_self=True)
     print(Comments.query.all())
 
 def generate_comment_id(comment,eventId,clientId):
