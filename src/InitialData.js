@@ -45,10 +45,16 @@ export function InitialData(props) {
   const n1 = '200';
   const n2 = '2000';
   const n3 = '20000';
+  function showHome() {
+    setShowPage(false);
+  }
   function renderPage(currEvent) {
     setShowPage(true);
     setEventPage(
       <div>
+        <div>
+          <button type="button" className="search" onClick={showHome}>Home</button>
+        </div>
         <EventPage
           currEvent={currEvent}
           clientId={clientId}
@@ -59,38 +65,40 @@ export function InitialData(props) {
   }
   if (!showPage) {
     return (
-      <div className="container-fluid">
-        <ul className="events">
-          {initialData.map((currEvent) => (
-            <li>
-              <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-                <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
-                <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
-                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div id="mapid">
-          <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {locations.map((currLocation, idx) => (
-              <Marker key={`marker-${idx * 2}`} position={[currLocation.lat, currLocation.long]}>
-                <Popup>
-                  {currLocation.name}
-                  <br />
-                  {currLocation.address}
-                  ,
-                  {currLocation.city}
-                  ,
-                  {currLocation.state}
-                </Popup>
-              </Marker>
+      <div>
+        <div className="container-fluid">
+          <ul className="events">
+            {initialData.map((currEvent) => (
+              <li>
+                <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                  <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+                  <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
+                  <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                </div>
+              </li>
             ))}
-          </MapContainer>
+          </ul>
+          <div id="mapid">
+            <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {locations.map((currLocation, idx) => (
+                <Marker key={`marker-${idx * 2}`} position={[currLocation.lat, currLocation.long]}>
+                  <Popup>
+                    {currLocation.name}
+                    <br />
+                    {currLocation.address}
+                    ,
+                    {currLocation.city}
+                    ,
+                    {currLocation.state}
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
         </div>
       </div>
     );

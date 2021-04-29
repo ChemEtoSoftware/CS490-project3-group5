@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import { Login } from './Login';
 import { Logout } from './Logout';
 import { GetLocation } from './GetLocation';
+// import { LandingPage } from './LandingPage';
 // import { InitialData } from './InitialData';
 
 export const socket = io();
@@ -19,6 +20,7 @@ function App() {
   const [isLoggedIn, setLogin] = useState(false);
   const [authID, setAuthID] = useState('');
   const [canRender, setRenderStatus] = useState(false);
+  // const [landing, setLanding] = useState(true);
   function toggleLogin() {
     if (isLoggedIn) {
       setLogin(false);
@@ -46,6 +48,11 @@ function App() {
     }
     return null;
   }
+  /* function switchPage() {
+    const button = document.getElementById('searchfilters');
+    button.style.display = 'none';
+    setLanding(false);
+  } */
   function conditionalLogout() {
     if (isLoggedIn && canRender) {
       return (
@@ -54,6 +61,14 @@ function App() {
           <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
         </div>
       );
+      /* return (
+        <div>
+          <button id="searchfilters" type="button" className="search" onClick={switchPage}>Search For Events</button>
+          <GetLocation clientId={authID} socket={socket} />
+          {landing === true ? <LandingPage /> : <GetLocation clientId={authID} socket={socket} />}
+          <Logout toggleLogin={toggleLogin} socket={socket} authID={authID} />
+        </div>
+      ); */
     }
     return null;
   }
