@@ -78,7 +78,7 @@ input[type=text]:focus {
 }*/
 
 button {
-  background-color: #4CAF50;
+  background-color: #2874A6;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -96,7 +96,7 @@ button:hover {
 
 .search {
   font: bold 34px "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
-  color: white;
+  color: black;
   line-height: 90%;
   margin: 0.2em 0 0.4em 0;
   font-size: 20px;
