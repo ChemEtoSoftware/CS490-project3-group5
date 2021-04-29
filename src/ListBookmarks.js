@@ -21,6 +21,7 @@ export function ListBookmarks(props) {
   const n3 = '10000';
   console.log(Bookmarks);
   function renderPage(currEvent) {
+    socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>

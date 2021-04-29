@@ -1,7 +1,7 @@
-/* eslint-disable */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import './App.css';
 import PropTypes from 'prop-types';
 import { List, Header } from 'semantic-ui-react';
@@ -11,7 +11,7 @@ import {
 }
   from 'react-leaflet';
 
-const socket = io(); // Connects to socket connection io()
+// const socket = io(); // Connects to socket connection io()
 
 export function EventPage(props) {
   /* Couldn't figure out how to pass variables as props in onclick,
@@ -39,11 +39,8 @@ export function EventPage(props) {
   const n4 = '400000';
   const lat = currEvent._embedded.venues[0].location.latitude;
   const long = currEvent._embedded.venues[0].location.longitude;
-  
   const [likes, setLikes] = useState(0); // state to update likes
   const [dislikes, setDislikes] = useState(0); // state to update dislikes
-  
-  
   useEffect(() => {
     /*
     socket.on('event_list', (data) => {
@@ -51,38 +48,31 @@ export function EventPage(props) {
       // setLikes(data.likes); // array of likes
       console.log(data);
       console.log(data.likes);
-    
     });
     */
-    
     socket.on('update_likes_dislikes', (data) => {
       setLikes(data.likes); // array of likes
       setDislikes(data.dislikes);
       console.log(data);
       console.log(data.likes);
       console.log(data.dislikes);
-    
     });
-    
     socket.on('show_likes_dislikes', (data) => {
-      console.log("Inside show likes/dislikes");
+      console.log('Inside show likes/dislikes');
       console.log(data); // {dislikes: "94", likes: "7"}
       setLikes(data.likes);
       setDislikes(data.dislikes);
     });
-    
   }, []);
-  
   const updateLikes = () => {
     console.log('Inside updateLikes');
     socket.emit('dislike_event', { eventID: currEvent.id, isLiked: true });
-    setLikes(likes+1);
+    setLikes(likes + 1);
   };
-  
   const updateDislikes = () => {
     console.log('Inside UupdateDislikes');
     socket.emit('dislike_event', { eventID: currEvent.id, isLiked: false });
-    setDislikes(dislikes+1);
+    setDislikes(dislikes + 1);
   };
   return (
     <div>
@@ -108,7 +98,9 @@ export function EventPage(props) {
                 >
                   <FaThumbsUp />
                 </button>
-                {likes} likes
+                {likes}
+                <span> </span>
+                likes
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 <button
                   label="dislikeButton"
@@ -119,14 +111,14 @@ export function EventPage(props) {
                     updateDislikes();
                   }}
                 >
-                  <FaThumbsDown
-              /></button>
-              {dislikes} dislikes
-            </h3>
-        
+                  <FaThumbsDown />
+                </button>
+                {dislikes}
+                <span> </span>
+                dislikes
+              </h3>
             </div>
           </List.Item>
-          
         </div>
       </List>
       <div id="mapid">
