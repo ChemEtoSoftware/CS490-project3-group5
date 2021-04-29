@@ -25,6 +25,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install semantic-ui-react
+    - run: npm install react-icons --save
+    - run: npm i react-icons
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
