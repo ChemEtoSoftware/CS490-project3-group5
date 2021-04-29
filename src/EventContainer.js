@@ -90,7 +90,7 @@ export function EventPage(props) {
         <div className="container" key={clientId + i}>
           <List.Item key={currEvent.id + n}>
             <Header key={currEvent.id + n1}>{currEvent.name}</Header>
-            <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" />
+            <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
             <div key={currEvent.id + n3} className="buttonHolder">
               <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
             </div>
@@ -137,9 +137,13 @@ export function EventPage(props) {
           />
           <Marker key={`marker-${currEvent.id}`} position={[lat, long]}>
             <Popup>
-              A pretty CSS3 popup.
+              {currEvent.name}
               <br />
-              Easily customizable.
+              {currEvent._embedded.venues[0].address.line1}
+              ,
+              {currEvent._embedded.venues[0].city.name}
+              ,
+              {currEvent._embedded.venues[0].state.stateCode}
             </Popup>
           </Marker>
         </MapContainer>

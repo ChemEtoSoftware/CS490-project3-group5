@@ -21,7 +21,12 @@ export function SearchFilterEvents(props) {
         setInitialData(prev);
         for (i = 0; i < prev.length; i += 1) {
           const curr = prev[i]._embedded.venues[0].location;
-          const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
+          const address = prev[i]._embedded.venues[0].address.line1;
+          const city = prev[i]._embedded.venues[0].city.name;
+          const state = prev[i]._embedded.venues[0].state.stateCode;
+          const dict = {
+            lat: curr.latitude, long: curr.longitude, name: prev[i].name, address, city, state,
+          };
           setLocations((currLocation) => [...currLocation, dict]);
         }
       })
