@@ -22,7 +22,6 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-
 export function EventPage(props) {
   /* Couldn't figure out how to pass variables as props in onclick,
   so instead just use them directly. Bookmarks function can either
