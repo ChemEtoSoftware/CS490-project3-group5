@@ -1,10 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect } from 'react';
 // import io from 'socket.io-client';
 import './App.css';
 import PropTypes from 'prop-types';
-import { List, Header } from 'semantic-ui-react';
+import { List, Header, Icon } from 'semantic-ui-react';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import {
   MapContainer, TileLayer, Marker, Popup,
@@ -99,6 +98,8 @@ export function EventPage(props) {
                   }}
                 >
                   <FaThumbsUp />
+                  <Icon name="close" link />
+                  <i className="bi bi-hand-thumbs-up-fill" />
                 </button>
                 {likes}
                 <span> </span>
