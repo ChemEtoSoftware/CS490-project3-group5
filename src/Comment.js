@@ -90,7 +90,8 @@ export function Comment(props) {
     // return () => {
     //   socket.removeEventListener('EventLoad');
     // };
-  }, [comments]);
+  }, []);
+
   return (
     <div>
       {conditionalExistingComments()}

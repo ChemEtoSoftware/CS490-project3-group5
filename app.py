@@ -4,9 +4,9 @@
     as well as allowing them the chance to play each other.
 """
 import os
-import requests
 import hashlib
 import json
+import requests
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -350,28 +350,28 @@ def on_disconnect():
     print('User disconnected!')
 
 @SOCKETIO.on('Eventload')
-def loadEvent(data):
+def load_event(data):
     """Event clicked, use data to load comments and emit to componnent"""
     # data = clientId, eventId, uniqueID
     # use clientId to load commenting user's photo and name
-    commentUserData = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
     # use eventId to load existing comments associated with that event
-    commentUserData['eventId'] = data["eventId"]
-    existingComments = Comments.query.filter_by(event_id=data["eventId"])
-    sendListPairs=[]
-    if existingComments:
-        sendListPairs.append('True')
-        for comm in existingComments:
-            commName = comm.username
-            commText = comm.text
-            sendListPairs.append(commName+': '+commText)
-            print(sendListPairs)
+    comment_user_data['eventId'] = data["eventId"]
+    existing_comments = Comments.query.filter_by(event_id=data["eventId"])
+    send_list_pairs = []
+    if existing_comments:
+        send_list_pairs.append('True')
+        for comm in existing_comments:
+            comm_name = comm.username
+            comm_text = comm.text
+            send_list_pairs.append(comm_name+': '+comm_text)
+            print(send_list_pairs)
     else:
-        sendListPairs.append('None')
+        send_list_pairs.append('None')
         print('No comments exist for event')
-    commentUserData["comments"] = sendListPairs
-    print(commentUserData)
-    SOCKETIO.emit('EventLoad', commentUserData, broadcast=False, include_self=True)
+    comment_user_data["comments"] = send_list_pairs
+    print(comment_user_data)
+    SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
     # SOCKETIO.emit('CommentLoad',sendListPairs,broadcast=False, include_self=True)
     print('EMITTING EVENTLOAD')
     print(data)
@@ -382,17 +382,17 @@ def comment_submit(data):
     global ACTIVE_USER_SOCKET_PAIRS
     # load information from comment
     text = data["comment"] # comment text
-    eventId = data["eventID"] # eventID associated with comment
-    clientId = data["clientId"] # clientId who made the comment
-    commentUserData = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
-    name = commentUserData["Name"]
+    event_id = data["eventID"] # eventID associated with comment
+    client_id = data["clientId"] # clientId who made the comment
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    name = comment_user_data["Name"]
     # set defaults for temporary working comments
-    head = clientId
+    head = client_id
     tail = '0'
     depth = 0
     comment_data = Comments(
-        commentId = generate_comment_id(text,eventId,clientId),
-        event_id=eventId,
+        comment_id=generate_comment_id(text, event_id, client_id),
+        event_id=event_id,
         username=name,
         text=text,
         head=head,
@@ -400,30 +400,30 @@ def comment_submit(data):
         depth=depth)
     DB.session.add(comment_data)
     DB.session.commit()
-    existingComments = Comments.query.filter_by(event_id=eventId)
-    commentUserData={}
-    sendListPairs=[]
-    if existingComments:
-        sendListPairs.append('True')
-        for comm in existingComments:
-            commName = comm.username
-            commText = comm.text
-            sendListPairs.append(commName+': '+commText)
+    existing_comments = Comments.query.filter_by(event_id=event_id)
+    comment_user_data = {}
+    send_list_pairs = []
+    if existing_comments:
+        send_list_pairs.append('True')
+        for comm in existing_comments:
+            comm_name = comm.username
+            comm_text = comm.text
+            send_list_pairs.append(comm_name+': '+comm_text)
     else:
-        sendListPairs.append('None')
+        send_list_pairs.append('None')
         print('No comments exist for event')
-    commentUserData["comments"] = sendListPairs
-    print(commentUserData)
-    SOCKETIO.emit('EventLoad', commentUserData, broadcast=False, include_self=True)
+    comment_user_data["comments"] = send_list_pairs
+    SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
     print(Comments.query.all())
 
-def generate_comment_id(comment,eventId,clientId):
-    m = hashlib.md5()
-    line = comment+eventId+clientId
+def generate_comment_id(comment, event_id, client_id):
+    ''' Generate unique comment ID '''
+    mix = hashlib.md5()
+    line = comment+event_id+client_id
     line = line.encode('utf-8')
-    m.update(line)
-    commentId = str(int(m.hexdigest(), 16))[0:12]
-    return commentId
+    mix.update(line)
+    comment_id = str(int(mix.hexdigest(), 16))[0:12]
+    return comment_id
 
 @SOCKETIO.on('Login')
 def on_login(data):
@@ -434,7 +434,7 @@ def on_login(data):
     if data["googleId"][-7:] in all_users:
         all_users = db_add_user(data)
     else:
-        print("Returning User: ",data)
+        print("Returning User: ", data)
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
@@ -452,7 +452,7 @@ def db_add_user(data):
     # truncate image url length to avoid string overflow in DB
     truncate_len = len("'https://lh3.googleusercontent.com")
     truncated_imgurl = data["imageUrl"][truncate_len:]
-    print("NEW IMAGE URL: ",truncated_imgurl)
+    print("NEW IMAGE URL: ", truncated_imgurl)
     # init user data received from client into obj
     # id is a string of length 7 which is maximum integer size
     user_data = Users(

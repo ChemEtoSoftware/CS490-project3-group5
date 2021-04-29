@@ -45,7 +45,7 @@ def get_comments(d_b):
         username = d_b.Column(d_b.String(80), nullable=False)
         text = d_b.Column(d_b.String(150), nullable=False)
         head = d_b.Column(d_b.String(80), nullable=True)
-        tail = d_b.Column(d_b.String(80),nullable=True)
+        tail = d_b.Column(d_b.String(80), nullable=True)
         depth = d_b.Column(d_b.Integer, nullable=False)
         def __repr__(self):
             return '<Comment %r>' % self.commentId
