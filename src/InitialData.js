@@ -24,6 +24,7 @@ import {
   MapContainer, TileLayer, Marker, Popup,
 }
   from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import { EventPage } from './EventContainer';
 /* eslint-disable no-underscore-dangle */
 
@@ -79,7 +80,7 @@ export function InitialData(props) {
               </li>
             ))}
           </ul>
-          <div id="mapid">
+          <div className="mapid">
             <MapContainer center={[initialMapMarker.lat, initialMapMarker.long]} zoom={13} scrollWheelZoom={false}>
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
