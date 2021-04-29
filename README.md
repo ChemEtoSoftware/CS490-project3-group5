@@ -43,6 +43,7 @@ In your terminal:
 17. `pip install geocoder`
 18. `pip install geopy`
 19. `pip install uszipcode`
+20. `npm install react-icons --save`
 
 ## Setup
 
