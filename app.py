@@ -391,7 +391,7 @@ def comment_submit(data):
     tail = '0'
     depth = 0
     comment_data = Comments(
-        comment_id=generate_comment_id(text, event_id, client_id),
+        commentId=generate_comment_id(text, event_id, client_id),
         event_id=event_id,
         username=name,
         text=text,
