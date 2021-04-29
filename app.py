@@ -1,4 +1,4 @@
-# pylint: disable=W0702
+# pylint: disable=W0702,R1705
 """
     This module is specifically for creating a database that stores tictactoe player scores,
     as well as allowing them the chance to play each other.
@@ -112,24 +112,28 @@ def api_post():
 
 @APP.route('/location', methods=['POST'])
 def get_lat_long():
-    """ ger user location """
+    """ get user location """
     global USER_STATE
     location_json = request.get_json()
-    latitude = location_json.get('lat')
-    longitude = location_json.get('long')
-    geolocator = Nominatim(user_agent="EventGuru")
-    coordinates = "" + str(latitude) + " " + str(longitude)
-    location = geolocator.reverse(coordinates)
-    print(location.address)
-    location_list = location.address.split(", ")
-    print(location_list)
-    zip_code = location_list[-2]
-    searchengine = SearchEngine(simple_zipcode=True)
-    zipcode = searchengine.by_zipcode(zip_code)
-    zipcode_dict = zipcode.to_dict()
-    USER_STATE = zipcode_dict["state"]
-    print(zipcode_dict["state"])
-    return zipcode_dict
+    if len(location_json) == 2:
+        latitude = location_json.get('lat')
+        longitude = location_json.get('long')
+        geolocator = Nominatim(user_agent="EventGuru")
+        coordinates = "" + str(latitude) + " " + str(longitude)
+        location = geolocator.reverse(coordinates)
+        print(location.address)
+        location_list = location.address.split(", ")
+        print(location_list)
+        zip_code = location_list[-2]
+        searchengine = SearchEngine(simple_zipcode=True)
+        zipcode = searchengine.by_zipcode(zip_code)
+        zipcode_dict = zipcode.to_dict()
+        USER_STATE = zipcode_dict["state"]
+        print(zipcode_dict["state"])
+        return zipcode_dict
+    else:
+        USER_STATE = ""
+        return USER_STATE
 
 @SOCKETIO.on('connect')
 def on_connect():
@@ -293,7 +297,7 @@ def on_bookmark(data):
     pair = ACTIVE_USER_SOCKET_PAIRS[socket_id]
     user_id = pair['ID']
     print(user_id)
-    bookmarked_event_id = [data['eventID']]
+    bookmarked_event_id = data['eventID']
     exists = DB.session.query(Bookmarks).filter_by(
         clientId=user_id, event_id=bookmarked_event_id).first()
     if exists is None:

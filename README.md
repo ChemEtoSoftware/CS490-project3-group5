@@ -42,6 +42,7 @@ In your terminal:
 16. `pip install ratelimiter`
 17. `pip install geocoder`
 18. `pip install geopy`
+19. `pip install -Iv uszipcode==0.2.4`
 19. `pip install uszipcode`
 20. `npm install react-icons --save`
 

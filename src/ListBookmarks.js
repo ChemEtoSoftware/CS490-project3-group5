@@ -20,11 +20,17 @@ export function ListBookmarks(props) {
   const n2 = '1000';
   const n3 = '10000';
   console.log(Bookmarks);
+  function showHome() {
+    setShowPage(false);
+  }
   function renderPage(currEvent) {
     socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>
+        <div>
+          <button type="button" className="search" onClick={showHome}>Home</button>
+        </div>
         <EventPage
           currEvent={currEvent}
           clientId={clientId}

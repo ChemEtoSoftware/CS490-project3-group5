@@ -131,11 +131,11 @@ export function EventPage(props) {
             <Popup>
               {currEvent.name}
               <br />
-              {currEvent._embedded.venues[0].address.line1}
+              {typeof currEvent._embedded.venues[0].address === 'undefined' ? null : currEvent._embedded.venues[0].address.line1}
               ,
-              {currEvent._embedded.venues[0].city.name}
+              {typeof currEvent._embedded.venues[0].city === 'undefined' ? null : currEvent._embedded.venues[0].city.name}
               ,
-              {currEvent._embedded.venues[0].state.stateCode}
+              {typeof currEvent._embedded.venues[0].state === 'undefined' ? null : currEvent._embedded.venues[0].state.stateCode}
             </Popup>
           </Marker>
         </MapContainer>
