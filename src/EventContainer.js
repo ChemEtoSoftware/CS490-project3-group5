@@ -9,6 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import './App.css';
 import PropTypes from 'prop-types';
+import L from 'leaflet';
 import { List, Header } from 'semantic-ui-react';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
