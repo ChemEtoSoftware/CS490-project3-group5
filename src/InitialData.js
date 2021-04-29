@@ -25,6 +25,7 @@ import {
 }
   from 'react-leaflet';
 import { EventPage } from './EventContainer';
+/* eslint-disable no-underscore-dangle */
 
 export function InitialData(props) {
   /* All these states and socket are
@@ -89,11 +90,11 @@ export function InitialData(props) {
                   <Popup>
                     {currLocation.name}
                     <br />
-                    {currLocation.address}
+                    {typeof currLocation.address === 'undefined' ? null : currLocation.address.line1}
                     ,
-                    {currLocation.city}
+                    {typeof currLocation.city === 'undefined' ? null : currLocation.city.name}
                     ,
-                    {currLocation.state}
+                    {typeof currLocation.state === 'undefined' ? null : currLocation.state.stateCode}
                   </Popup>
                 </Marker>
               ))}
