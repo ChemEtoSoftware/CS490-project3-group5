@@ -100,6 +100,7 @@ export function EventPage(props) {
                   <FaThumbsUp />
                   <Icon name="close" link />
                   <i className="bi bi-hand-thumbs-up-fill" />
+                  <i className="fas fa-thumbs-up" />
                 </button>
                 {likes}
                 <span> </span>
