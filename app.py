@@ -1,4 +1,4 @@
-# pylint: disable=W0702
+# pylint: disable=W0702,R1705
 """
     This module is specifically for creating a database that stores tictactoe player scores,
     as well as allowing them the chance to play each other.
@@ -130,10 +130,9 @@ def get_lat_long():
         USER_STATE = zipcode_dict["state"]
         print(zipcode_dict["state"])
         return zipcode_dict
-    else: 
+    else:
         USER_STATE = ""
         return USER_STATE
-    
 
 @SOCKETIO.on('connect')
 def on_connect():
