@@ -24,6 +24,7 @@ export function ListBookmarks(props) {
     setShowPage(false);
   }
   function renderPage(currEvent) {
+    socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>

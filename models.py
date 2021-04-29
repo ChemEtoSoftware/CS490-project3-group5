@@ -1,4 +1,7 @@
 """Class for user and bookmark template"""
+
+#from app import DB
+
 def get_users(d_b):
     """This function fetches users table.
     Prevents a cyclical import"""
@@ -23,3 +26,13 @@ def get_bookmarks(d_b):
         def __repr__(self):
             return '<Bookmark %r>' % self.id
     return Bookmarks
+def get_likes_dislikes(d_b):
+    '''Model for Likes and Dislikes Feature'''
+    class LikesDislikes(d_b.Model):
+        '''Can create DB with eventID, num of likes and dislikes'''
+        eventID = d_b.Column(d_b.String(80), primary_key=True)
+        likes = d_b.Column(d_b.Integer, nullable=False)
+        dislikes = d_b.Column(d_b.Integer, nullable=False)
+        def __repr__(self):
+            return '<LikesDislikes %r>' % self.eventID
+    return LikesDislikes
