@@ -15,27 +15,28 @@ export const Movies = ({ initialData }) => {
     );
 };
 */
-
-/* eslint-disable */
-/* eslint-disable no-underscore-dangle, jsx-a11y/click-events-have-key-events,
-jsx-a11y/no-static-element-interactions */
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
-import { List, Icon } from 'semantic-ui-react';
-
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-static-element-interactions, global-require */
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './map.css';
 import {
   MapContainer, TileLayer, Marker, Popup,
 }
   from 'react-leaflet';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import { EventPage } from './EventContainer';
 /* eslint-disable no-underscore-dangle */
 
-const socket = io(); // Connects to socket connection io()
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 export function InitialData(props) {
   /* All these states and socket are
@@ -60,8 +61,6 @@ export function InitialData(props) {
     setShowPage(false);
   }
   function renderPage(currEvent) {
-    console.log("On click render page");
-    socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>
@@ -76,8 +75,6 @@ export function InitialData(props) {
       </div>,
     );
   }
-  
-  
   if (!showPage) {
     return (
       <div>
