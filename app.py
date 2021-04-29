@@ -5,6 +5,8 @@
 """
 import os
 import requests
+import hashlib
+import json
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -336,6 +338,7 @@ def retrieve_bookmarks(data):
             event_details.append(jsontext)
             redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=False, include_self=True)
+
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
@@ -346,29 +349,47 @@ def loadEvent(data):
     """Event clicked, use data to load comments and emit to componnent"""
     # data = clientId, eventId, uniqueID
     # use clientId to load commenting user's photo and name
-    imageAddon = "'https://lh3.googleusercontent.com"
     commentUserData = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
     # use eventId to load existing comments associated with that event
-    # existingComments = Comments.query.filter_by(event_id=data["eventId"])
-    # for comm in existingComments:
-    #     print(comm)
-    print("EMITTING EVENTLOAD")
+    commentUserData['eventId'] = data["eventId"]
+    existingComments = Comments.query.filter_by(event_id=data["eventId"])
+    sendListPairs=dict()
+    sendListPairs['eventId']=data["eventId"]
+    if existingComments:
+        sendListPairs['check']='True'
+        for comm in existingComments:
+            commName = comm.username
+            commText = comm.text
+            sendListPairs[comm.commentId]={commName, commText}
+            print(sendListPairs)
+    else:
+        sendListPairs['check']='None'
+        print('No comments exist for event')
+    # print(dict(sendListPairs))
+    json_object = json.dumps(sendListPairs, indent = 4)  
+    SOCKETIO.emit('EventLoad', commentUserData, broadcast=False, include_self=True)
+    SOCKETIO.emit('CommentLoad',json_object,broadcast=False, include_self=True)
+    print('EMITTING EVENTLOAD')
     print(data)
+
 @SOCKETIO.on('comment')
 def comment_submit(data):
     """this runs on receipt of a new comment"""
+    global ACTIVE_USER_SOCKET_PAIRS
     # load information from comment
     text = data["comment"] # comment text
     eventId = data["eventID"] # eventID associated with comment
     clientId = data["clientId"] # clientId who made the comment
+    commentUserData = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    name = commentUserData["Name"]
     # set defaults for temporary working comments
     head = clientId
     tail = '0'
     depth = 0
     comment_data = Comments(
-        commentId = '0',
+        commentId = generate_comment_id(text,eventId,clientId),
         event_id=eventId,
-        username="username",
+        username=name,
         text=text,
         head=head,
         tail=tail,
@@ -376,15 +397,25 @@ def comment_submit(data):
     DB.session.add(comment_data)
     DB.session.commit()
     print(Comments.query.all())
-    
+
+def generate_comment_id(comment,eventId,clientId):
+    m = hashlib.md5()
+    line = comment+eventId+clientId
+    line = line.encode('utf-8')
+    m.update(line)
+    commentId = str(int(m.hexdigest(), 16))[0:12]
+    return commentId
+
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    all_users = Users.query.all()
     global LIST_OF_ACTIVE_USERS
+    all_users = Users.query.all()
     print("Data Recieved: \n", data)
     if data["googleId"][-7:] in all_users:
         all_users = db_add_user(data)
+    else:
+        print("Returning User: ",data)
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
@@ -402,6 +433,7 @@ def db_add_user(data):
     # truncate image url length to avoid string overflow in DB
     truncate_len = len("'https://lh3.googleusercontent.com")
     truncated_imgurl = data["imageUrl"][truncate_len:]
+    print("NEW IMAGE URL: ",truncated_imgurl)
     # init user data received from client into obj
     # id is a string of length 7 which is maximum integer size
     user_data = Users(

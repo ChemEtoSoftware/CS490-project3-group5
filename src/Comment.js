@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 // import io from 'socket.io-client';
 
 export function Comment(props) {
-//   const { setLogin, socket, authID } = props;
-  const inputRef = useRef(null);//useRef for input box
+  const inputRef = useRef(null);
   const { socket, eventId, clientId } = props;
-  const [comments, setComments] = useState([]);//saves existing comments in state variable
-  const [showExistingComments, setShowExistingComm] = useState(false);//toggle for showing exist com
-  const [showCommentBox, setShowCommentBox] = useState(false);//toggle for showing commentbox
-  function onClick() {
+  const [comments, setComments] = useState({});
+  const [showExistingComments, setShowExistingComm] = useState(false);
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [userImage, setUserImage] = useState('');
+  const [userName, setUserName] = useState('');
+  function buttonHandler() {
     if (inputRef.current === null || inputRef.current.value === '') {
       alert('Theres nothing to comment!');
     } else if (inputRef.current != null) {
@@ -24,38 +25,78 @@ export function Comment(props) {
       socket.emit('comment', data);
     }
   }
+  function conditionalExistingComments() {
+    if (showExistingComments) {
+      return (
+        <h1>Comments</h1>
+      );
+    }
+    return null;
+  }
   function conditionalCommentBox() {
-    if()
-    return(<div>
-      <form>
+    if (showCommentBox) {
+      return (
         <div>
-          <textarea name="comments" id="comments" ref={inputRef}>
-            Hey... say something!
-          </textarea>
+          <form>
+            <div>
+              <div>
+                <img src={userImage} className="profileImage" alt="User Profile" />
+                <h3>{userName}</h3>
+              </div>
+              <textarea name="comments" id="comments" ref={inputRef}>
+                Hey... say something!
+              </textarea>
+            </div>
+            <button type="button" onClick={() => buttonHandler()}>
+              Add Comment
+            </button>
+          </form>
         </div>
-        <button type="button" onClick={() => onClick()}>
-          Add Comment
-        </button>
-      </form>
-    </div>);
+      );
+    }
+    return null;
   }
   useEffect(() => {
     console.log('Emitting Eventload');
-    if (!showExistingComments) {
+    if (!showCommentBox) {
       socket.emit('Eventload', { uniqueID: socket.id, clientId, eventId });
     }
     socket.on('EventLoad', (data) => {
       // Eventload is socketId, clientId, eventId
-      console.log('comments received from server');
       // check if there exists comments before setshowExistingComm becomes true
-      setComments(data.comments);
-      console.log(comments);
-      setShowExistingComm(true);
+      if (data.eventId === eventId) {
+        console.log(data.Image);
+        setUserImage(data.Image);
+        setUserName(data.Name);
+        if (data.Pairs !== 'None') {
+          setComments(data.Pairs);
+          console.log(comments);
+          setShowExistingComm(true);
+        }
+        setShowCommentBox(true);
+      }
     });
-    return () => socket.removeEventListener('EventLoad');
+    return () => {
+      socket.removeEventListener('EventLoad');
+    };
+  }, []);
+  useEffect(() => {
+    socket.on('CommentLoad', (data) => {
+      if (data.eventId === eventId) {
+        console.log(data);
+        setComments(data);
+        console.log(comments);
+      }
+    });
+    return () => {
+      socket.removeEventListener('CommentLoad');
+    };
   }, []);
   return (
-    conditionalCommentBox();
+    <div>
+      {conditionalCommentBox()}
+      {conditionalExistingComments()}
+    </div>
   );
 }
 
@@ -64,10 +105,12 @@ Comment.propTypes = {
   clientId: PropTypes.string,
   eventId: PropTypes.string,
 };
+
 Comment.defaultProps = {
   socket: null,
   clientId: null,
   eventId: null,
 };
+
 export default Comment;
 // <input className="input" ref={inputRef} type="text" />
