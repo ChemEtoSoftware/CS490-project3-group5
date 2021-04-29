@@ -17,7 +17,6 @@ export const Movies = ({ initialData }) => {
 */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './map.css';
@@ -61,12 +60,12 @@ export function InitialData(props) {
   if (!showPage) {
     return (
       <div className="container-fluid">
-        <ul className="list-inline">
+        <ul className="events">
           {initialData.map((currEvent) => (
-            <li className="event">
+            <li>
               <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-                <img key={currEvent.id + n2} src={currEvent.images[0].url} className="img-responsive" alt="" />
-                <h3 key={currEvent.id + n1}>{currEvent.name}</h3>
+                <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+                <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
                 <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
               </div>
             </li>
@@ -81,9 +80,13 @@ export function InitialData(props) {
             {locations.map((currLocation, idx) => (
               <Marker key={`marker-${idx * 2}`} position={[currLocation.lat, currLocation.long]}>
                 <Popup>
-                  A pretty CSS3 popup.
+                  {currLocation.name}
                   <br />
-                  Easily customizable.
+                  {currLocation.address}
+                  ,
+                  {currLocation.city}
+                  ,
+                  {currLocation.state}
                 </Popup>
               </Marker>
             ))}
