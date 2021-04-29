@@ -36,3 +36,17 @@ def get_likes_dislikes(d_b):
         def __repr__(self):
             return '<LikesDislikes %r>' % self.eventID
     return LikesDislikes
+def get_comments(d_b):
+    """ defines comment table"""
+    class Comments(d_b.Model):
+        """creates a comment"""
+        commentId = d_b.Column(d_b.String(80), primary_key=True)
+        event_id = d_b.Column(d_b.String(80), nullable=False)
+        username = d_b.Column(d_b.String(80), nullable=False)
+        text = d_b.Column(d_b.String(150), nullable=False)
+        head = d_b.Column(d_b.String(80), nullable=True)
+        tail = d_b.Column(d_b.String(80), nullable=True)
+        depth = d_b.Column(d_b.Integer, nullable=False)
+        def __repr__(self):
+            return '<Comment %r>' % self.commentId
+    return Comments
