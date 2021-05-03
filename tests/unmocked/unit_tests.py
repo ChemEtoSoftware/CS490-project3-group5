@@ -8,6 +8,7 @@ unitTests without mocking:
 import unittest
 from api_request_url import api
 from user_remove import user_remove
+from get_lat_long import get_lat_long
 
 INPUT_PARAMETER = "pop"
 EXPECTED_OUTPUT = "https://app.ticketmaster.com/discovery/v2/events.json?&keyword=pop"
@@ -87,6 +88,59 @@ class UsersRemoveTestCase(unittest.TestCase):
 
             self.assertNotEqual(len(actual_result), len(expected_result))
             self.assertNotEqual(actual_result[0], expected_result[0])
+
+INPUT_DICT = "input"
+OUTPUT = "output"
+
+class GetStateCode(unittest.TestCase):
+    """ success outputs and tests """
+    def setUp(self):
+        """ success outputs """
+        self.success_test_parameters = [
+            {
+                INPUT_DICT : [40.7067838, -74.0101468],
+                OUTPUT : 'NY'
+            },
+            {
+                INPUT_DICT : [40.573504, -74.382711],
+                OUTPUT : 'NJ'
+            },
+            {
+                INPUT_DICT : [30.3321838, -81.655651],
+                OUTPUT : 'FL'
+            }
+        ]
+
+        self.failure_test_parameters = [
+            {
+                INPUT_DICT : [40.7067838, -74.0101468],
+                OUTPUT : 'New York'
+            },
+            {
+                INPUT_DICT : [40.573504, -74.382711],
+                OUTPUT : 'N J'
+            },
+            {
+                INPUT_DICT : [30.3321838, -81.655651],
+                OUTPUT : 'FL Florida'
+            }
+        ]
+
+    def test_get_state_code_success(self):
+        """ success tests """
+        for test in self.success_test_parameters:
+            actual_result = get_lat_long(test[INPUT_DICT])
+            expected_result = test[OUTPUT]
+            self.assertEqual(actual_result, expected_result)
+            self.assertEqual(len(actual_result), len(expected_result))
+
+    def test_get_state_code_failure(self):
+        """ failure tests """
+        for test in self.failure_test_parameters:
+            actual_result = get_lat_long(test[INPUT_DICT])
+            expected_result = test[OUTPUT]
+            self.assertNotEqual(actual_result, expected_result)
+            self.assertNotEqual(len(actual_result), len(expected_result))
 
 
 if __name__ == '__main__':
