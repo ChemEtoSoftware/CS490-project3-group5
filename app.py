@@ -349,15 +349,8 @@ def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
 
-@SOCKETIO.on('Eventload')
-def load_event(data):
-    """Event clicked, use data to load comments and emit to componnent"""
-    # data = clientId, eventId, uniqueID
-    # use clientId to load commenting user's photo and name
-    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
-    # use eventId to load existing comments associated with that event
-    comment_user_data['eventId'] = data["eventId"]
-    existing_comments = Comments.query.filter_by(event_id=data["eventId"])
+def generate_comment_list(existing_comments):
+    ''' generate list of formatted existing comments to send to client'''
     send_list_pairs = []
     if existing_comments:
         send_list_pairs.append('True')
@@ -365,31 +358,60 @@ def load_event(data):
             comm_name = comm.username
             comm_text = comm.text
             send_list_pairs.append(comm_name+': '+comm_text)
-            print(send_list_pairs)
     else:
         send_list_pairs.append('None')
         print('No comments exist for event')
+    return send_list_pairs
+
+@SOCKETIO.on('Eventload')
+def load_event(data):
+    """Event clicked, use data to load comments + user data and emit to component"""
+    # data = clientId, eventId, uniqueID
+    # use clientId to load commenting user's photo and name
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
+    # use eventId to load existing comments associated with that event
+    comment_user_data['eventId'] = data["eventId"]
+    existing_comments = Comments.query.filter_by(event_id=data["eventId"])
+    # send existing comment obj to helper func, returning formatted array of comments
+    send_list_pairs = generate_comment_list(existing_comments)
     comment_user_data["comments"] = send_list_pairs
     print(comment_user_data)
     SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
-    # SOCKETIO.emit('CommentLoad',sendListPairs,broadcast=False, include_self=True)
     print('EMITTING EVENTLOAD')
-    print(data)
 
 @SOCKETIO.on('comment')
 def comment_submit(data):
-    """this runs on receipt of a new comment"""
+    """on receipt of new comment, update db
+    send new list to clients that are displaying current eventID"""
     global ACTIVE_USER_SOCKET_PAIRS
-    # load information from comment
+    # load information from data emit
+    event_id = data["eventID"] # eventID associated with comment
     text = data["comment"] # comment text
     event_id = data["eventID"] # eventID associated with comment
     client_id = data["clientId"] # clientId who made the comment
-    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]]
+    # load user data from socketID of client
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] # ID, Name, Image
     name = comment_user_data["Name"]
-    # set defaults for temporary working comments
-    head = client_id
-    tail = '0'
-    depth = 0
+    # generate new list of comments to send to clients
+    existing_comments = db_add_comment(client_id, text, event_id, name)
+    comment_user_data = dict()
+    send_list_pairs = generate_comment_list(existing_comments)
+    comment_user_data["comments"] = send_list_pairs
+    comment_user_data["eventID"] = event_id
+    # emit updated comment list to user
+    # SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
+    SOCKETIO.emit('Comment', comment_user_data, broadcast=False, include_self=True)
+    print(comment_user_data)
+    print(Comments.query.all())
+
+def db_add_comment(client_id, text, event_id, name):
+    """ returns queried list of comments """
+    # Create client object and save in DB
+    head = client_id  # head should be comment ID of comment above
+    tail = '0' # tail should be commentID of comment below this individual comment
+    depth = 0 # this is the depth level (indent level) of this comment
+    # depth can be found recursively looking at head until you reach depth 0,
+    # to find the new depth of threaded comments
     comment_data = Comments(
         commentId=generate_comment_id(text, event_id, client_id),
         event_id=event_id,
@@ -398,23 +420,10 @@ def comment_submit(data):
         head=head,
         tail=tail,
         depth=depth)
+    # add comment to comment DB
     DB.session.add(comment_data)
     DB.session.commit()
-    existing_comments = Comments.query.filter_by(event_id=event_id)
-    comment_user_data = {}
-    send_list_pairs = []
-    if existing_comments:
-        send_list_pairs.append('True')
-        for comm in existing_comments:
-            comm_name = comm.username
-            comm_text = comm.text
-            send_list_pairs.append(comm_name+': '+comm_text)
-    else:
-        send_list_pairs.append('None')
-        print('No comments exist for event')
-    comment_user_data["comments"] = send_list_pairs
-    SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
-    print(Comments.query.all())
+    return Comments.query.filter_by(event_id=event_id)
 
 def generate_comment_id(comment, event_id, client_id):
     ''' Generate unique comment ID '''
@@ -429,6 +438,7 @@ def generate_comment_id(comment, event_id, client_id):
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
     global LIST_OF_ACTIVE_USERS
+    global ACTIVE_USER_SOCKET_PAIRS
     all_users = Users.query.all()
     print("Data Recieved: \n", data)
     if data["googleId"][-7:] in all_users:
@@ -485,7 +495,6 @@ def on_dislike_event(data):
     current_event = data['eventID']
     #print(current_event)
     print(data['isLiked'])
-
     if current_event in events:
         print("This event exists {}".format(current_event))
         #print(current_event.likes)
