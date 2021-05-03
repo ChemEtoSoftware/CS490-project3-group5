@@ -6,10 +6,10 @@ import copy
 import os
 
 sys.path.append(os.path.abspath('../../'))
-from app import on_bookmark, Users, Bookmarks
+from app import on_bookmark, Users, Bookmarks, Comments
 import models
 
-from app import db_add_user
+from app import db_add_user, db_add_comment
 KEY_INPUT = 'input'
 KEY_EXPECTED = 'expected'
 INPUT = "id, event_id"
@@ -69,6 +69,60 @@ class AddUserTestCase(unittest.TestCase):
                         self.assertEqual(len(actual_result), len(expected_result))
                     # print("after asserts")
             print('end of test\n')
+
+initial_comment = Comments(commentId="001", event_id="002", username="username", text="Comment", head="000", tail="below", depth=0)
+expected_comment = Comments(commentId="002", event_id="003", username="username2", text="Comment2", head="001", tail="below", depth=0)
+class AddCommmentToDB(unittest.TestCase):
+    """Tests comment DB functionality"""
+    def setUp(self):
+        self.successful_test_params = [
+            {
+                KEY_INPUT: {
+                    "client_id": "001",
+                    "text": "Comment2",
+                    "event_id": "003",
+                    "name": "username2"
+                },
+                KEY_EXPECTED: [initial_comment, expected_comment],
+            },
+        ]
+        # initial_user = Users(id=INITIAL_ID, email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
+        self.db_mock_init = [initial_comment]
+        
+    def mocked_db_session_add(self, comment):
+        self.db_mock_init.append(comment)
+    
+    def mocked_db_session_commit(self):
+        # return self.db_mock_init
+        pass
+    def mocked_user_query_all(self):
+        return self.db_mock_init
+
+    def test_add_comment_success(self):
+        print('Start of testing add_user_to_database')
+        for test in self.successful_test_params:
+            self.db_mock_init = [initial_comment]
+            with patch('app.DB.session.add', self.mocked_db_session_add):
+                with patch('app.DB.session.commit', self.mocked_db_session_commit):
+                    with patch('app.Users.query') as mocked_query:
+                        mocked_query.all= self.mocked_user_query_all
+                        print(self.db_mock_init)
+                        db_add_comment(
+                            test[KEY_INPUT]["client_id"],
+                            test[KEY_INPUT]["text"],
+                            test[KEY_INPUT]["event_id"],
+                            test[KEY_INPUT]["name"],
+                            )
+                        actual_result = self.db_mock_init
+                        expected_result = test[KEY_EXPECTED]
+                        print("\tA:",actual_result)
+                        print("\tE:",expected_result)
+                        print("\tM DB:",self.db_mock_init)
+                        # print("before asserts")
+                        self.assertEqual(len(actual_result), len(expected_result))
+                    # print("after asserts")
+            print('end of test\n')
+
 class AddBookmarkToDB(unittest.TestCase):
     """Tests that the add_to_db function is working properly"""
     def setUp(self):

@@ -385,12 +385,27 @@ def comment_submit(data):
     send new list to clients that are displaying current eventID"""
     global ACTIVE_USER_SOCKET_PAIRS
     # load information from data emit
+    event_id = data["eventID"] # eventID associated with comment
     text = data["comment"] # comment text
     event_id = data["eventID"] # eventID associated with comment
     client_id = data["clientId"] # clientId who made the comment
     # load user data from socketID of client
     comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] # ID, Name, Image
     name = comment_user_data["Name"]
+    # generate new list of comments to send to clients
+    existing_comments = db_add_comment(client_id, text, event_id, name)
+    comment_user_data = dict()
+    send_list_pairs = generate_comment_list(existing_comments)
+    comment_user_data["comments"] = send_list_pairs
+    comment_user_data["eventID"] = event_id
+    # emit updated comment list to user
+    # SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
+    SOCKETIO.emit('Comment', comment_user_data, broadcast=False, include_self=True)
+    print(comment_user_data)
+    print(Comments.query.all())
+
+def db_add_comment(client_id, text, event_id, name):
+    """ returns queried list of comments """
     # Create client object and save in DB
     head = client_id  # head should be comment ID of comment above
     tail = '0' # tail should be commentID of comment below this individual comment
@@ -408,17 +423,7 @@ def comment_submit(data):
     # add comment to comment DB
     DB.session.add(comment_data)
     DB.session.commit()
-    # generate new list of comments to send to clients
-    existing_comments = Comments.query.filter_by(event_id=event_id)
-    comment_user_data = dict()
-    send_list_pairs = generate_comment_list(existing_comments)
-    comment_user_data["comments"] = send_list_pairs
-    comment_user_data["eventID"] = event_id
-    # emit updated comment list to user
-    # SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
-    SOCKETIO.emit('Comment', comment_user_data, broadcast=False, include_self=True)
-    print(comment_user_data)
-    print(Comments.query.all())
+    return Comments.query.filter_by(event_id=event_id)
 
 def generate_comment_id(comment, event_id, client_id):
     ''' Generate unique comment ID '''
@@ -490,7 +495,6 @@ def on_dislike_event(data):
     current_event = data['eventID']
     #print(current_event)
     print(data['isLiked'])
-
     if current_event in events:
         print("This event exists {}".format(current_event))
         #print(current_event.likes)
