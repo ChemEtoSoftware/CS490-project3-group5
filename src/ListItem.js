@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './Comments.css';
 
 export function ListItem(props) {
   const { name } = props;
   return (
-    <li>
+    <li className="listItem">
       {name}
     </li>
   );
