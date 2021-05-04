@@ -27,10 +27,25 @@ export function GetLocation(props) {
     // setTimeout(function() {updateLoc(true);},1000);
     updateLoc(true);
   }
+  function error() {
+    fetch('/location', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lat: -200,
+        long: -200,
+      }),
+    });
+    // setTimeout(function() {updateLoc(true);},1000);
+    updateLoc(true);
+  }
 
   function getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
+      navigator.geolocation.getCurrentPosition(showPosition, error);
     }
   }
 
