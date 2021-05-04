@@ -572,7 +572,7 @@ def mock_on_likes_dislikes(event_id):
     event_id = DB.session.query(LikesDislikes).get(event_id)
     event_id.dislikes = event_id.dislikes + 1
     DB.session.commit()
-    return [ event_id.likes, event_id.dislikes]
+    return [event_id.likes, event_id.dislikes]
 # Note we need to add this line so we can import APP in the python shell
 if __name__ == "__main__":
     # Note that we don't call APP.run anymore. We call socketio.run with APP arg
