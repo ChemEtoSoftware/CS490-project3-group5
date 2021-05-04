@@ -17,10 +17,10 @@ EXPECTED_OUTPUT = "expected"
 ID = 'id'
 EVENT_ID = 'eventID'
 
-FIRST_ADDITION = Bookmarks(id='234', event_id='567')
-SECOND_ADDITION = Bookmarks(id='678', event_id='907')
-THIRD_ADDITION = Bookmarks(id='1234', event_id='5678')
-INITIAL_PERSON = Bookmarks(id='1234', event_id='1234')
+FIRST_ADDITION = Bookmarks(clientId='234', event_id='567')
+SECOND_ADDITION = Bookmarks(clientId='678', event_id='907')
+THIRD_ADDITION = Bookmarks(clientId='1234', event_id='5678')
+INITIAL_PERSON = Bookmarks(clientId='1234', event_id='1234')
 
 initial_user = Users(id="1234567", email="54321@email.com", firstName="NameFirst", familyName="NameLast", imageURL="url.img.jpg")
 expected_user = Users(id="7654321", email="12345@email.com",firstName="firstname",familyName="lastname",imageURL="https://lh3.googleusercontent.com/754321")
@@ -141,6 +141,23 @@ class AddBookmarkToDB(unittest.TestCase):
             }
         ]
         self.initial_db_mock = [INITIAL_PERSON]
+        self.mocked_list = {
+            '1234' : {
+                'ID' : '1234',
+                'Name' : 'Kevin',
+                'Image' : None
+            },
+            '234' : {
+                'ID' : '234',
+                'Name' : 'Kevin',
+                'Image' : None
+            },
+            '678' : {
+                'ID' : '678',
+                'Name' : 'Kevin',
+                'Image' : None
+            }
+        }
     def mocked_add(self, user):
         """Mocks db.session.add"""
         self.initial_db_mock.append(user)
@@ -155,10 +172,11 @@ class AddBookmarkToDB(unittest.TestCase):
             with patch('app.DB.session.add', self.mocked_add):
                 with patch('app.DB.session.commit', self.mocked_commit):
                     with patch('app.Bookmarks.query') as mocked_query:
-                        mocked_query.all = self.mocked_query_all
-                        actual_result = on_bookmark(test[INPUT])
-                        expected_result = test[EXPECTED_OUTPUT]
-                        self.assertEqual(len(actual_result), len(expected_result))
+                        with patch.dict('app.ACTIVE_USER_SOCKET_PAIRS', self.mocked_list, clear=True):
+                            mocked_query.all = self.mocked_query_all
+                            actual_result = on_bookmark(test[INPUT])
+                            expected_result = test[EXPECTED_OUTPUT]
+                            self.assertEqual(len(actual_result), len(expected_result))
                         # self.assertEqual(actual_result, expected_result)
 if __name__ == '__main__':
     unittest.main()

@@ -12,6 +12,7 @@ export function ListBookmarks(props) {
     Bookmarks,
     clientId,
     socket,
+    setShowBookmarks,
   } = props;
   const [eventPage, setEventPage] = useState([]);
   const [showPage, setShowPage] = useState(false);
@@ -22,15 +23,13 @@ export function ListBookmarks(props) {
   console.log(Bookmarks);
   function showHome() {
     setShowPage(false);
+    setShowBookmarks(false);
   }
   function renderPage(currEvent) {
     socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>
-        <div>
-          <button type="button" className="search" onClick={showHome}>Home</button>
-        </div>
         <EventPage
           currEvent={currEvent}
           clientId={clientId}
@@ -41,18 +40,23 @@ export function ListBookmarks(props) {
   }
   if (!showPage) {
     return (
-      <div className="container-fluid">
-        <ul className="events">
-          {Bookmarks.map((currEvent) => (
-            <li>
-              <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-                <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
-                <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
-                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div>
+        <div>
+          <button type="button" className="search" onClick={showHome}>Home</button>
+        </div>
+        <div className="container-fluid">
+          <ul className="events">
+            {Bookmarks.map((currEvent) => (
+              <li>
+                <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                  <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+                  <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
+                  <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   //  eslint-disable-next-line
@@ -65,21 +69,15 @@ export function ListBookmarks(props) {
 ListBookmarks.propTypes = {
   Bookmarks: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
-  showEventPage: PropTypes.bool,
-  setShowEventPage: PropTypes.func,
-  eventPage: PropTypes.string,
-  setEventPage: PropTypes.func,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  setShowBookmarks: PropTypes.func,
 };
 
 ListBookmarks.defaultProps = {
   Bookmarks: [],
   clientId: null,
-  showEventPage: true,
-  setShowEventPage: null,
-  eventPage: '',
-  setEventPage: null,
   socket: null,
+  setShowBookmarks: null,
 };
 
 export default ListBookmarks;
