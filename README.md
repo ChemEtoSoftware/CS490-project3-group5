@@ -10,7 +10,8 @@ and user information (user's name, Google ID, email).
 
 ## Heroku App Link
 
-[Click here to view our web applicaition!](https://damp-mesa-15975.herokuapp.com/)
+1. [Click here to view our unpolished web applicaition! (Sprint 1)](https://damp-mesa-15975.herokuapp.com/)
+2. [Click here to view our polished web applicaition! (Sprint 2)](https://evening-ocean-01062.herokuapp.com/)
 
 ## Copy this repo
 
@@ -43,7 +44,6 @@ In your terminal:
 17. `pip install geocoder`
 18. `pip install geopy`
 19. `pip install -Iv uszipcode==0.2.4`
-19. `pip install uszipcode`
 20. `npm install react-icons --save`
 
 ## Setup
@@ -56,9 +56,9 @@ In your terminal:
 2. Register this web application as a project on your Google Developer account: [Follow the link here](https://developers.google.com/identity/sign-in/web/sign-in)
 3. Add your local testing environment URL as an authorized redirect URI and an authorized JavaScript origin URL in your app on the Google Cloud Platform.
 4. Put these variables in a `.env` file as follows: 
-   `export GOOGLE_CLIENT_ID="YOUR_CLIENT_ID"`
-   `export GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET"`
-   `export APIKEY='YOUR_API_KEY'`
+   `export GOOGLE_CLIENT_ID="YOUR_CLIENT_ID"` <-- From Google Cloud Platfrom
+   `export GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET"` <-- From Google Cloud Platfrom
+   `export APIKEY='YOUR_API_KEY'` <-- From Ticketmaster Developer Account
    
 ## Database Setup
 
@@ -109,7 +109,7 @@ In your terminal:
 
 1. Add and commit all of the files using git
 2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
-3. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/python`
+3. Add python buildpack: `heroku buildpacks:add --index 2 heroku/python`
 4. Push all code to Heroku: `git push heroku main`
 5. Go to your [Heroku dashboard](https://dashboard.heroku.com/apps) and open your application's settings
 6. Run your application in you terminal: `heroku open`
@@ -131,9 +131,10 @@ In your terminal:
 
 ## Known Problems
 
-1. We have to still beautify our web application. A lot of the componenets and features of the app are currenlty in rigid containers but we are hoping to fix that by the end of Sprint 2.
-2. The event page is still a work in progress because a lot of the features to be displayed on the page are Sprint 2 user stories. Thus, the event page looks unlike the design mockups from our project specs.
-3. After clicking on an event div to bookmark, a user is unable to run a new search query, as the event div is not replaced by new results. To show the results, the user must refresh the page.
+1. Upon login, users will have to wait 5-10 seconds to see any events or components pop us. This delay is caused by the geolocator functionality. To generate a list of local events for each user, the program gets the user's longitude and latitutde coordinates, converts the coordinates to an address to extract the zipcode, uses the zipcode to generate the associated state code (2-letter form of the state), and sends a request url to the TicketMaster API to get the list of local events. This whole process takes a significantly visible amount of time. This explains why there is a waiting time between logging in and seeing local events pop up. The web applicaiton fully functions even if the user diables location sharing, but this particular feature of generating local events will not work if the user doesn't allow locaiton sharing.
+2. Once events show up after logging in, users will see alist of local events as well as a map at the bottom of the web application. At first glance, the map will look empty and will not have any visible markers. However, users must zoom out on the map (click the minus sign) to see markers for events listed on the landing page after login. Upon clicking a marker, users can then see which marker is associated with which listed event.
+3. After clicking on an event div, users will have the ability to like or dislike an event; once either like or dislike is clicked, the user cannot undo the click and cannot add another like or dislike in the same session. However, if a user goes back home and clicks on the same event div again, the user can once again click on the like or dislike button for that same event.
+4. If a user wants to add a comment to an event, they cannot add the same comment to the same event. If a user tries to add the same comment more than once to the same event, a key error will show up. The key generated and stored for each comment is a MD5 hash made from the user's name and comment; so if the same comment is enetered by the smae user for the same event, there will be a repititon in the list of keys and will cause the program to break.
 
 ## Technical Issues 
 

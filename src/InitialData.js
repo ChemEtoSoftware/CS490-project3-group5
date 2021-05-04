@@ -20,6 +20,7 @@ export const Movies = ({ initialData }) => {
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './map.css';
+import './App.css';
 import {
   MapContainer, TileLayer, Marker, Popup,
 }
@@ -67,7 +68,7 @@ export function InitialData(props) {
     setEventPage(
       <div>
         <div>
-          <button type="button" className="search" onClick={showHome}>Home</button>
+          <button type="button" className="homebutton" onClick={showHome}>Home</button>
         </div>
         <EventPage
           currEvent={currEvent}
