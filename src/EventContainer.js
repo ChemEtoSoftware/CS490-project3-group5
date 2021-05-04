@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/interactive-supports-focus */
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -110,12 +112,16 @@ export function EventPage(props) {
         <List key={clientId * i}>
           <div className="container" key={clientId + i}>
             <List.Item key={currEvent.id + n}>
-              <Header key={currEvent.id + n1}>{currEvent.name}</Header>
-              <img key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
-              <div key={currEvent.id + n3} className="buttonHolder">
-                <button type="button" className="search" onClick={Bookmarks}> Bookmark </button>
+              <img className="eventimages" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+              <div className="headerButtonCombo">
+                <Header className="eventheaders" key={currEvent.id + n1}>{currEvent.name}</Header>
+                <div role="button" key={currEvent.id + n3} className="bookmarkbutton" onClick={Bookmarks}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-bookmarks" viewBox="0 0 16 16">
+                    <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5V4zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1H4z" />
+                    <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1z" />
+                  </svg>
+                </div>
               </div>
-              <p key={currEvent.id + n4}>{currEvent.dates.start.localDate}</p>
               <div className="like-dislike">
                 <h3>
                   <button
@@ -151,6 +157,13 @@ export function EventPage(props) {
                   <span> </span>
                   dislikes
                 </h3>
+              </div>
+              <div className="info" key={currEvent.id + n4}>
+                <p>{typeof currEvent.dates.start === 'undefined' ? null : currEvent.dates.start.localDate}</p>
+                <p>{typeof currEvent.dates.start === 'undefined' ? null : currEvent.dates.start.localTime}</p>
+                <p>{typeof currEvent._embedded.venues[0].address === 'undefined' ? null : currEvent._embedded.venues[0].address.line1}</p>
+                <p>{typeof currEvent._embedded.venues[0].city === 'undefined' ? null : currEvent._embedded.venues[0].city.name}</p>
+                <p>{typeof currEvent._embedded.venues[0].state === 'undefined' ? null : currEvent._embedded.venues[0].state.stateCode}</p>
               </div>
             </List.Item>
           </div>
