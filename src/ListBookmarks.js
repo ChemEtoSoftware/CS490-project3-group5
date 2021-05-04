@@ -30,9 +30,6 @@ export function ListBookmarks(props) {
     setShowPage(true);
     setEventPage(
       <div>
-        <div>
-          <button type="button" className="search" onClick={showHome}>Home</button>
-        </div>
         <EventPage
           currEvent={currEvent}
           clientId={clientId}
@@ -43,18 +40,23 @@ export function ListBookmarks(props) {
   }
   if (!showPage) {
     return (
-      <div className="container-fluid">
-        <ul className="events">
-          {Bookmarks.map((currEvent) => (
-            <li>
-              <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
-                <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
-                <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
-                <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div>
+        <div>
+          <button type="button" className="search" onClick={showHome}>Home</button>
+        </div>
+        <div className="container-fluid">
+          <ul className="events">
+            {Bookmarks.map((currEvent) => (
+              <li>
+                <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                  <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
+                  <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
+                  <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   //  eslint-disable-next-line
