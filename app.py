@@ -1,4 +1,4 @@
-# pylint: disable=W0702,R1705
+# pylint: disable=W0702,R1705,C0301
 """
     This module is specifically for creating a database that stores tictactoe player scores,
     as well as allowing them the chance to play each other.
@@ -118,7 +118,7 @@ def get_lat_long():
     """ get user location """
     global USER_STATE
     location_json = request.get_json()
-    if len(location_json) == 2 and location_json.get('lat')!=-200 and location_json.get('long')!=200:
+    if len(location_json) == 2 and location_json.get('lat') != -200 and location_json.get('long') != -200:
         latitude = location_json.get('lat')
         longitude = location_json.get('long')
         geolocator = Nominatim(user_agent="EventGuru")
