@@ -120,7 +120,7 @@ def get_lat_long():
     """ get user location """
     global USER_STATE
     location_json = request.get_json()
-    if len(location_json) == 2:
+    if len(location_json) == 2 and location_json.get('lat')!=-200 and location_json.get('long')!=200:
         latitude = location_json.get('lat')
         longitude = location_json.get('long')
         geolocator = Nominatim(user_agent="EventGuru")
