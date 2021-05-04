@@ -27,7 +27,7 @@ def get_bookmarks(d_b):
             return '<Bookmark %r>' % self.id
     return Bookmarks
 def get_likes_dislikes(d_b):
-    '''Model for Likes and Dislikes Feature'''
+    '''Can create DB with eventID, num of likes and dislikes'''
     class LikesDislikes(d_b.Model):
         '''Can create DB with eventID, num of likes and dislikes'''
         eventID = d_b.Column(d_b.String(80), primary_key=True)

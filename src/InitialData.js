@@ -61,6 +61,8 @@ export function InitialData(props) {
     setShowPage(false);
   }
   function renderPage(currEvent) {
+    console.log('On click render page');
+    socket.emit('request_data', { eventID: currEvent.id });
     setShowPage(true);
     setEventPage(
       <div>
