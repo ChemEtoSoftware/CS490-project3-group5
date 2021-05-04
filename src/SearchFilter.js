@@ -49,6 +49,7 @@ export function SearchFilterEvents(props) {
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [Bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState('');
+  const [bookmarkString, setBookmarkString] = useState('');
   // Retrieves users bookmark's after clicking button.
   useEffect(() => {
     socket.on('retrieve_bookmarks', (data) => {
@@ -56,6 +57,7 @@ export function SearchFilterEvents(props) {
       console.log(data);
       setBookmarks(data);
       setLoading(null);
+      setBookmarkString('Bookmarked ');
     });
   }, [showBookmarks]);
 
@@ -183,6 +185,7 @@ export function SearchFilterEvents(props) {
     setShowBookmarks(!showBookmarks);
     setBookmarks([]);
     setLoading(<h1>Loading...(It takes a while to load)</h1>);
+    setBookmarkString('');
   }
 
   function displayFilteredSearch() {
@@ -284,7 +287,10 @@ export function SearchFilterEvents(props) {
       </div>
       {/* Either displays initial data or bookmarks. */}
       <div className="search">
-        <h1>Events</h1>
+        <h1 id="PageLabel">
+          {bookmarkString}
+          Events
+        </h1>
         {error === true
           ? displayErrorMessage()
           : [

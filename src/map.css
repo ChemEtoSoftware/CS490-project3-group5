@@ -1,6 +1,7 @@
 .leaflet-container {
   width: 25%;
   height: 25vh;
+  float: right;
 }
 .events{
     display: inline-grid;

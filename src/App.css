@@ -40,12 +40,44 @@
     transform: rotate(360deg);
   }
 }
-
+.like-dislike{
+  display: flex;
+  justify-content: center;
+}
+.info{
+  text-align: center;
+}
+.eventimages{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+.eventheaders{
+  text-align: center;
+  display: table-cell
+}
+.bookmarkbutton{
+  text-align: center;
+  display: table-cell;
+  white-space: nowrap;
+}
+.headerButtonCombo{
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
 .logoutbutton {
   margin: 0 auto;
   break-after: always;
 }
-
+.homebutton{
+  margin: 0 auto;
+  break-after: always;
+  position: absolute;
+  top: 20px;
+  right: 125px;
+}
 .leaderboardbutton {
   margin: 0 auto;
   break-after: always;
@@ -54,7 +86,9 @@
 .victor {
   margin: 0 auto;
 }
-
+#PageLabel{
+  text-align: center;
+}
 input[type=text] {
   width: 20%;
   padding: 12px 20px;

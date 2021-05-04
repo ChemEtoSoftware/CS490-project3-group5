@@ -42,7 +42,7 @@ export function ListBookmarks(props) {
     return (
       <div>
         <div>
-          <button type="button" className="search" onClick={showHome}>Home</button>
+          <button type="button" className="homebutton" onClick={showHome}>Home</button>
         </div>
         <div className="container-fluid">
           <ul className="events">
