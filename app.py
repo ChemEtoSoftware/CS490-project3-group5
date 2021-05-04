@@ -27,10 +27,8 @@ APP = Flask(__name__, static_folder='./build/static')
 APP.secret_key = os.urandom(24)
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 DB = SQLAlchemy(APP)
 # from models import Comments
-
 import models
 if __name__ == "__main__":
     DB.create_all()
@@ -496,11 +494,7 @@ def on_dislike_event(data):
     #print(current_event)
     print(data['isLiked'])
     if current_event in events:
-        print("This event exists {}".format(current_event))
-        #print(current_event.likes)
-        #print(LikesDislikes.query.filter_by(dislikes=3).first())
         curr_event = DB.session.query(LikesDislikes).get(data['eventID'])
-        print("this is the current event: " + str(curr_event))
         if data['isLiked'] is True:
             curr_event.likes = curr_event.likes + 1
             DB.session.commit()
@@ -508,8 +502,6 @@ def on_dislike_event(data):
             curr_event.dislikes = curr_event.dislikes + 1
             DB.session.commit()
         events, likes, dislikes = db_events() #should be updated like/dislike
-        print("This is the data that exists " + str(events) + str(likes) + str(dislikes))
-        print("Num of likes for event: " + str(curr_event) + str(curr_event.likes))
         SOCKETIO.emit('update_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
     else:
         if data['isLiked'] is True:
@@ -541,9 +533,6 @@ def db_events():
         events.append(event.eventID)
         likes.append(event.likes)
         dislikes.append(event.dislikes)
-    #print(events)
-    #print(likes)
-    #print(dislikes)
     return events, likes, dislikes
 @SOCKETIO.on('request_data')
 def on_request_data(data):
@@ -552,7 +541,7 @@ def on_request_data(data):
     events, likes, dislikes = db_events()
     current_event = data['eventID']
     if current_event in events:
-        print("This event exists {}".format(current_event))
+        #print("This event exists {}".format(current_event))
         curr_event = DB.session.query(LikesDislikes).get(data['eventID'])
         SOCKETIO.emit('show_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
     else:
@@ -560,7 +549,7 @@ def on_request_data(data):
         DB.session.add(initialize_event)
         DB.session.commit()
         events.append(current_event)
-        print(initialize_event)
+        #print(initialize_event)
         SOCKETIO.emit('show_likes_dislikes', {'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes)}) # pylint: disable=line-too-long
     # SOCKETIO.emit('show_likes_dislikes',
     # { 'likes': str(curr_event.likes), 'dislikes': str(curr_event.dislikes) })
