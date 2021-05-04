@@ -100,6 +100,7 @@ export function EventPage(props) {
   };
   const updateDislikes = () => {
     console.log('Inside UupdateDislikes');
+    setDisable(true);
     socket.emit('dislike_event', { eventID: currEvent.id, isLiked: false });
     setDislikes(dislikes + 1);
   };
