@@ -3,7 +3,12 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 import { SearchFilterEvents } from './SearchFilter';
+import { EventPage } from './EventContainer';
 import { Comment } from './Comment.js';
+import {
+  MapContainer, TileLayer, Marker, Popup,
+}
+  from 'react-leaflet';
 import io from 'socket.io-client';
 
 const socket = io();
@@ -24,11 +29,8 @@ test('Test if event container renders correctly', () => {
   const element = screen.getByText('Filter Events');
   expect(element).toBeInTheDocument();
 });
-/*  test('See if the leaderboard is updated based on a change in props', () => {
-  const { rerender } = render(<Display name="Kevin" number="100"
-  currentUser="Kevin" currentLetter="X" />);
-  expect(screen.getByRole('row')).toHaveTextContent('Kevin');
-  rerender(<Display name="Irene" number="99" currentUser="Kevin" currentLetter="O" />);
-  expect(screen.getByRole('row')).toHaveTextContent('Irene');
+test('See if map renders.', () => {
+  const rerender = render(<SearchFilterEvents socket={socket} />);
+  const element = screen.getByText('Bookmarks');
+  expect(element).toBeInTheDocument();
 });
-*/
