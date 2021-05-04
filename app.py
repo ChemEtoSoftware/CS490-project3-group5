@@ -310,7 +310,7 @@ def on_bookmark(data):
     else:
         DB.session.delete(exists)
         DB.session.commit()
-    list_of_bookmarks = DB.session.query(Bookmarks).filter_by(clientId=user_id)
+    list_of_bookmarks = Bookmarks.query.all()
     for bookmark in list_of_bookmarks:
         print(bookmark.event_id)
     return list_of_bookmarks
