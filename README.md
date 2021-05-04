@@ -10,8 +10,8 @@ and user information (user's name, Google ID, email).
 
 ## Heroku App Link
 
-[Click here to view our web applicaition! (Sprint 1)](https://damp-mesa-15975.herokuapp.com/)
-[Click here to view our web applicaition! (Sprint 2)](https://evening-ocean-01062.herokuapp.com/)
+1. [Click here to view our unpolished web applicaition! (Sprint 1)](https://damp-mesa-15975.herokuapp.com/)
+2. [Click here to view our polished web applicaition! (Sprint 2)](https://evening-ocean-01062.herokuapp.com/)
 
 ## Copy this repo
 
@@ -133,7 +133,7 @@ In your terminal:
 
 1. Upon login, users will have to wait 5-10 seconds to see any events or components pop us. This delay is caused by the geolocator functionality. To generate a list of kocal events for each user, the program gets the user's longitude and latitutde coordinates, converts the coordinates to an address to extract the zipcode, uses the zipcode to generate the associated state code (2-letter form of the state), and sends a request url to the TicketMaster API to get the list of local events. This whole process takes a significantly visible amount of time. This explains why there is a waiting time between logging in and seeing local events pop up. The web applicaiton fully functions even if the user diables location sharing, but this particular feature of generating local events will not work if the user doesn't allow locaiton sharing.
 2. Once events show up after logging in, users will see alist of local events as well as a map at the bottom of the web application. At first glance, the map will look empty and will not have any visible markers. However, users must zoom out on the map (click the minus sign) to see markers for events listed on the landing page after login. Upon clicking a marker, users can then see which marker is associated with which listed event.
-3. 
+3. After clicking on an event div, users will have the ability to like or dislike an event; once either like or dislike is clicked, the user cannot undo the click and cannot add another like or dislike in the same session. However, if a user goes back home and clicks on the same event div again, the user can once again click on the like or dislike button for that same event.
 
 ## Technical Issues 
 
