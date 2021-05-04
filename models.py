@@ -26,13 +26,23 @@ def get_bookmarks(d_b):
         def __repr__(self):
             return '<Bookmark %r>' % self.id
     return Bookmarks
+  
 def get_likes_dislikes(d_b):
-    '''Model for Likes and Dislikes Feature'''
+    '''Can create DB with eventID, num of likes and dislikes'''
     class LikesDislikes(d_b.Model):
-        '''Can create DB with eventID, num of likes and dislikes'''
+        #Can create DB with eventID, num of likes and dislikes
         eventID = d_b.Column(d_b.String(80), primary_key=True)
         likes = d_b.Column(d_b.Integer, nullable=False)
         dislikes = d_b.Column(d_b.Integer, nullable=False)
         def __repr__(self):
             return '<LikesDislikes %r>' % self.eventID
     return LikesDislikes
+'''
+class LikesDislikes(DB.Model):
+    #Can create DB with eventID, num of likes and dislikes
+    eventID = DB.Column(DB.String(80), primary_key=True)
+    likes = DB.Column(DB.Integer, nullable=False)
+    dislikes = DB.Column(DB.Integer, nullable=False)
+    def __repr__(self):
+        return '<LikesDislikes %r>' % self.eventID
+'''
