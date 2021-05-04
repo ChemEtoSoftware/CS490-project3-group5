@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import { Login } from './Login';
 import { Logout } from './Logout';
 import { GetLocation } from './GetLocation';
-// import { LandingPage } from './LandingPage';
+import { LandingPage } from './LandingPage';
 // import { InitialData } from './InitialData';
 
 export const socket = io();
@@ -20,12 +20,14 @@ function App() {
   const [isLoggedIn, setLogin] = useState(false);
   const [authID, setAuthID] = useState('');
   const [canRender, setRenderStatus] = useState(false);
-  // const [landing, setLanding] = useState(true);
+  const [landing, setLanding] = useState(true);
   function toggleLogin() {
     if (isLoggedIn) {
       setLogin(false);
+      setLanding(true);
     } else {
       setLogin(true);
+      setLanding(false);
     }
     return null;
   }
@@ -141,6 +143,7 @@ function App() {
   return (
     <div>
       {conditionalLogin()}
+      {landing === true ? <LandingPage /> : null}
       {conditionalLogout()}
     </div>
   );

@@ -4,6 +4,8 @@
     as well as allowing them the chance to play each other.
 """
 import os
+import hashlib
+import json
 import requests
 from flask import Flask, json, request, session, send_from_directory
 from flask_socketio import SocketIO
@@ -16,6 +18,7 @@ from ratelimiter import RateLimiter
 from geopy.geocoders import Nominatim
 from uszipcode import SearchEngine
 
+
 #Prevents server overload
 Payload.max_decode_packets = 200
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
@@ -25,14 +28,16 @@ APP.secret_key = os.urandom(24)
 APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
 DB = SQLAlchemy(APP)
+# from models import Comments
+
 import models
 if __name__ == "__main__":
     DB.create_all()
 Users = models.get_users(DB)
 Bookmarks = models.get_bookmarks(DB)
 LikesDislikes = models.get_likes_dislikes(DB)
+Comments = models.get_comments(DB)
 
 CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
 
@@ -338,24 +343,114 @@ def retrieve_bookmarks(data):
             event_details.append(jsontext)
             redurl = 'https://app.ticketmaster.com/discovery/v2/events/'
     SOCKETIO.emit('retrieve_bookmarks', event_details, broadcast=False, include_self=True)
+
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     """Simply shows who's disconnected, nothing more."""
     print('User disconnected!')
 
+def generate_comment_list(existing_comments):
+    ''' generate list of formatted existing comments to send to client'''
+    send_list_pairs = []
+    if existing_comments:
+        send_list_pairs.append('True')
+        for comm in existing_comments:
+            comm_name = comm.username
+            comm_text = comm.text
+            send_list_pairs.append(comm_name+': '+comm_text)
+    else:
+        send_list_pairs.append('None')
+        print('No comments exist for event')
+    return send_list_pairs
+
+@SOCKETIO.on('Eventload')
+def load_event(data):
+    """Event clicked, use data to load comments + user data and emit to component"""
+    # data = clientId, eventId, uniqueID
+    # use clientId to load commenting user's photo and name
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["uniqueID"]] # ID, Name, Image (+imageAddon)
+    # use eventId to load existing comments associated with that event
+    comment_user_data['eventId'] = data["eventId"]
+    existing_comments = Comments.query.filter_by(event_id=data["eventId"])
+    # send existing comment obj to helper func, returning formatted array of comments
+    send_list_pairs = generate_comment_list(existing_comments)
+    comment_user_data["comments"] = send_list_pairs
+    print(comment_user_data)
+    SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
+    print('EMITTING EVENTLOAD')
+
+@SOCKETIO.on('comment')
+def comment_submit(data):
+    """on receipt of new comment, update db
+    send new list to clients that are displaying current eventID"""
+    global ACTIVE_USER_SOCKET_PAIRS
+    # load information from data emit
+    event_id = data["eventID"] # eventID associated with comment
+    text = data["comment"] # comment text
+    event_id = data["eventID"] # eventID associated with comment
+    client_id = data["clientId"] # clientId who made the comment
+    # load user data from socketID of client
+    comment_user_data = ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] # ID, Name, Image
+    name = comment_user_data["Name"]
+    # generate new list of comments to send to clients
+    existing_comments = db_add_comment(client_id, text, event_id, name)
+    comment_user_data = dict()
+    send_list_pairs = generate_comment_list(existing_comments)
+    comment_user_data["comments"] = send_list_pairs
+    comment_user_data["eventID"] = event_id
+    # emit updated comment list to user
+    # SOCKETIO.emit('EventLoad', comment_user_data, broadcast=False, include_self=True)
+    SOCKETIO.emit('Comment', comment_user_data, broadcast=False, include_self=True)
+    print(comment_user_data)
+    print(Comments.query.all())
+
+def db_add_comment(client_id, text, event_id, name):
+    """ returns queried list of comments """
+    # Create client object and save in DB
+    head = client_id  # head should be comment ID of comment above
+    tail = '0' # tail should be commentID of comment below this individual comment
+    depth = 0 # this is the depth level (indent level) of this comment
+    # depth can be found recursively looking at head until you reach depth 0,
+    # to find the new depth of threaded comments
+    comment_data = Comments(
+        commentId=generate_comment_id(text, event_id, client_id),
+        event_id=event_id,
+        username=name,
+        text=text,
+        head=head,
+        tail=tail,
+        depth=depth)
+    # add comment to comment DB
+    DB.session.add(comment_data)
+    DB.session.commit()
+    return Comments.query.filter_by(event_id=event_id)
+
+def generate_comment_id(comment, event_id, client_id):
+    ''' Generate unique comment ID '''
+    mix = hashlib.md5()
+    line = comment+event_id+client_id
+    line = line.encode('utf-8')
+    mix.update(line)
+    comment_id = str(int(mix.hexdigest(), 16))[0:12]
+    return comment_id
+
 @SOCKETIO.on('Login')
 def on_login(data):
     '''Receives login emit and uploads user data to database'''
-    all_users = Users.query.all()
     global LIST_OF_ACTIVE_USERS
+    global ACTIVE_USER_SOCKET_PAIRS
+    all_users = Users.query.all()
     print("Data Recieved: \n", data)
     if data["googleId"][-7:] in all_users:
         all_users = db_add_user(data)
+    else:
+        print("Returning User: ", data)
     # add googleId to list and dict of active users
     LIST_OF_ACTIVE_USERS.append(data["googleId"][-7:])
     ACTIVE_USER_SOCKET_PAIRS[data["socketID"]] = {
         "ID":data["googleId"][-7:],
         "Name":data["givenName"],
+        "Image":data["imageUrl"],
     }
     print("Current Users: \n")
     for item in all_users:
@@ -367,6 +462,7 @@ def db_add_user(data):
     # truncate image url length to avoid string overflow in DB
     truncate_len = len("'https://lh3.googleusercontent.com")
     truncated_imgurl = data["imageUrl"][truncate_len:]
+    print("NEW IMAGE URL: ", truncated_imgurl)
     # init user data received from client into obj
     # id is a string of length 7 which is maximum integer size
     user_data = Users(
@@ -399,7 +495,6 @@ def on_dislike_event(data):
     current_event = data['eventID']
     #print(current_event)
     print(data['isLiked'])
-
     if current_event in events:
         print("This event exists {}".format(current_event))
         #print(current_event.likes)

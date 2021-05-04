@@ -84,6 +84,7 @@ export function SearchFilterEvents(props) {
         const prev = [...data._embedded.events];
         setInitialData(prev);
         console.log(prev);
+        setLocations([]);
         for (i = 0; i < prev.length; i += 1) {
           const curr = prev[i]._embedded.venues[0].location;
           const dict = { lat: curr.latitude, long: curr.longitude, name: prev[i].name };
