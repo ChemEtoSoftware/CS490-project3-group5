@@ -12,6 +12,7 @@ export function ListBookmarks(props) {
     Bookmarks,
     clientId,
     socket,
+    setShowBookmarks,
   } = props;
   const [eventPage, setEventPage] = useState([]);
   const [showPage, setShowPage] = useState(false);
@@ -22,6 +23,7 @@ export function ListBookmarks(props) {
   console.log(Bookmarks);
   function showHome() {
     setShowPage(false);
+    setShowBookmarks(false);
   }
   function renderPage(currEvent) {
     socket.emit('request_data', { eventID: currEvent.id });
@@ -65,21 +67,15 @@ export function ListBookmarks(props) {
 ListBookmarks.propTypes = {
   Bookmarks: PropTypes.arrayOf(PropTypes.object),
   clientId: PropTypes.string,
-  showEventPage: PropTypes.bool,
-  setShowEventPage: PropTypes.func,
-  eventPage: PropTypes.string,
-  setEventPage: PropTypes.func,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  setShowBookmarks: PropTypes.func,
 };
 
 ListBookmarks.defaultProps = {
   Bookmarks: [],
   clientId: null,
-  showEventPage: true,
-  setShowEventPage: null,
-  eventPage: '',
-  setEventPage: null,
   socket: null,
+  setShowBookmarks: null,
 };
 
 export default ListBookmarks;
