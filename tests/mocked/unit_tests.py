@@ -1,3 +1,4 @@
+'''Mocked Unit Tests'''
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
@@ -6,10 +7,11 @@ import copy
 import os
 
 sys.path.append(os.path.abspath('../../'))
-from app import on_bookmark, Users, Bookmarks, Comments
+from app import on_bookmark, Users, Bookmarks, Comments, LikesDislikes
 import models
 
 from app import db_add_user, db_add_comment
+from app import  add_event_id, mock_on_likes_dislikes
 KEY_INPUT = 'input'
 KEY_EXPECTED = 'expected'
 INPUT = "id, event_id"
@@ -160,5 +162,105 @@ class AddBookmarkToDB(unittest.TestCase):
                         expected_result = test[EXPECTED_OUTPUT]
                         self.assertEqual(len(actual_result), len(expected_result))
                         # self.assertEqual(actual_result, expected_result)
+INITIAL_EVENT = '00'
+class AddEventIdTestCase(unittest.TestCase):
+    '''Mocked Unit Test to check if eventID is added to DB'''
+    def setUp(self):
+        '''successful cases'''
+        self.success_test_params = [{
+            KEY_INPUT: '01',
+            KEY_EXPECTED: [INITIAL_EVENT, '01'],
+        }, {
+            KEY_INPUT:
+            '02',
+            KEY_EXPECTED: [INITIAL_EVENT, '01', '02'],
+        }, {
+            KEY_INPUT:
+            '03',
+            KEY_EXPECTED: [INITIAL_EVENT, '01', '02', '03'],
+        }]
+
+        initial_event = LikesDislikes(eventID=INITIAL_EVENT, likes=0, dislikes=0)
+        self.initial_db_mock = [initial_event]
+
+    def mocked_db_session_add(self, event_id):
+        '''Mocks db.session.add'''
+        self.initial_db_mock.append(event_id)
+
+    def mocked_db_session_commit(self):
+        '''none'''
+        pass
+
+    def mocked_person_query_all(self):
+        '''mocks the event query db'''
+        return self.initial_db_mock
+
+    def test_success(self):
+        '''successful cases'''
+        for test in self.success_test_params:
+            with patch('app.DB.session.add', self.mocked_db_session_add):
+                with patch('app.DB.session.commit',
+                           self.mocked_db_session_commit):
+                    with patch('app.LikesDislikes.query') as mocked_query:
+                        mocked_query.all = self.mocked_person_query_all
+
+                        print(self.initial_db_mock)
+                        actual_result = add_event_id(test[KEY_INPUT])
+                        print(actual_result)
+                        expected_result = test[KEY_EXPECTED]
+
+                        self.assertEqual(len(actual_result),
+                                         len(expected_result))
+                        self.assertEqual(actual_result[1], expected_result[1])
+class OnLikesDislikesTestCase(unittest.TestCase):
+    '''Mock Unit Test for testing if likes and dislikes increment'''
+    def setUp(self):
+        '''setup for parameters'''
+        self.success_test_params = [
+            {
+                KEY_INPUT: ['event1'],
+                KEY_EXPECTED: [0, 0],
+            },
+            {
+                KEY_INPUT: ['event1'],
+                KEY_EXPECTED: [1, 1],
+            },
+            {
+                KEY_INPUT: ['event2'],
+                KEY_EXPECTED: [0, 0],
+            },
+            {
+                KEY_INPUT: ['event1'],
+                KEY_EXPECTED: [2, 2],
+            },
+        ]
+
+        event1 = LikesDislikes(eventID='event1', likes=0, dislikes=0)
+        event2 = LikesDislikes(eventID='event2', likes=0, dislikes=0)
+        self.initial_db_mock = [event1, event2]
+
+        print(self.initial_db_mock)
+
+    def mocked_query_get(self, first_event):
+        '''mocking the db with event'''
+        return self.initial_db_mock(LikesDislikes).get(first_event)
+
+    def mocked_likes_dislikes(self, event1):
+        '''mocking the likes of db'''
+        return event1.likes + 1
+
+    def mocked_db_session_commit(self):
+        '''none'''
+        pass
+
+    def test_split_success(self):
+        '''successful test cases'''
+        for test in self.success_test_params:
+            first_event = test[KEY_INPUT][0]
+            with patch('app.DB.session.query') as mocked_query:
+                mocked_query.get = self.mocked_query_get
+                actual_result = mock_on_likes_dislikes(first_event)
+                expected_result = test[KEY_EXPECTED]
+                self.assertEqual(len(actual_result), len(expected_result))
 if __name__ == '__main__':
     unittest.main()
