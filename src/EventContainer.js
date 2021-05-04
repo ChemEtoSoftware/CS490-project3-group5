@@ -68,6 +68,7 @@ export function EventPage(props) {
   const long = currEvent._embedded.venues[0].location.longitude;
   const [likes, setLikes] = useState(0); // state to update likes
   const [dislikes, setDislikes] = useState(0); // state to update dislikes
+  const [disable, setDisable] = useState(false);
   useEffect(() => {
     /*
     socket.on('event_list', (data) => {
@@ -93,6 +94,7 @@ export function EventPage(props) {
   }, []);
   const updateLikes = () => {
     console.log('Inside updateLikes');
+    setDisable(true);
     socket.emit('dislike_event', { eventID: currEvent.id, isLiked: true });
     setLikes(likes + 1);
   };
@@ -117,7 +119,9 @@ export function EventPage(props) {
                 <h3>
                   <button
                     label="likeButton"
+                    id="likeButton"
                     type="button"
+                    disabled={disable}
                     onClick={() => {
                       console.log(currEvent.id);
                       // socket.emit('dislikeEvent', { eventID: currEvent.id, isLiked: false });
@@ -133,6 +137,7 @@ export function EventPage(props) {
                   <button
                     label="dislikeButton"
                     type="button"
+                    disabled={disable}
                     onClick={() => {
                       console.log(currEvent.id);
                       // socket.emit('dislikeEvent', { eventID: currEvent.id, isLiked: false });
