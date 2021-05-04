@@ -269,16 +269,18 @@ export function SearchFilterEvents(props) {
             {' '}
             <br />
           </div>
-          {showHide === false ? displayFilteredSearchButton() : null}
           {showHide === true ? displayFilteredSearch() : null}
-          <div className="buttonHolder">
-            {' '}
-            <button type="submit" className="search" onClick={handleSearch}>Search</button>
-            {' '}
+          <div className="centerButtons">
+            {showHide === false ? displayFilteredSearchButton() : null}
+            <div className="buttonHolder">
+              {' '}
+              <button type="submit" className="search" onClick={handleSearch}>Search</button>
+              {' '}
+            </div>
           </div>
         </form>
       </div>
-      <div>
+      <div className="centerBookmarks">
         <div className="buttonHolder">
           {' '}
           <button type="button" className="search" onClick={fetchBookmarks}>Bookmarks</button>
