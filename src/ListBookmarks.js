@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
@@ -50,7 +49,7 @@ export function ListBookmarks(props) {
           <ul className="events">
             {Bookmarks.map((currEvent) => (
               <li>
-                <div key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
+                <div role="button" key={currEvent.id + n} onClick={() => renderPage(currEvent)}>
                   <img className="event_image" key={currEvent.id + n2} src={currEvent.images[0].url} alt="" width="300" height="200" />
                   <h3 key={currEvent.id + n1} width="300">{currEvent.name}</h3>
                   <p key={currEvent.id + n3}>{currEvent.dates.start.localDate}</p>
