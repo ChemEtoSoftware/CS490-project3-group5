@@ -128,6 +128,8 @@ In your terminal:
    b) label-has-for - This enforces that a label tag has an associated control. Some of the labels displayed on our web app are not associated with any other user interactions tags or elements on the page; this feature is limiting how we layout all the elements on the page.
    c) no-underscore-dangle - This enforces that there are no dangling underscores in identifiers. In order for us to extract the right data from the API response json object, we must serch through a key called `_embedded`; this feature is limiting what keys we search through in the json object that is returend from the API.
    d) `App.test.js` ignored, unit tests were not linted following Project 2 Milestone 3 specifications. `.eslintrc.js`  is ignored, as hidden files should not be linted, as they are not code that is executed at runtime.
+   e) eslint-disable jsx-a11y/click-events-have-key-events - This is to prevent having to add a key event handler for every single div component. That would simply be impractical as the divs are all mapped, and as such there is no possible way to handle them all with separate keys. 
+   
 
 ## Known Problems
 
@@ -135,6 +137,7 @@ In your terminal:
 2. Once events show up after logging in, users will see a list of local events as well as a map at the bottom of the web application. At first glance, the map will look empty and will not have any visible markers. However, users must zoom out on the map (click the minus sign) to see markers for events listed on the landing page after login. Upon clicking a marker, users can then see which marker is associated with which listed event.
 3. After clicking on an event div, users will have the ability to like or dislike an event; once either like or dislike is clicked, the user cannot undo the click and cannot add another like or dislike in the same session. However, if a user goes back home and clicks on the same event div again, the user can once again click on the like or dislike button for that same event.
 4. If a user wants to add a comment to an event, they cannot add the same comment to the same event. If a user tries to add the same comment more than once to the same event, a key error will show up. The key generated and stored for each comment is a MD5 hash made from the user's name and comment; so if the same comment is entered by the same user for the same event, there will be a repitition in the list of keys and will cause the program to break.
+5. After clicking the bookmarks button, it takes some time for the bookmarks to show up. There was an error with the server that could not be resolved in which it would send more API fetches than was allowed at once. The rate had to be limited to 1 fetch per second, even though the limit is 5. If the rate limit was set above 1, it would return faults.
 
 ## Technical Issues 
 
