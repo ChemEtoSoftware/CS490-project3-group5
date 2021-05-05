@@ -139,4 +139,4 @@ In your terminal:
 ## Technical Issues 
 
 1. We had a hard time working with GitHub and integrating all of our code together. We ran into a few merging problems because several people were pushing and pulling code at the same time. We resolved these issues by having meetings several times throughout the week as a group or with just a few people from the group and discussing the problems and action items together.
-2. We also had a hard time with a few dependencies that we each had to install on our local environments to test the app in its fullest functionality. For example, semantic-ui-reaact and react-google-login posed many problems when we tested each others working components on our local environments.
+2. We also had a hard time with a few dependencies that we each had to install on our local environments to test the app in its fullest functionality. For example, semantic-ui-react and react-google-login posed many problems when we tested each others working components on our local environments.
