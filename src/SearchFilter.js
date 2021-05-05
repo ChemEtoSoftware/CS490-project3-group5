@@ -305,6 +305,7 @@ export function SearchFilterEvents(props) {
                     clientId={clientId}
                     socket={socket}
                     setShowBookmarks={setShowBookmarks}
+                    setBookmarkString={setBookmarkString}
                   />
                 </div>
               )

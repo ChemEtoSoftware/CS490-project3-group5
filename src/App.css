@@ -72,8 +72,6 @@
   break-after: always;
 }
 .homebutton{
-  margin: 0 auto;
-  break-after: always;
   position: absolute;
   top: 20px;
   right: 125px;

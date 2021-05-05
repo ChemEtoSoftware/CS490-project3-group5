@@ -13,6 +13,7 @@ export function ListBookmarks(props) {
     clientId,
     socket,
     setShowBookmarks,
+    setBookmarkString,
   } = props;
   const [eventPage, setEventPage] = useState([]);
   const [showPage, setShowPage] = useState(false);
@@ -24,6 +25,7 @@ export function ListBookmarks(props) {
   function showHome() {
     setShowPage(false);
     setShowBookmarks(false);
+    setBookmarkString('');
   }
   function renderPage(currEvent) {
     socket.emit('request_data', { eventID: currEvent.id });
@@ -63,7 +65,16 @@ export function ListBookmarks(props) {
   }
   //  eslint-disable-next-line
   else {
-    return (eventPage);
+    return (
+      <div>
+        <div>
+          <button type="button" className="homebutton" onClick={showHome}>Home</button>
+        </div>
+        <div>
+          {eventPage}
+        </div>
+      </div>
+    );
   }
 }
 ListBookmarks.propTypes = {
@@ -71,6 +82,7 @@ ListBookmarks.propTypes = {
   clientId: PropTypes.string,
   socket: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   setShowBookmarks: PropTypes.func,
+  setBookmarkString: PropTypes.func,
 };
 
 ListBookmarks.defaultProps = {
@@ -78,6 +90,7 @@ ListBookmarks.defaultProps = {
   clientId: null,
   socket: null,
   setShowBookmarks: null,
+  setBookmarkString: null,
 };
 
 export default ListBookmarks;
