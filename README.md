@@ -10,8 +10,8 @@ and user information (user's name, Google ID, email).
 
 ## Heroku App Link
 
-1. [Click here to view our unpolished web applicaition! (Sprint 1)](https://damp-mesa-15975.herokuapp.com/)
-2. [Click here to view our polished web applicaition! (Sprint 2)](https://evening-ocean-01062.herokuapp.com/)
+1. [Click here to view our unpolished web application! (Sprint 1)](https://damp-mesa-15975.herokuapp.com/)
+2. [Click here to view our polished web application! (Sprint 2)](https://evening-ocean-01062.herokuapp.com/)
 
 ## Copy this repo
 
@@ -116,7 +116,7 @@ In your terminal:
 
 ## Linting
 1. Pylint:
-   a) E1101 - This is used when a variable is accessed for an nonexistant member. The inferencing mechanism makes it hard for Pylint to always refer to the right types, especially when using SQLAlchemy in our scenario.
+   a) E1101 - This is used when a variable is accessed for an nonexistent member. The inferencing mechanism makes it hard for Pylint to always refer to the right types, especially when using SQLAlchemy in our scenario.
    b) C0413 - This is used when the code and imports are mixed up. It is necessary for us to import models only after creatign a db variable to prevent circular imports in the set up of our DB.
    c) W1508 - This is whed when env manipulations functions does not return None or str values. In the case that we enter env variables not in string format, we can make sure this error does not stop the code from functioning properly. 
    d) R0903 - This is used when a class has too few public methods. Since we need only a limited number of public menthods for the web app to run as expected, it is not necessary for us to add unecessary lines of code to the server side of the application.
